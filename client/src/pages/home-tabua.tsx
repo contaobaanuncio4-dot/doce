@@ -54,13 +54,6 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Banner de Frete Grátis */}
-      <div className="bg-green-600 text-white text-center py-2 px-4">
-        <p className="text-sm font-medium">
-          🚚 Frete grátis a partir de R$ 40,00 para todo o Brasil!
-        </p>
-      </div>
-      
       <Header onCartToggle={onCartToggle} />
 
 
