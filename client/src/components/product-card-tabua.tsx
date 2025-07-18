@@ -9,11 +9,18 @@ interface Product {
   id: number;
   name: string;
   description: string;
-  price: string;
-  imageUrl: string;
-  discount?: number;
+  price?: string;
+  price500g?: string;
+  price1kg?: string;
   originalPrice?: string;
-  installments?: string;
+  originalPrice500g?: string;
+  originalPrice1kg?: string;
+  imageUrl: string;
+  category: string;
+  discount?: number;
+  featured?: boolean;
+  rating?: string;
+  reviews?: number;
 }
 
 interface ProductCardTabuaProps {
