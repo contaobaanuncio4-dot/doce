@@ -64,6 +64,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Cart routes
+  app.get("/api/cart", async (req, res) => {
+    try {
+      const sessionId = req.sessionID;
+      const cartItems = await storage.getCartItems(sessionId);
+      res.json(cartItems);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+      res.status(500).json({ message: "Failed to fetch cart items" });
+    }
+  });
+
   app.get("/api/cart/:sessionId", async (req, res) => {
     try {
       const sessionId = req.params.sessionId;
@@ -86,21 +97,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const cartItem = insertCartItemSchema.parse(req.body);
+      const sessionId = req.sessionID;
+      const { productId, quantity, size, price } = req.body;
       
-      // Check if item already exists in cart
-      const existingItems = await storage.getCartItems(cartItem.sessionId);
-      const existingItem = existingItems.find(item => item.productId === cartItem.productId);
-      
-      if (existingItem) {
-        // Update quantity
-        const updatedItem = await storage.updateCartItem(existingItem.id, existingItem.quantity + cartItem.quantity);
-        res.json(updatedItem);
-      } else {
-        // Add new item
-        const newItem = await storage.addToCart(cartItem);
-        res.json(newItem);
-      }
+      const cartItem = await storage.addToCart({
+        sessionId,
+        productId,
+        quantity,
+        size: size || "500g",
+        price: price || "0"
+      });
+      res.json(cartItem);
     } catch (error) {
       console.error("Error adding to cart:", error);
       res.status(500).json({ message: "Failed to add to cart" });

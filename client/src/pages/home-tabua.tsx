@@ -54,25 +54,16 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header onCartToggle={onCartToggle} />
-      
-      {/* Banner de promoção */}
-      <PromoBanner />
-
-      {/* Banner de imagem principal */}
-      <div className="relative h-64 md:h-96 bg-gradient-to-r from-tabua-green to-tabua-yellow overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative h-full flex items-center justify-center text-white text-center">
-          <div>
-            <h2 className="text-2xl md:text-4xl font-bold mb-2">
-              Queijos & Doces direto de Minas 🔺
-            </h2>
-            <p className="text-lg md:text-xl">
-              🔥 Até 4x sem juros
-            </p>
-          </div>
-        </div>
+      {/* Banner de Frete Grátis */}
+      <div className="bg-green-600 text-white text-center py-2 px-4">
+        <p className="text-sm font-medium">
+          🚚 Frete grátis a partir de R$ 40,00 para todo o Brasil!
+        </p>
       </div>
+      
+      <Header onCartToggle={onCartToggle} />
+
+
 
       {/* Seção de Doces Mais Vendidos */}
       <section className="py-12 bg-gray-50">

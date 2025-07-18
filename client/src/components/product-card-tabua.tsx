@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
+import { CartSidebar } from "./cart-sidebar";
 
 interface Product {
   id: number;
@@ -29,19 +30,8 @@ interface ProductCardTabuaProps {
 
 export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const [quantity, setQuantity] = useState(1);
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
   const queryClient = useQueryClient();
-
-  const addToCartMutation = useMutation({
-    mutationFn: async () => {
-      await apiRequest("/api/cart/add", "POST", {
-        productId: product.id,
-        quantity: quantity
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-    },
-  });
 
   const discountPercent = product.discount || 20;
   const currentPrice = product.price500g || product.price;
@@ -99,14 +89,19 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             <Button
               className="w-full text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
               style={{ backgroundColor: '#0F2E51' }}
-              onClick={() => addToCartMutation.mutate()}
-              disabled={addToCartMutation.isPending}
+              onClick={() => setShowCartSidebar(true)}
             >
-              {addToCartMutation.isPending ? "Adicionando..." : "Adicionar à sacola"}
+              Adicionar à sacola
             </Button>
           </div>
         </div>
       </div>
+      
+      <CartSidebar
+        isOpen={showCartSidebar}
+        onClose={() => setShowCartSidebar(false)}
+        product={product}
+      />
     </div>
   );
 }

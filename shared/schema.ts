@@ -34,7 +34,8 @@ export const cartItems = pgTable("cart_items", {
   sessionId: text("session_id").notNull(),
   productId: integer("product_id").notNull(),
   quantity: integer("quantity").notNull(),
-  weight: text("weight").notNull(), // "500g" or "1kg"
+  size: text("size").notNull().default("500g"), // "500g" or "1kg"
+  price: text("price").notNull().default("0"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
