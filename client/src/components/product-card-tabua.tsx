@@ -41,8 +41,8 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const installmentValue = (parseFloat(product.price.replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
 
   return (
-    <div className="js-item-product item-container bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group">
-      <div className="item p-relative overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group">
+      <div className="relative overflow-hidden">
         {/* Labels/Badges */}
         <div className="labels js-labels-floating-group labels-floating absolute top-2 left-2 z-10">
           {discountPercent > 0 && (
@@ -53,41 +53,37 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
         </div>
 
         {/* Container da imagem */}
-        <div className="js-product-item-image-container product-item-image-container item-image p-relative">
-          <div style={{ paddingBottom: '133.24%' }} className="p-relative d-block">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              loading="lazy"
-            />
-          </div>
+        <div className="relative aspect-square overflow-hidden">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
         </div>
 
         {/* Container das informações */}
-        <div className="item-info-container p-3 sm:p-4">
-          <div className="item-info">
+        <div className="p-3 sm:p-4">
+          <div>
             {/* Nome do produto */}
-            <div className="js-item-name h2 item-name text-sm sm:text-base font-medium text-gray-900 mb-2 leading-tight line-clamp-2 hover:text-tabua-green transition-colors">
+            <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-2 leading-tight line-clamp-2 hover:text-tabua-green transition-colors">
               {product.name}
-            </div>
+            </h3>
 
             {/* Container de preços */}
-            <div className="item-price-container mb-3">
+            <div className="mb-3">
               {/* Preço principal */}
-              <div className="js-price-display price item-price text-lg sm:text-xl font-bold text-tabua-green mb-1">
+              <div className="text-lg sm:text-xl font-bold text-tabua-green mb-1">
                 R$ {product.price}
               </div>
 
               {/* Parcelamento */}
-              <div className="js-max-installments-container installments m-top-quarter item-installments">
-                <div className="js-max-installments product-installments text-xs sm:text-sm text-gray-600">
-                  <span className="js-installment-amount">12</span>
-                  <span> x de </span>
-                  <span className="js-installment-price font-medium">
-                    R$ {installmentValue}
-                  </span>
-                </div>
+              <div className="text-xs sm:text-sm text-gray-600">
+                <span>12</span>
+                <span> x de </span>
+                <span className="font-medium">
+                  R$ {installmentValue}
+                </span>
               </div>
             </div>
 

@@ -13,6 +13,8 @@ interface ExitIntentModalProps {
 }
 
 export default function ExitIntentModal({ isOpen, onClose }: ExitIntentModalProps) {
+  // Disabled exit intent modal
+  return null;
   const [isAccepted, setIsAccepted] = useState(false);
   const { toast } = useToast();
   const { sessionId } = useCart();
