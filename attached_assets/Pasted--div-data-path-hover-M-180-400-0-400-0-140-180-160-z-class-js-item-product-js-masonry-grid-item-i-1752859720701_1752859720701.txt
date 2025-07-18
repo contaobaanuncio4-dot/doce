@@ -1,0 +1,173 @@
+<div data-path-hover="M 180,400 0,400 0,140 180,160 z" class="js-item-product js-masonry-grid-item item-container" data-product-type="list" data-product-id="251845397" data-store="product-item-251845397" data-component="product-list-item" data-component-value="251845397" style="position: absolute; left: 0px; top: 0px;">
+  <div class="item">
+        
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<div class="labels js-labels-floating-group labels-floating" data-store="product-item-labels">
+
+		
+					<div class="js-stock-label-private label js-stock-label label label-circle label-primary label-overlap" data-store="product-item-label-stock" style="display:none;">
+									Sem Estoque
+							</div>
+		
+				
+		
+		
+		
+		
+					<div class="js-shipping-label-private js-free-shipping-minimum-label label label label-circle label-primary-dark label-overlap" data-store="product-item-label-shipping" style="display: none;">
+																			Envio grátis
+												</div>
+		
+		
+		
+	</div>
+<span class="hidden" data-store="stock-product-251845397-42"></span>
+
+      
+    
+    <div class="p-relative overflow-none">
+              
+                
+        
+
+
+
+
+
+
+                    
+
+
+
+<div class="js-product-item-image-container-private  product-item-image-container item-image" data-store="product-item-image-251845397" data-images-url="">
+            <div style="padding-bottom: 133.24074074074%;" class="p-relative d-block">
+                <a href="https://vendinhadocunha.com.br/produtos/doce-de-pingo-de-leite-com-amendoim/" title="Doce de Pingo de Leite com Amendoim" aria-label="Doce de Pingo de Leite com Amendoim" class="js-product-item-image-link-private ">
+
+                
+                
+                    
+                    
+
+
+																																		
+<img width="1080" height="1439" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-srcset="//acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-240-0.webp 240w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-320-0.webp 320w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-480-0.webp 480w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-640-0.webp 640w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-1024-1024.webp 1024w" class="js-product-item-image-private product-item-image js-item-image item-image lazyautosizes img-absolute img-absolute-centered fade-in item-image-featured ls-is-cached lazyloaded " data-expand="-10" alt="Doce de Pingo de Leite com Amendoim - comprar online" srcset="//acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-240-0.webp 240w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-320-0.webp 320w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-480-0.webp 480w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-640-0.webp 640w, //acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-1024-1024.webp 1024w" sizes="190px">
+
+                
+                
+                
+                            </a>
+
+            
+            
+                        </div>
+    </div>
+
+        
+            <div class="item-info-container" data-store="product-item-info-251845397">
+          <div class="item-info">
+                                                                <a href="https://vendinhadocunha.com.br/produtos/doce-de-pingo-de-leite-com-amendoim/" title="Doce de Pingo de Leite com Amendoim" aria-label="Doce de Pingo de Leite com Amendoim">
+              <div class="js-item-name h2 item-name" data-store="product-item-name-251845397">Doce de Pingo de Leite com Amendoim</div>
+              <div class="item-price-container " data-store="product-item-price-251845397">
+                              	  <span class="js-compare-price-display hidden item-price-compare price-compare">
+                                     </span>
+                  <span class="js-offer-label m-left-half font-small" style="display:none;">
+                    <span class="js-offer-percentage">0</span>% OFF
+                  </span>
+                                <div class="js-price-display price item-price" data-product-price="3790">
+                                      R$37,90
+                                  </div>
+
+                                  
+
+
+                  
+                  
+                                        
+	
+	
+				
+		
+					<div class="js-max-installments-container js-max-installments installments m-top-quarter item-installments font-small">
+
+				
+				
+					
+											<div class="js-max-installments product-installments">
+
+							
+								
+																								
+								
+								<span class="js-installment-amount product-installment-amount">8</span>
+
+								
+								<span>
+																			x
+									
+																			de
+																	</span>
+
+								
+								<span class="js-installment-price product-installment-value">
+									R$5,49
+																	</span>
+													</div>
+												</div>
+			
+                                                </div>
+                          </a>
+          </div>
+        
+      </div>
+    </div>
+      </div>
+        <script type="application/ld+json" data-component="structured-data.item">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://vendinhadocunha.com.br/produtos/doce-de-pingo-de-leite-com-amendoim/"
+        },
+        "name": "Doce de Pingo de Leite com Amendoim",
+        "image": "https://acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-480-0.webp",
+        "description": "  O doce de pingo de leite com amendoim é uma verdadeira explosão de sabor. Ele une a suavidade e cremosidade do pingo de leite, que tem um toque caramelizad...",
+                                    "weight": {
+                "@type": "QuantitativeValue",
+                "unitCode": "KGM",
+                "value": "0.6"
+            },
+                "offers": {
+            "@type": "Offer",
+            "url": "https://vendinhadocunha.com.br/produtos/doce-de-pingo-de-leite-com-amendoim/",
+            "priceCurrency": "BRL",
+            "price": "37.9",
+                            "availability": "http://schema.org/InStock",
+                "inventoryLevel": {
+                    "@type": "QuantitativeValue",
+                    "value": "42"
+                },
+                        "seller": {
+                "@type": "Organization",
+                "name": "Vendinha do Cunha"
+            }
+        }
+    }
+    </script>
+
+</div>

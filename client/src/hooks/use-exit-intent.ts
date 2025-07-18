@@ -7,8 +7,13 @@ export function useExitIntent() {
   useEffect(() => {
     // Check if exit intent has been shown in this session
     const hasShown = sessionStorage.getItem("exitIntentShown");
-    if (hasShown) {
+    const lastShown = localStorage.getItem("lastExitIntentShown");
+    const now = Date.now();
+    
+    // Only show again after 24 hours
+    if (hasShown || (lastShown && (now - parseInt(lastShown)) < 24 * 60 * 60 * 1000)) {
       setHasShownExitIntent(true);
+      return;
     }
 
     let isExitIntentTriggered = false;
@@ -20,6 +25,7 @@ export function useExitIntent() {
         setHasShownExitIntent(true);
         setShowExitIntent(true);
         sessionStorage.setItem("exitIntentShown", "true");
+        localStorage.setItem("lastExitIntentShown", Date.now().toString());
       }
     };
 

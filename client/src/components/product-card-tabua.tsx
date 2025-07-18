@@ -41,73 +41,67 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const installmentValue = (parseFloat(product.price.replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
 
   return (
-    <Card className="group relative overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-200">
-      {/* Badge de desconto */}
-      {discountPercent > 0 && (
-        <div className="absolute top-3 left-3 z-10">
-          <Badge className="bg-discount-bg text-white font-bold px-2 py-1 text-sm">
-            -{discountPercent}%
-          </Badge>
-        </div>
-      )}
-
-      <CardContent className="p-0">
-        {/* Imagem do produto */}
-        <div className="relative aspect-square overflow-hidden">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-          {/* Overlay com botões de ação */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                className="bg-white text-gray-900 hover:bg-gray-100"
-                onClick={() => addToCartMutation.mutate()}
-                disabled={addToCartMutation.isPending}
-              >
-                Adicionar
-              </Button>
+    <div className="js-item-product item-container bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group">
+      <div className="item p-relative overflow-hidden">
+        {/* Labels/Badges */}
+        <div className="labels js-labels-floating-group labels-floating absolute top-2 left-2 z-10">
+          {discountPercent > 0 && (
+            <div className="label label-circle bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              {discountPercent}% OFF
             </div>
+          )}
+        </div>
+
+        {/* Container da imagem */}
+        <div className="js-product-item-image-container product-item-image-container item-image p-relative">
+          <div style={{ paddingBottom: '133.24%' }} className="p-relative d-block">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
           </div>
         </div>
 
-        {/* Informações do produto */}
-        <div className="p-4">
-          <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-3 line-clamp-2">
-            {product.name}
-          </h3>
-
-          {/* Preços */}
-          <div className="mb-3">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-lg font-bold text-tabua-green">
-                Preço promocional {product.price}
-              </span>
-              {originalPrice && (
-                <span className="text-sm text-gray-500 line-through">
-                  Preço normal {originalPrice}
-                </span>
-              )}
+        {/* Container das informações */}
+        <div className="item-info-container p-3 sm:p-4">
+          <div className="item-info">
+            {/* Nome do produto */}
+            <div className="js-item-name h2 item-name text-sm sm:text-base font-medium text-gray-900 mb-2 leading-tight line-clamp-2 hover:text-tabua-green transition-colors">
+              {product.name}
             </div>
-            <p className="text-xs text-gray-600">
-              Até 12x de R$ {installmentValue}
-            </p>
-          </div>
 
-          {/* Botão principal */}
-          <Button
-            className="w-full bg-tabua-green hover:bg-tabua-green/90 text-white font-medium py-2 text-sm"
-            onClick={() => addToCartMutation.mutate()}
-            disabled={addToCartMutation.isPending}
-          >
-            {addToCartMutation.isPending ? "Adicionando..." : "Adicionar à sacola"}
-          </Button>
+            {/* Container de preços */}
+            <div className="item-price-container mb-3">
+              {/* Preço principal */}
+              <div className="js-price-display price item-price text-lg sm:text-xl font-bold text-tabua-green mb-1">
+                R$ {product.price}
+              </div>
+
+              {/* Parcelamento */}
+              <div className="js-max-installments-container installments m-top-quarter item-installments">
+                <div className="js-max-installments product-installments text-xs sm:text-sm text-gray-600">
+                  <span className="js-installment-amount">12</span>
+                  <span> x de </span>
+                  <span className="js-installment-price font-medium">
+                    R$ {installmentValue}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Botão de adicionar */}
+            <Button
+              className="w-full bg-tabua-green hover:bg-tabua-green/90 text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors"
+              onClick={() => addToCartMutation.mutate()}
+              disabled={addToCartMutation.isPending}
+            >
+              {addToCartMutation.isPending ? "Adicionando..." : "Adicionar à sacola"}
+            </Button>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
