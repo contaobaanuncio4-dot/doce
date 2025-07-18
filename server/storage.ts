@@ -59,21 +59,7 @@ export class MemStorage implements IStorage {
   private initializeProducts() {
     const sweetProducts: InsertProduct[] = [
 
-      {
-        name: "Doce de Cocada com Abacaxi",
-        description: "Deliciosa cocada artesanal com pedaços frescos de abacaxi. Uma combinação tropical irresistível que une o sabor cremoso do coco com a doçura refrescante do abacaxi.",
-        price500g: "34.90",
-        price1kg: "38.39",
-        originalPrice500g: "60.90",
-        originalPrice1kg: "66.99",
-        category: "doces",
-        imageUrl: "https://tabuademinas.com/cdn/shop/files/kit4queijos_160x.png?v=1751561960",
-        stock: 15,
-        featured: true,
-        discount: 43,
-        rating: "4.8",
-        reviews: 156,
-      },
+
       {
         name: "Doce Prestígio Mineiro",
         description: "Inspirado no famoso doce brasileiro, nossa versão artesanal combina coco fresco com cobertura de chocolate. Uma explosão de sabores que remete à infância.",
