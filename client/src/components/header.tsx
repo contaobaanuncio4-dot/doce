@@ -1,160 +1,108 @@
-import { useState } from "react";
-import { ShoppingCart, Menu, X, Utensils } from "lucide-react";
+import { ShoppingCart, Menu, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useCart } from "@/hooks/use-cart";
 import { useQuery } from "@tanstack/react-query";
 
 interface HeaderProps {
-  onCartClick?: () => void;
+  onCartToggle: () => void;
 }
 
-export default function Header({ onCartClick }: HeaderProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { sessionId, setIsCartOpen } = useCart();
-
+export default function Header({ onCartToggle }: HeaderProps) {
   const { data: cartItems = [] } = useQuery({
-    queryKey: ["/api/cart", sessionId],
-    enabled: !!sessionId,
+    queryKey: ['/api/cart']
   });
 
   const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
 
-  const handleCartClick = () => {
-    if (onCartClick) {
-      onCartClick();
-    } else {
-      setIsCartOpen(true);
-    }
-  };
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMobileMenuOpen(false);
-  };
-
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-40">
-      <div className="container mx-auto px-4">
-        {/* Top Bar */}
-        <div className="bg-traditional-blue text-white text-center py-2 text-sm">
-          <p>
-            <span className="mr-2">🚚</span>
-            Frete GRÁTIS para todo o Brasil em compras acima de R$ 150
-          </p>
-        </div>
-        
-        {/* Main Header */}
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center">
-            <div className="bg-warm-brown text-white rounded-full w-16 h-16 flex items-center justify-center mr-4">
-              <Utensils className="w-8 h-8" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-traditional-blue font-serif">
+    <>
+      {/* Barra de promoção */}
+      <div className="bg-tabua-green text-white text-center py-2 text-sm font-medium">
+        Frete Grátis na Tábua de Minas 🧀
+      </div>
+      
+      {/* Header principal */}
+      <header className="bg-white shadow-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Menu mobile */}
+            <Button variant="ghost" size="sm" className="md:hidden">
+              <Menu className="h-6 w-6" />
+            </Button>
+
+            {/* Logo */}
+            <div className="flex-shrink-0 flex items-center">
+              <h1 className="text-2xl font-bold text-tabua-green">
                 Tábua de Minas
               </h1>
-              <p className="text-sm text-gray-600">
-                Doces e Queijos Artesanais
-              </p>
+            </div>
+
+            {/* Navegação desktop */}
+            <nav className="hidden md:flex space-x-8">
+              <a href="#" className="text-gray-700 hover:text-tabua-green font-medium">
+                Início
+              </a>
+              <a href="#" className="text-gray-700 hover:text-tabua-green font-medium">
+                Clube da Tábua
+              </a>
+              <div className="relative group">
+                <button className="text-gray-700 hover:text-tabua-green font-medium flex items-center">
+                  Produtos
+                </button>
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="py-2">
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Tudo da Vendinha!
+                    </a>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Doces - Tábua de Minas
+                    </a>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Queijos - Tábua de Minas
+                    </a>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Queijos Linha Premium
+                    </a>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Doces Mais Vendidos
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <a href="#" className="text-gray-700 hover:text-tabua-green font-medium">
+                Rastreie seu pedido
+              </a>
+            </nav>
+
+            {/* Ações do usuário */}
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" className="hidden md:flex">
+                <Search className="h-5 w-5" />
+              </Button>
+              
+              <Button variant="ghost" size="sm">
+                <User className="h-5 w-5" />
+                <span className="hidden md:ml-2 md:inline">Conta</span>
+              </Button>
+
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={onCartToggle}
+                className="relative"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-tabua-red text-white text-xs">
+                    {totalItems}
+                  </Badge>
+                )}
+                <span className="hidden md:ml-2 md:inline">Carrinho</span>
+              </Button>
             </div>
           </div>
-          
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-6">
-            <button 
-              onClick={() => scrollToSection('home')}
-              className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors"
-            >
-              Início
-            </button>
-            <button 
-              onClick={() => scrollToSection('produtos')}
-              className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors"
-            >
-              Produtos
-            </button>
-            <button 
-              onClick={() => scrollToSection('sobre')}
-              className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors"
-            >
-              Sobre
-            </button>
-            <button 
-              onClick={() => scrollToSection('contato')}
-              className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors"
-            >
-              Contato
-            </button>
-          </nav>
-          
-          {/* Cart and Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              size="lg"
-              onClick={handleCartClick}
-              className="relative"
-            >
-              <ShoppingCart className="w-6 h-6 text-traditional-blue" />
-              {totalItems > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
-                  {totalItems}
-                </Badge>
-              )}
-            </Button>
-            
-            {/* Mobile Menu Toggle */}
-            <Button 
-              variant="ghost" 
-              size="lg"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6 text-traditional-blue" />
-              ) : (
-                <Menu className="w-6 h-6 text-traditional-blue" />
-              )}
-            </Button>
-          </div>
         </div>
-        
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
-            <nav className="flex flex-col space-y-4">
-              <button 
-                onClick={() => scrollToSection('home')}
-                className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors text-left"
-              >
-                Início
-              </button>
-              <button 
-                onClick={() => scrollToSection('produtos')}
-                className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors text-left"
-              >
-                Produtos
-              </button>
-              <button 
-                onClick={() => scrollToSection('sobre')}
-                className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors text-left"
-              >
-                Sobre
-              </button>
-              <button 
-                onClick={() => scrollToSection('contato')}
-                className="text-lg font-semibold text-traditional-blue hover:text-warm-brown transition-colors text-left"
-              >
-                Contato
-              </button>
-            </nav>
-          </div>
-        )}
-      </div>
-    </header>
+      </header>
+    </>
   );
 }

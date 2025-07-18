@@ -24,14 +24,16 @@
   --ring: hsl(207, 84%, 19%);
   --radius: 0.5rem;
   
-  /* Custom Minas Gerais colors */
-  --warm-brown: hsl(25, 64%, 30%);
-  --burlywood: hsl(45, 57%, 72%);
-  --wheat: hsl(45, 37%, 86%);
-  --traditional-blue: hsl(207, 84%, 19%);
-  --minas-green: hsl(143, 45%, 45%);
-  --cornsilk: hsl(45, 100%, 97%);
-  --kraft: hsl(45, 29%, 75%);
+  /* Cores do site original Tábua de Minas */
+  --tabua-green: hsl(142, 51%, 38%);
+  --tabua-yellow: hsl(40, 82%, 52%);
+  --tabua-red: hsl(0, 74%, 57%);
+  --tabua-cream: hsl(45, 100%, 96%);
+  --tabua-brown: hsl(25, 64%, 30%);
+  --tabua-orange: hsl(28, 87%, 67%);
+  --text-dark: hsl(210, 29%, 24%);
+  --discount-bg: hsl(0, 74%, 57%);
+  --price-green: hsl(142, 51%, 38%);
 }
 
 .dark {

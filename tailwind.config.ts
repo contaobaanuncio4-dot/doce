@@ -61,6 +61,16 @@ export default {
           border: "var(--sidebar-border)",
           ring: "var(--sidebar-ring)",
         },
+        // Cores do site original Tábua de Minas
+        'tabua-green': 'var(--tabua-green)',
+        'tabua-yellow': 'var(--tabua-yellow)',
+        'tabua-red': 'var(--tabua-red)',
+        'tabua-cream': 'var(--tabua-cream)',
+        'tabua-brown': 'var(--tabua-brown)',
+        'tabua-orange': 'var(--tabua-orange)',
+        'text-dark': 'var(--text-dark)',
+        'discount-bg': 'var(--discount-bg)',
+        'price-green': 'var(--price-green)',
       },
       keyframes: {
         "accordion-down": {
