@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(45, 47%, 94%);
+  --foreground: hsl(207, 84%, 19%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(207, 84%, 19%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(207, 84%, 19%);
+  --primary: hsl(25, 64%, 30%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(45, 29%, 87%);
+  --secondary-foreground: hsl(207, 84%, 19%);
+  --muted: hsl(45, 29%, 87%);
+  --muted-foreground: hsl(25, 5%, 45%);
+  --accent: hsl(45, 29%, 87%);
+  --accent-foreground: hsl(207, 84%, 19%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(45, 29%, 87%);
+  --input: hsl(45, 29%, 87%);
+  --ring: hsl(207, 84%, 19%);
+  --radius: 0.5rem;
+  
+  /* Custom Minas Gerais colors */
+  --warm-brown: hsl(25, 64%, 30%);
+  --burlywood: hsl(45, 57%, 72%);
+  --wheat: hsl(45, 37%, 86%);
+  --traditional-blue: hsl(207, 84%, 19%);
+  --minas-green: hsl(143, 45%, 45%);
+  --cornsilk: hsl(45, 100%, 97%);
+  --kraft: hsl(45, 29%, 75%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --primary: hsl(0, 0%, 98%);
+  --primary-foreground: hsl(240, 5.9%, 10%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --ring: hsl(240, 4.9%, 83.9%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+}
+
+@layer components {
+  .kraft-texture {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="kraft"><feTurbulence baseFrequency="0.04" numOctaves="3" result="noise"/><feColorMatrix values="0 0 0 0 0.82 0 0 0 0 0.71 0 0 0 0 0.55 0 0 0 0.1 0"/></filter></defs><rect width="100" height="100" filter="url(%23kraft)"/></svg>');
+    background-blend-mode: multiply;
+  }
+  
+  .wood-texture {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="wood"><feTurbulence baseFrequency="0.02" numOctaves="1" result="noise"/><feColorMatrix values="0 0 0 0 0.55 0 0 0 0 0.27 0 0 0 0 0.07 0 0 0 0.3 0"/></filter></defs><rect width="100" height="100" filter="url(%23wood)"/></svg>');
+    background-blend-mode: multiply;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-full font-semibold text-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+    background: linear-gradient(135deg, hsl(25, 64%, 30%), hsl(25, 64%, 35%));
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, hsl(25, 64%, 35%), hsl(25, 64%, 30%));
+  }
+  
+  .product-card {
+    @apply bg-card rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  .quantity-selector {
+    @apply flex items-center border-2 border-burlywood rounded-lg overflow-hidden;
+  }
+  
+  .quantity-btn {
+    @apply bg-burlywood border-none px-3 py-2 cursor-pointer text-lg font-bold transition-colors duration-200 hover:bg-kraft;
+  }
+  
+  .quantity-input {
+    @apply border-none px-3 py-2 text-center text-base w-16 bg-white;
+  }
+  
+  .discount-badge {
+    @apply text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse;
+    background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+  }
+  
+  .floating-cart {
+    @apply fixed bottom-5 right-5 z-50 shadow-2xl;
+  }
+  
+  .cart-slide {
+    @apply transition-transform duration-300 ease-in-out;
+    transform: translateX(100%);
+  }
+  
+  .cart-slide.open {
+    transform: translateX(0);
+  }
+  
+  .exit-intent-modal {
+    @apply fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .bounce-in {
+    animation: bounceIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    70% { transform: scale(0.9); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  /* Elderly-friendly styles */
+  .elderly-friendly {
+    @apply text-xl leading-relaxed;
+  }
+  
+  .elderly-friendly button {
+    @apply min-h-[60px] min-w-[120px] text-xl font-semibold;
+  }
+  
+  .elderly-friendly input {
+    @apply min-h-[60px] text-xl px-4;
+  }
+  
+  /* Traditional colors */
+  .bg-warm-brown { background-color: hsl(25, 64%, 30%); }
+  .bg-burlywood { background-color: hsl(45, 57%, 72%); }
+  .bg-wheat { background-color: hsl(45, 37%, 86%); }
+  .bg-traditional-blue { background-color: hsl(207, 84%, 19%); }
+  .bg-minas-green { background-color: hsl(143, 45%, 45%); }
+  .bg-cornsilk { background-color: hsl(45, 100%, 97%); }
+  .bg-kraft { background-color: hsl(45, 29%, 75%); }
+  
+  .text-warm-brown { color: hsl(25, 64%, 30%); }
+  .text-burlywood { color: hsl(45, 57%, 72%); }
+  .text-wheat { color: hsl(45, 37%, 86%); }
+  .text-traditional-blue { color: hsl(207, 84%, 19%); }
+  .text-minas-green { color: hsl(143, 45%, 45%); }
+  .text-cornsilk { color: hsl(45, 100%, 97%); }
+  .text-kraft { color: hsl(45, 29%, 75%); }
+  
+  .border-warm-brown { border-color: hsl(25, 64%, 30%); }
+  .border-burlywood { border-color: hsl(45, 57%, 72%); }
+  .border-wheat { border-color: hsl(45, 37%, 86%); }
+  .border-traditional-blue { border-color: hsl(207, 84%, 19%); }
+  .border-minas-green { border-color: hsl(143, 45%, 45%); }
+  .border-cornsilk { border-color: hsl(45, 100%, 97%); }
+  .border-kraft { border-color: hsl(45, 29%, 75%); }
+}
