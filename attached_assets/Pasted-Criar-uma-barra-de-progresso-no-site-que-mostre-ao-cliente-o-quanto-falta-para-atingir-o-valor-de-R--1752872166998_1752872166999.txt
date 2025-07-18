@@ -1,0 +1,43 @@
+Criar uma barra de progresso no site que mostre ao cliente o quanto falta para atingir o valor de R$ 40,00 e ganhar o frete grátis. A barra vai aumentar conforme o cliente adiciona produtos ao carrinho. O sistema também deve calcular e aplicar a taxa de frete (R$ 9,90) quando o valor da compra for inferior a R$ 40,00.
+
+Requisitos:
+
+Barra de Progresso do Frete Grátis:
+
+A barra deve aparecer na parte superior ou inferior da página, com a seguinte mensagem: "Faltam X reais para ganhar frete grátis".
+
+A barra deve ter um design visual claro e intuitivo. A cor da barra deve ser azul, e a cor de preenchimento deve ser uma tonalidade que contraste para indicar o progresso.
+
+Quando o cliente adicionar um item ao carrinho, a barra deve ser atualizada automaticamente para refletir o valor total da compra.
+
+O valor total será calculado com base nos produtos do carrinho, considerando preço, quantidade e possíveis descontos.
+
+A barra de progresso vai de 0 a R$ 40,00. Conforme o cliente adiciona produtos, a barra vai se preenchendo até atingir o valor mínimo para frete grátis.
+
+Comportamento da Barra de Progresso:
+
+Quando o cliente atingir R$ 40,00 em compras, a barra de progresso deve mostrar "Você ganhou frete grátis!" e a cor da barra pode mudar para indicar que a meta foi atingida.
+
+Caso o valor da compra seja inferior a R$ 40,00, a barra vai mostrando o valor que falta para atingir o limite.
+
+A quantidade de progresso da barra será proporcional ao valor da compra do cliente.
+
+Cálculo e Exibição do Frete:
+
+Frete Grátis: Caso o valor total da compra do cliente seja superior a R$ 40,00, o frete deve ser automaticamente calculado como grátis.
+
+Taxa de Frete: Caso o valor total da compra seja inferior a R$ 40,00, será cobrado um valor fixo de R$ 9,90 para o frete.
+
+A aplicação da taxa de frete de R$ 9,90 deve ser visível para o cliente logo abaixo da barra de progresso, mostrando o valor do frete e o valor total da compra (com e sem o frete).
+
+Comportamento no Carrinho:
+
+O sistema deve automaticamente atualizar o valor total e a barra de progresso sempre que o cliente adicionar ou remover um produto do carrinho.
+
+O valor do frete será recalculado em tempo real, dependendo do valor total da compra.
+
+Comportamento Responsivo:
+
+A barra de progresso deve ser responsiva e funcionar adequadamente tanto em desktops quanto em dispositivos móveis.
+
+O layout deve ser simples, com a barra ocupando uma posição discreta, mas ainda visível durante a navegação.

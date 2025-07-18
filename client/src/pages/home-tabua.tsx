@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import PromoBanner from "@/components/promo-banner";
 import ExitIntentModal from "@/components/exit-intent-modal";
 import OrderBumpModal from "@/components/order-bump-modal";
+import { ShippingProgressBar } from "@/components/shipping-progress-bar";
 import { useState, useEffect } from "react";
 
 interface HomeTabuaProps {
@@ -55,6 +56,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   return (
     <div className="min-h-screen bg-white">
       <Header onCartToggle={onCartToggle} />
+      <ShippingProgressBar />
 
 
 

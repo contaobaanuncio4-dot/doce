@@ -51,24 +51,27 @@ The backend uses **Express.js** with **TypeScript** running on Node.js:
 
 ### Frontend Components
 - **Product Cards**: Responsive product display with quantity selectors
-- **Shopping Cart**: Sliding sidebar cart with real-time updates
+- **Shopping Cart**: Sliding sidebar cart with size selection (500g/1kg) and real-time updates
+- **Shipping Progress Bar**: Dynamic progress indicator for free shipping (R$ 40 threshold)
 - **Exit Intent Modal**: Conversion optimization with 10% discount offer
 - **Order Bump Modal**: Additional product recommendations with 30% discount
 - **Header/Footer**: Traditional design with trust badges and social links
 
 ### Backend Services
-- **Product Management**: CRUD operations for product catalog
-- **Cart Operations**: Session-based cart with add/update/remove functionality
+- **Product Management**: CRUD operations for product catalog with size variants (500g/1kg)
+- **Cart Operations**: Session-based cart with size and price tracking
+- **Shipping Calculator**: Automatic free shipping for orders ≥ R$ 40, R$ 9.90 shipping fee below threshold
 - **Order Processing**: Complete checkout flow with PIX payment integration
 - **CEP Integration**: Brazilian postal code lookup for address completion
 
 ## Data Flow
 
 1. **Product Browsing**: Products are fetched from PostgreSQL and cached using React Query
-2. **Cart Management**: Cart items are stored per session ID and synced in real-time
-3. **Checkout Process**: Form data is validated client-side, then processed server-side
-4. **Payment Flow**: PIX payment codes are generated for Brazilian payment processing
-5. **Order Completion**: Orders are stored with complete audit trail
+2. **Cart Management**: Cart items are stored per session ID with size and price variants
+3. **Shipping Calculation**: Real-time calculation of shipping costs and free shipping progress
+4. **Checkout Process**: Form data is validated client-side, then processed server-side
+5. **Payment Flow**: PIX payment codes are generated for Brazilian payment processing
+6. **Order Completion**: Orders are stored with complete audit trail
 
 ## External Dependencies
 
