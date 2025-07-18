@@ -6,7 +6,10 @@ export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  price500g: decimal("price_500g", { precision: 10, scale: 2 }).notNull(),
+  price1kg: decimal("price_1kg", { precision: 10, scale: 2 }).notNull(),
+  originalPrice500g: decimal("original_price_500g", { precision: 10, scale: 2 }),
+  originalPrice1kg: decimal("original_price_1kg", { precision: 10, scale: 2 }),
   category: text("category").notNull(), // 'queijos', 'doces', 'combos'
   imageUrl: text("image_url").notNull(),
   stock: integer("stock").default(100),
@@ -14,7 +17,15 @@ export const products = pgTable("products", {
   discount: integer("discount").default(0), // percentage
   rating: decimal("rating", { precision: 2, scale: 1 }).default("5.0"),
   reviews: integer("reviews").default(0),
-  weight: text("weight"), // "500g", "300g", etc.
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const productReviews = pgTable("product_reviews", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull(),
+  customerName: text("customer_name").notNull(),
+  rating: integer("rating").notNull(),
+  comment: text("comment"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -23,6 +34,7 @@ export const cartItems = pgTable("cart_items", {
   sessionId: text("session_id").notNull(),
   productId: integer("product_id").notNull(),
   quantity: integer("quantity").notNull(),
+  weight: text("weight").notNull(), // "500g" or "1kg"
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -61,12 +73,15 @@ export const insertProductSchema = createInsertSchema(products);
 export const insertCartItemSchema = createInsertSchema(cartItems);
 export const insertOrderSchema = createInsertSchema(orders);
 export const insertOrderItemSchema = createInsertSchema(orderItems);
+export const insertProductReviewSchema = createInsertSchema(productReviews);
 
 export type Product = typeof products.$inferSelect;
 export type CartItem = typeof cartItems.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
+export type ProductReview = typeof productReviews.$inferSelect;
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+export type InsertProductReview = z.infer<typeof insertProductReviewSchema>;

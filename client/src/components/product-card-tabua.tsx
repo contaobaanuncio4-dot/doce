@@ -36,9 +36,10 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
     },
   });
 
-  const discountPercent = product.discount || Math.floor(Math.random() * 50) + 20;
-  const originalPrice = product.originalPrice || `R$ ${(parseFloat(product.price.replace('R$ ', '').replace(',', '.')) * 1.5).toFixed(2).replace('.', ',')}`;
-  const installmentValue = (parseFloat(product.price.replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
+  const discountPercent = product.discount || 20;
+  const currentPrice = product.price500g || product.price;
+  const originalPrice = product.originalPrice500g || product.originalPrice || `R$ ${(parseFloat((product.price500g || product.price).replace('R$ ', '').replace(',', '.')) * 1.3).toFixed(2).replace('.', ',')}`;
+  const installmentValue = (parseFloat((product.price500g || product.price).replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group">
@@ -74,7 +75,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             <div className="mb-3">
               {/* Preço principal */}
               <div className="text-lg sm:text-xl font-bold mb-1" style={{ color: '#DDAF36' }}>
-                R$ {product.price}
+                R$ {currentPrice}
               </div>
 
               {/* Parcelamento */}

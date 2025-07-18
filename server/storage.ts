@@ -1,17 +1,4 @@
-import { 
-  products, 
-  cartItems, 
-  orders, 
-  orderItems,
-  type Product, 
-  type CartItem, 
-  type Order, 
-  type OrderItem,
-  type InsertProduct,
-  type InsertCartItem,
-  type InsertOrder,
-  type InsertOrderItem
-} from "@shared/schema";
+import type { Product, CartItem, Order, OrderItem, ProductReview, InsertProduct, InsertCartItem, InsertOrder, InsertOrderItem } from "@shared/schema";
 
 export interface IStorage {
   // Product operations
@@ -35,6 +22,10 @@ export interface IStorage {
   getOrderById(id: number): Promise<Order | undefined>;
   getOrdersBySessionId(sessionId: string): Promise<Order[]>;
   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
+  
+  // Review operations
+  getProductReviews(productId: number): Promise<ProductReview[]>;
+  addProductReview(review: Omit<ProductReview, 'id' | 'createdAt'>): Promise<ProductReview>;
 }
 
 export class MemStorage implements IStorage {
@@ -42,109 +33,148 @@ export class MemStorage implements IStorage {
   private cartItems: Map<number, CartItem>;
   private orders: Map<number, Order>;
   private orderItems: Map<number, OrderItem>;
+  private reviews: Map<number, ProductReview>;
   private currentProductId: number;
   private currentCartId: number;
   private currentOrderId: number;
   private currentOrderItemId: number;
+  private currentReviewId: number;
 
   constructor() {
     this.products = new Map();
     this.cartItems = new Map();
     this.orders = new Map();
     this.orderItems = new Map();
+    this.reviews = new Map();
     this.currentProductId = 1;
     this.currentCartId = 1;
     this.currentOrderId = 1;
     this.currentOrderItemId = 1;
+    this.currentReviewId = 1;
     
-    // Initialize with sample products
     this.initializeProducts();
+    this.initializeReviews();
   }
 
   private initializeProducts() {
-    const sampleProducts: InsertProduct[] = [
+    const sweetProducts: InsertProduct[] = [
       {
-        name: "Queijo Minas Tradicional",
-        description: "Queijo artesanal curado por 60 dias, sabor marcante e textura cremosa",
-        price: "38.25",
-        category: "queijos",
-        imageUrl: "https://images.unsplash.com/photo-1452195100486-9cc805987862?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-        stock: 50,
-        featured: true,
-        discount: 15,
-        rating: "4.9",
-        reviews: 127,
-        weight: "300g"
-      },
-      {
-        name: "Doce de Leite Caseiro",
-        description: "Doce de leite artesanal feito com leite fresco e açúcar cristal",
-        price: "28.90",
+        name: "Doce 1",
+        description: "Delicioso doce artesanal de Minas Gerais. Feito com ingredientes frescos e tradicionais da região, este doce carrega toda a tradição e sabor únicos que fazem de Minas um estado conhecido pela sua culinária excepcional.",
+        price500g: "22.90",
+        price1kg: "39.90",
+        originalPrice500g: "28.90",
+        originalPrice1kg: "49.90",
         category: "doces",
-        imageUrl: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-        stock: 30,
-        featured: true,
-        discount: 0,
-        rating: "5.0",
-        reviews: 203,
-        weight: "500g"
-      },
-      {
-        name: "Combo Tradição Mineira",
-        description: "Queijo, doce de leite, goiabada e biscoito de polvilho",
-        price: "89.90",
-        category: "combos",
-        imageUrl: "https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134158_gallery-f2481f2f6da2af43ca17400705957233-1024-1024.webp",
         stock: 25,
         featured: true,
-        discount: 25,
+        discount: 20,
         rating: "4.8",
+        reviews: 127,
+      },
+      {
+        name: "Doce 2", 
+        description: "Doce tradicional mineiro com sabor inigualável. Produzido com técnicas artesanais passadas de geração em geração, este doce representa a verdadeira essência da culinária mineira, com ingredientes selecionados e muito amor no preparo.",
+        price500g: "24.90",
+        price1kg: "44.90",
+        originalPrice500g: "29.90",
+        originalPrice1kg: "54.90",
+        category: "doces",
+        imageUrl: "https://acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134201_gallery-0ced8af0fce1eb7b9017400711220608-1024-1024.webp",
+        stock: 30,
+        featured: true,
+        discount: 15,
+        rating: "4.9", 
         reviews: 89,
-        weight: "1.2kg"
       },
       {
-        name: "Goiabada Artesanal",
-        description: "Goiabada tradicional feita com goiaba selecionada",
-        price: "24.90",
+        name: "Doce 3",
+        description: "Especialidade da casa com ingredientes selecionados. Um doce que representa a verdadeira essência de Minas, feito com receitas familiares guardadas há décadas e ingredientes da mais alta qualidade para proporcionar uma experiência gastronômica única.",
+        price500g: "26.90",
+        price1kg: "48.90",
+        originalPrice500g: "32.90",
+        originalPrice1kg: "58.90",
         category: "doces",
-        imageUrl: "https://images.unsplash.com/photo-1609501676725-7186f506c304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
-        stock: 40,
-        featured: false,
-        discount: 0,
-        rating: "4.7",
-        reviews: 156,
-        weight: "400g"
-      },
-      {
-        name: "Queijo Pão de Açúcar",
-        description: "Queijo curado especial com sabor intenso e marcante",
-        price: "52.90",
-        category: "queijos",
-        imageUrl: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134149_gallery-24144f6cfc3a3f84f917400705607850-1024-1024.webp",
         stock: 20,
-        featured: false,
-        discount: 0,
-        rating: "4.9",
-        reviews: 74,
-        weight: "300g"
+        featured: true,
+        discount: 18,
+        rating: "5.0",
+        reviews: 156,
       },
       {
-        name: "Beijinho Tradicional",
-        description: "Docinhos tradicionais feitos com coco e leite condensado",
-        price: "32.90",
+        name: "Doce 4",
+        description: "Doce cremoso e saboroso, ideal para toda a família. Feito com muito carinho e tradição mineira, este doce conquista pelo sabor marcante e textura perfeita. Uma verdadeira viagem às origens da doçaria artesanal de Minas Gerais.",
+        price500g: "21.90",
+        price1kg: "38.90",
+        originalPrice500g: "26.90",
+        originalPrice1kg: "46.90",
         category: "doces",
-        imageUrl: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600",
+        imageUrl: "https://acdn-us.mitiendanube.com/stores/003/650/403/products/20250226_153746-eaaf1cab9d70d1b92a17405957512697-1024-1024.webp",
         stock: 35,
         featured: false,
-        discount: 0,
-        rating: "4.6",
+        discount: 20,
+        rating: "4.7",
+        reviews: 73,
+      },
+      {
+        name: "Doce 5",
+        description: "Receita especial da Tábua de Minas. Um doce que carrega a história e o sabor autêntico da região, preparado com ingredientes naturais e técnicas tradicionais que preservam todo o sabor e qualidade que tornaram Minas famosa pela sua doçaria.",
+        price500g: "28.90",
+        price1kg: "52.90",
+        originalPrice500g: "34.90",
+        originalPrice1kg: "62.90",
+        category: "doces",
+        imageUrl: "https://acdn-us.mitiendanube.com/stores/003/650/403/products/screenshot_20250220_134203_gallery-ceb3bfbce301401ec417400715674870-1024-1024.webp",
+        stock: 15,
+        featured: true,
+        discount: 17,
+        rating: "4.9",
         reviews: 92,
-        weight: "12 unidades"
+      },
+      {
+        name: "Doce 6",
+        description: "Doce artesanal premium com textura única. Uma experiência gastronômica inesquecível que combina tradição e inovação, oferecendo sabores que remetem à infância e à mesa da vovó, com a qualidade e apresentação de um produto gourmet.",
+        price500g: "25.90",
+        price1kg: "46.90",
+        originalPrice500g: "30.90",
+        originalPrice1kg: "55.90",
+        category: "doces",
+        imageUrl: "https://acdn-us.mitiendanube.com/stores/003/650/403/products/1000440122-83b1fec983ebf014fc17436208923246-1024-1024.webp",
+        stock: 22,
+        featured: false,
+        discount: 16,
+        rating: "4.8",
+        reviews: 64,
       }
     ];
 
-    sampleProducts.forEach(product => {
-      this.createProduct(product);
+    sweetProducts.forEach(product => {
+      const newProduct: Product = {
+        ...product,
+        id: this.currentProductId++,
+        createdAt: new Date(),
+      };
+      this.products.set(newProduct.id, newProduct);
+    });
+  }
+
+  private initializeReviews() {
+    const sampleReviews = [
+      { productId: 1, customerName: "Maria Silva", rating: 5, comment: "Produto excelente! Sabor autêntico e entrega rápida." },
+      { productId: 1, customerName: "João Santos", rating: 4, comment: "Muito bom, recomendo. Lembra o doce da minha avó." },
+      { productId: 2, customerName: "Ana Costa", rating: 5, comment: "Simplesmente perfeito! A qualidade é excepcional." },
+      { productId: 3, customerName: "Carlos Mendes", rating: 5, comment: "O melhor doce que já provei. Super recomendo!" },
+    ];
+
+    sampleReviews.forEach(review => {
+      const newReview: ProductReview = {
+        ...review,
+        id: this.currentReviewId++,
+        createdAt: new Date(),
+      };
+      this.reviews.set(newReview.id, newReview);
     });
   }
 
@@ -165,21 +195,14 @@ export class MemStorage implements IStorage {
     return Array.from(this.products.values()).filter(p => p.featured);
   }
 
-  async createProduct(insertProduct: InsertProduct): Promise<Product> {
-    const id = this.currentProductId++;
-    const product: Product = {
-      ...insertProduct,
-      id,
-      stock: insertProduct.stock ?? 100,
-      featured: insertProduct.featured ?? false,
-      discount: insertProduct.discount ?? 0,
-      rating: insertProduct.rating ?? "5.0",
-      reviews: insertProduct.reviews ?? 0,
-      weight: insertProduct.weight ?? null,
-      createdAt: new Date()
+  async createProduct(product: InsertProduct): Promise<Product> {
+    const newProduct: Product = {
+      ...product,
+      id: this.currentProductId++,
+      createdAt: new Date(),
     };
-    this.products.set(id, product);
-    return product;
+    this.products.set(newProduct.id, newProduct);
+    return newProduct;
   }
 
   async updateProduct(id: number, updates: Partial<Product>): Promise<Product | undefined> {
@@ -196,24 +219,23 @@ export class MemStorage implements IStorage {
     return Array.from(this.cartItems.values()).filter(item => item.sessionId === sessionId);
   }
 
-  async addToCart(insertCartItem: InsertCartItem): Promise<CartItem> {
-    const id = this.currentCartId++;
-    const cartItem: CartItem = {
-      ...insertCartItem,
-      id,
-      createdAt: new Date()
+  async addToCart(item: InsertCartItem): Promise<CartItem> {
+    const newItem: CartItem = {
+      ...item,
+      id: this.currentCartId++,
+      createdAt: new Date(),
     };
-    this.cartItems.set(id, cartItem);
-    return cartItem;
+    this.cartItems.set(newItem.id, newItem);
+    return newItem;
   }
 
   async updateCartItem(id: number, quantity: number): Promise<CartItem | undefined> {
-    const cartItem = this.cartItems.get(id);
-    if (!cartItem) return undefined;
+    const item = this.cartItems.get(id);
+    if (!item) return undefined;
     
-    const updatedItem = { ...cartItem, quantity };
-    this.cartItems.set(id, updatedItem);
-    return updatedItem;
+    item.quantity = quantity;
+    this.cartItems.set(id, item);
+    return item;
   }
 
   async removeFromCart(id: number): Promise<boolean> {
@@ -221,39 +243,30 @@ export class MemStorage implements IStorage {
   }
 
   async clearCart(sessionId: string): Promise<boolean> {
-    const items = Array.from(this.cartItems.values()).filter(item => item.sessionId === sessionId);
+    const items = await this.getCartItems(sessionId);
     items.forEach(item => this.cartItems.delete(item.id));
     return true;
   }
 
   // Order operations
-  async createOrder(insertOrder: InsertOrder): Promise<Order> {
-    const id = this.currentOrderId++;
-    const order: Order = {
-      ...insertOrder,
-      id,
-      total: insertOrder.total,
-      discount: insertOrder.discount ?? "0",
-      status: insertOrder.status ?? "pending",
-      paymentMethod: insertOrder.paymentMethod ?? "pix",
-      pixCode: insertOrder.pixCode ?? null,
-      customerCpf: insertOrder.customerCpf ?? null,
-      addressComplement: insertOrder.addressComplement ?? null,
-      createdAt: new Date()
+  async createOrder(order: InsertOrder): Promise<Order> {
+    const newOrder: Order = {
+      ...order,
+      id: this.currentOrderId++,
+      createdAt: new Date(),
     };
-    this.orders.set(id, order);
-    return order;
+    this.orders.set(newOrder.id, newOrder);
+    return newOrder;
   }
 
-  async createOrderItem(insertOrderItem: InsertOrderItem): Promise<OrderItem> {
-    const id = this.currentOrderItemId++;
-    const orderItem: OrderItem = {
-      ...insertOrderItem,
-      id,
-      createdAt: new Date()
+  async createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem> {
+    const newOrderItem: OrderItem = {
+      ...orderItem,
+      id: this.currentOrderItemId++,
+      createdAt: new Date(),
     };
-    this.orderItems.set(id, orderItem);
-    return orderItem;
+    this.orderItems.set(newOrderItem.id, newOrderItem);
+    return newOrderItem;
   }
 
   async getOrderById(id: number): Promise<Order | undefined> {
@@ -268,9 +281,24 @@ export class MemStorage implements IStorage {
     const order = this.orders.get(id);
     if (!order) return undefined;
     
-    const updatedOrder = { ...order, status };
-    this.orders.set(id, updatedOrder);
-    return updatedOrder;
+    order.status = status;
+    this.orders.set(id, order);
+    return order;
+  }
+
+  // Review operations
+  async getProductReviews(productId: number): Promise<ProductReview[]> {
+    return Array.from(this.reviews.values()).filter(review => review.productId === productId);
+  }
+
+  async addProductReview(review: Omit<ProductReview, 'id' | 'createdAt'>): Promise<ProductReview> {
+    const newReview: ProductReview = {
+      ...review,
+      id: this.currentReviewId++,
+      createdAt: new Date(),
+    };
+    this.reviews.set(newReview.id, newReview);
+    return newReview;
   }
 }
 
