@@ -52,7 +52,7 @@ The backend uses **Express.js** with **TypeScript** running on Node.js:
 ### Frontend Components
 - **Product Cards**: Responsive product display with quantity selectors
 - **Shopping Cart**: Sliding sidebar cart with size selection (500g/1kg) and real-time updates
-- **Shipping Progress Bar**: Dynamic progress indicator for free shipping (R$ 40 threshold)
+- **Shipping Progress Bar**: Dynamic progress indicator for free shipping (R$ 30 threshold)
 - **Exit Intent Modal**: Conversion optimization with 10% discount offer
 - **Order Bump Modal**: Additional product recommendations with 30% discount
 - **Header/Footer**: Traditional design with trust badges and social links
@@ -60,7 +60,7 @@ The backend uses **Express.js** with **TypeScript** running on Node.js:
 ### Backend Services
 - **Product Management**: CRUD operations for product catalog with size variants (500g/1kg)
 - **Cart Operations**: Session-based cart with size and price tracking
-- **Shipping Calculator**: Automatic free shipping for orders ≥ R$ 40, R$ 9.90 shipping fee below threshold
+- **Shipping Calculator**: Automatic free shipping for orders ≥ R$ 30, R$ 9.90 shipping fee below threshold
 - **Order Processing**: Complete checkout flow with PIX payment integration
 - **CEP Integration**: Brazilian postal code lookup for address completion
 

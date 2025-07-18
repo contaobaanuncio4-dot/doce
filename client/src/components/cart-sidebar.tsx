@@ -74,7 +74,7 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
     return total + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
   }, 0);
 
-  const freeShippingThreshold = 40;
+  const freeShippingThreshold = 30;
   const freeShipping = cartTotal >= freeShippingThreshold;
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - cartTotal);
   const progressPercentage = Math.min(100, (cartTotal / freeShippingThreshold) * 100);
@@ -216,14 +216,14 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
                   className="h-2.5 rounded-full transition-all duration-300"
                   style={{ 
                     width: `${progressPercentage}%`,
-                    backgroundColor: freeShipping ? '#059669' : '#0F2E51'
+                    backgroundColor: freeShipping ? '#059669' : '#2563eb'
                   }}
                 ></div>
               </div>
               
               <div className="flex justify-between text-xs text-gray-600">
                 <span>R$ 0,00</span>
-                <span>R$ 40,00</span>
+                <span>R$ 30,00</span>
               </div>
             </div>
 

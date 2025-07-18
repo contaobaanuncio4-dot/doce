@@ -56,14 +56,12 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   return (
     <div className="min-h-screen bg-white">
       <Header onCartToggle={onCartToggle} />
-      <ShippingProgressBar />
-
-
 
       {/* Seção de Doces Mais Vendidos */}
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8">
+          <ShippingProgressBar />
+          <div className="text-center mb-8 mt-8">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               Doces Mais Vendidos - Tábua de Minas
             </h2>
