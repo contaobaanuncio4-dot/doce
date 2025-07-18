@@ -1,6 +1,6 @@
 export default function PromoBanner() {
   return (
-    <div className="bg-gradient-to-r from-tabua-yellow via-tabua-orange to-tabua-red text-white py-12 text-center">
+    <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-white py-12 text-center" style={{ background: 'linear-gradient(to right, #DDAF36, #DDAF36, #DDAF36)' }}>
       <div className="max-w-4xl mx-auto px-4">
         <h2 className="text-4xl md:text-6xl font-bold mb-4">
           PROMOÇÃO DE JULHO

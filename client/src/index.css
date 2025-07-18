@@ -24,16 +24,21 @@
   --ring: hsl(207, 84%, 19%);
   --radius: 0.5rem;
   
-  /* Cores do site original Tábua de Minas */
-  --tabua-green: hsl(142, 51%, 38%);
-  --tabua-yellow: hsl(40, 82%, 52%);
-  --tabua-red: hsl(0, 74%, 57%);
-  --tabua-cream: hsl(45, 100%, 96%);
-  --tabua-brown: hsl(25, 64%, 30%);
-  --tabua-orange: hsl(28, 87%, 67%);
-  --text-dark: hsl(210, 29%, 24%);
-  --discount-bg: hsl(0, 74%, 57%);
-  --price-green: hsl(142, 51%, 38%);
+  /* Cores do site Tábua de Minas */
+  --primary-blue: #0F2E51;
+  --primary-white: #FFFFFF;
+  --primary-gold: #DDAF36;
+  
+  /* Cores antigas convertidas para a nova paleta */
+  --tabua-green: #DDAF36;
+  --tabua-yellow: #DDAF36;
+  --tabua-red: #0F2E51;
+  --tabua-cream: #FFFFFF;
+  --tabua-brown: #0F2E51;
+  --tabua-orange: #DDAF36;
+  --text-dark: #0F2E51;
+  --discount-bg: #0F2E51;
+  --price-green: #DDAF36;
 }
 
 .dark {

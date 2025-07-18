@@ -46,7 +46,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
         {/* Labels/Badges */}
         <div className="labels js-labels-floating-group labels-floating absolute top-2 left-2 z-10">
           {discountPercent > 0 && (
-            <div className="label label-circle bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+            <div className="label label-circle text-white text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: '#0F2E51' }}>
               {discountPercent}% OFF
             </div>
           )}
@@ -66,14 +66,14 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
         <div className="p-3 sm:p-4">
           <div>
             {/* Nome do produto */}
-            <h3 className="text-sm sm:text-base font-medium text-gray-900 mb-2 leading-tight line-clamp-2 hover:text-tabua-green transition-colors">
+            <h3 className="text-sm sm:text-base font-medium mb-2 leading-tight line-clamp-2 transition-colors hover:opacity-75" style={{ color: '#0F2E51' }}>
               {product.name}
             </h3>
 
             {/* Container de preços */}
             <div className="mb-3">
               {/* Preço principal */}
-              <div className="text-lg sm:text-xl font-bold text-tabua-green mb-1">
+              <div className="text-lg sm:text-xl font-bold mb-1" style={{ color: '#DDAF36' }}>
                 R$ {product.price}
               </div>
 
@@ -89,7 +89,8 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
 
             {/* Botão de adicionar */}
             <Button
-              className="w-full bg-tabua-green hover:bg-tabua-green/90 text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors"
+              className="w-full text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
+              style={{ backgroundColor: '#0F2E51' }}
               onClick={() => addToCartMutation.mutate()}
               disabled={addToCartMutation.isPending}
             >

@@ -17,7 +17,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
   return (
     <>
       {/* Barra de promoção */}
-      <div className="bg-tabua-green text-white text-center py-2 text-sm font-medium">
+      <div className="text-white text-center py-2 text-sm font-medium" style={{ backgroundColor: '#0F2E51' }}>
         Frete Grátis na Tábua de Minas 🧀
       </div>
       
@@ -32,21 +32,21 @@ export default function Header({ onCartToggle }: HeaderProps) {
 
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-tabua-green">
+              <h1 className="text-2xl font-bold" style={{ color: '#0F2E51' }}>
                 Tábua de Minas
               </h1>
             </div>
 
             {/* Navegação desktop */}
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-700 hover:text-tabua-green font-medium">
+              <a href="#" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
                 Início
               </a>
-              <a href="#" className="text-gray-700 hover:text-tabua-green font-medium">
+              <a href="#" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
                 Clube da Tábua
               </a>
               <div className="relative group">
-                <button className="text-gray-700 hover:text-tabua-green font-medium flex items-center">
+                <button className="font-medium flex items-center hover:opacity-75" style={{ color: '#0F2E51' }}>
                   Produtos
                 </button>
                 <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -93,7 +93,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
               >
                 <ShoppingCart className="h-5 w-5" />
                 {totalItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-tabua-red text-white text-xs">
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full text-white text-xs" style={{ backgroundColor: '#DDAF36' }}>
                     {totalItems}
                   </Badge>
                 )}
