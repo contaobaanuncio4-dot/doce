@@ -1,0 +1,61 @@
+Olá, quero que você desenvolva um site moderno, visualmente bonito, porém fácil de navegar, especialmente pensado para o público mais velho. O site será da minha marca Tábua de Minas – Doces e Queijos (logo em anexo).
+
+🖼️ Design
+Interface bonita, aconchegante e tradicional, com elementos visuais que remetam ao interior de Minas Gerais (cores quentes, texturas como madeira, papel kraft, etc.).
+
+O design deve ser responsivo e com botões grandes, claros e fáceis de clicar para idosos.
+
+Tipografia legível e espaçamentos generosos.
+
+Fixar o logo no topo, com fácil acesso ao menu e carrinho.
+
+🛒 Funcionalidades da Loja
+Carrinho de Compras
+Carrinho aberto e sempre visível no site (tipo "sidebar" ou ícone flutuante).
+
+Cliente pode adicionar e remover itens facilmente, sem sair da página de navegação.
+
+Notificação de saída (Exit Intent)
+Se o usuário tentar sair do site (detecção de saída com o cursor indo para fora da tela):
+
+Mostrar um popup chamativo, dizendo algo como:
+
+"Ei! Antes de sair, você acaba de ganhar 10% de desconto em todos os produtos! Aproveite agora mesmo!"
+
+Dois botões: [Quero meu desconto] e [Não, obrigado]
+
+Se o cliente aceitar, aplicar automática e imediatamente 10% de desconto em todos os produtos do site.
+
+💳 Checkout Dinâmico
+Checkout simplificado, em uma única página.
+
+API de CEP com preenchimento automático de endereço.
+
+Pagamento exclusivo via PIX (com geração de QR Code e/ou Pix Copia e Cola).
+
+Após o preenchimento dos dados e antes de finalizar a compra, apresentar Order Bumps:
+
+🛍️ Order Bumps
+Produtos complementares com 30% de desconto, exibidos de forma visual e rápida para adicionar ao carrinho com 1 clique (por exemplo: "Quer levar esse doce de leite por 30% de desconto?").
+
+✅ Pós-Pagamento
+Após o pagamento confirmado, mostrar uma tela com produtos com 40% de desconto, com um texto como:
+
+"Parabéns pela compra! Aproveite agora ofertas exclusivas com 40% de desconto por tempo limitado."
+
+Botão [Adicionar ao pedido] que finalize um segundo pedido ou integre ao mesmo frete.
+
+📱 Requisitos Técnicos
+Site responsivo (funcional e bonito no celular e computador).
+
+CMS (de preferência WordPress + WooCommerce ou Shopify) para facilitar minha própria administração de produtos e pedidos.
+
+Integração de APIs:
+
+API de CEP (ex: ViaCEP).
+
+API de PIX (via Gerencianet, PagSeguro, Pagar.me ou outra confiável).
+
+Sistema de cupom automático baseado em evento (aceitação do desconto de 10%).
+
+Checkout com upsell e order bump integrados.
