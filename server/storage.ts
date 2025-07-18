@@ -58,21 +58,7 @@ export class MemStorage implements IStorage {
 
   private initializeProducts() {
     const sweetProducts: InsertProduct[] = [
-      {
-        name: "Doce de Leite Tradicional",
-        description: "Autêntico doce de leite cremoso, feito com leite fresco da fazenda e açúcar cristal. Tradição mineira em cada colherada.",
-        price500g: "28.90",
-        price1kg: "52.90",
-        originalPrice500g: "35.90",
-        originalPrice1kg: "65.90",
-        category: "doces",
-        imageUrl: "https://tabuademinas.com/cdn/shop/files/reeerererer_520x.png?v=1751488897",
-        stock: 25,
-        featured: true,
-        discount: 20,
-        rating: "4.9",
-        reviews: 187,
-      },
+
       {
         name: "Kit 4 Queijos Artesanais",
         description: "Seleção especial com 4 tipos de queijos artesanais mineiros: mussarela, prato, minas padrão e coalho.",
