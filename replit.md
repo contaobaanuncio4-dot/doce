@@ -14,6 +14,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Cart Functionality**: Fixed session handling for shopping cart functionality with direct "Add to Cart" system
 - **Fixed Shipping System**: Removed free shipping threshold, implemented fixed R$9.90 shipping for all orders
 - **Cart Bottom Bar**: Added fixed bottom cart bar with clean pricing layout showing subtotal crossed out and total highlighted with "COMPRAR AGORA" button
+- **Fixed Cart Functionality**: Corrected cart API to include product details with cart items, resolving "empty cart" display issue
+- **Modern Cart Design**: Applied custom cart sidebar and checkout page with site brand colors (#0F2E51 and #DDAF36)
 - **Removed Shipping Progress Bar**: Removed shipping information bar from homepage as requested
 - **Simplified Product Actions**: Changed from dual buttons to single "Adicionar ao Carrinho" button per user preference
 - **Navigation Improvements**: Removed "VER TODOS OS QUEIJOS" button as requested, kept only for doces section
