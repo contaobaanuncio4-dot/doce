@@ -25,6 +25,10 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **PIX Payment Integration**: Integrated BlackCat Payment Gateway for real PIX transactions with QR codes
 - **Real-time Payment Processing**: Orders now generate authentic PIX codes for customer payments
 - **Payment Gateway Security**: All transactions secured with BlackCat API authentication
+- **QR Code Generation**: Implemented real QR code generation using qrcode library for PIX payments
+- **Customer Reviews Section**: Added comprehensive reviews display with 4.9★ rating and customer testimonials
+- **Trust & Security Section**: Added "Por que escolher a Tábua de Minas" with quality, security, and delivery guarantees
+- **About Company Section**: Added company information highlighting 5,000+ orders and artisanal quality commitment
 
 ## User Preferences
 
