@@ -24,36 +24,25 @@ export default function ShoppingCartGuide() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Informações do Carrinho */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5" style={{ color: '#0F2E51' }} />
-              <span className="font-medium" style={{ color: '#0F2E51' }}>
-                {totalItems} {totalItems === 1 ? 'item' : 'itens'}
-              </span>
-            </div>
-            
-            <div className="font-bold text-[16px] text-[#dcae36]" style={{ color: '#DDAF36' }}>
-              R$ {finalTotal.toFixed(2).replace('.', ',')}
-            </div>
-
-
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="text-center">
+            <p className="text-sm text-gray-500 line-through">
+              Subtotal: R$ {total.toFixed(2).replace('.', ',')}
+            </p>
+            <p className="text-2xl font-bold" style={{ color: '#DDAF36' }}>
+              Total: R$ {finalTotal.toFixed(2).replace('.', ',')}
+            </p>
           </div>
-
-          {/* Botão Finalizar Compra */}
-          <Link href="/checkout">
-            <Button 
-              className="text-white font-semibold px-6 py-2 hover:opacity-90"
-              style={{ backgroundColor: '#0F2E51' }}
-            >
-              Finalizar Compra
-            </Button>
-          </Link>
         </div>
-
-
+        <Link href="/checkout">
+          <button 
+            className="hover:opacity-90 text-white font-bold py-3 px-6 rounded-full transition-colors"
+            style={{ backgroundColor: '#0F2E51' }}
+          >
+            COMPRAR AGORA
+          </button>
+        </Link>
       </div>
     </div>
   );
