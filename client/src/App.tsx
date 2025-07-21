@@ -8,7 +8,7 @@ import { useState } from "react";
 import NotFound from "@/pages/not-found";
 import { HomeTabua } from "@/pages/home-tabua";
 import ProductPage from "@/pages/product";
-import Checkout from "@/pages/checkout";
+import CheckoutSimple from "@/pages/checkout-simple";
 import Contact from "@/pages/contact";
 import TrackOrder from "@/pages/track-order";
 import ShoppingCart from "@/components/shopping-cart";
@@ -26,7 +26,7 @@ function Router() {
       <Switch>
         <Route path="/" component={() => <HomeTabua onCartToggle={handleCartToggle} />} />
         <Route path="/produto/:id" component={ProductPage} />
-        <Route path="/checkout" component={Checkout} />
+        <Route path="/checkout" component={CheckoutSimple} />
         <Route path="/contact" component={() => <Contact onCartToggle={handleCartToggle} />} />
         <Route path="/track-order" component={() => <TrackOrder onCartToggle={handleCartToggle} />} />
         <Route component={NotFound} />

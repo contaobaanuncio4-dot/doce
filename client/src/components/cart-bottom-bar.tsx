@@ -49,9 +49,7 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
               <div className="font-bold truncate" style={{ color: '#0F2E51' }}>
                 R$ {finalTotal.toFixed(2).replace(".", ",")}
               </div>
-              <div className="text-xs text-gray-500 hidden sm:block">
-                + Frete R$ {shippingCost.toFixed(2).replace(".", ",")}
-              </div>
+
             </div>
           </div>
 

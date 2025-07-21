@@ -35,15 +35,7 @@ export default function ShoppingCartGuide() {
               R$ {finalTotal.toFixed(2).replace('.', ',')}
             </div>
 
-            {/* Informação de Frete Fixo */}
-            <div className="flex items-center gap-2 text-sm">
-              <Truck className="w-4 h-4" style={{ color: '#0F2E51' }} />
-              <span className="text-gray-600">
-                Frete: <span className="font-medium" style={{ color: '#0F2E51' }}>
-                  R$ 9,90
-                </span>
-              </span>
-            </div>
+
           </div>
 
           {/* Botão Finalizar Compra */}
