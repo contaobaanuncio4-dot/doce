@@ -16,7 +16,10 @@ const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   customerEmail: z.string().email("Email inválido"),
   customerPhone: z.string().min(10, "Telefone deve ter pelo menos 10 dígitos"),
-  customerCpf: z.string().min(11, "CPF deve ter 11 dígitos").regex(/^\d{11}$/, "CPF deve conter apenas números"),
+  customerCpf: z.string().min(11, "CPF deve ter 11 dígitos").refine((cpf) => {
+    const cleanCpf = cpf.replace(/\D/g, '');
+    return cleanCpf.length === 11;
+  }, "CPF deve ter 11 dígitos"),
   zipCode: z.string().min(8, "CEP deve ter 8 dígitos"),
   address: z.string().min(5, "Endereço é obrigatório"),
   addressNumber: z.string().min(1, "Número é obrigatório"),

@@ -59,7 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid product ID" });
       }
-      const reviews = await storage.getProductReviews(id);
+      const reviews = await storage.getReviewsByProduct(id);
       res.json(reviews);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -275,17 +275,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Criar itens do pedido
+      const orderItemsToAdd = [];
       for (const cartItem of cartItems) {
         const product = await storage.getProductById(cartItem.productId);
         if (product) {
-          await storage.createOrderItem({
+          orderItemsToAdd.push({
             orderId: order.id,
             productId: cartItem.productId,
             quantity: cartItem.quantity,
             price: cartItem.price,
-            size: cartItem.size
+            size: cartItem.size || '500g'
           });
         }
+      }
+      
+      if (orderItemsToAdd.length > 0) {
+        await storage.addOrderItems(orderItemsToAdd);
       }
       
       // Limpar carrinho
@@ -312,7 +317,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/orders/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const order = await storage.getOrderById(id);
+      const order = await storage.getOrder(id);
       
       if (!order) {
         return res.status(404).json({ message: "Order not found" });
