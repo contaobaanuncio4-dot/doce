@@ -477,64 +477,96 @@ export default function CheckoutSimple() {
         )}
 
         {step === 2 && (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="bg-white rounded-2xl p-4 md:p-6 shadow-sm">
               <div className="text-center">
-                <div className="text-6xl mb-4">📱</div>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: '#0F2E51' }}>
+                <h3 className="text-xl md:text-2xl font-bold mb-2" style={{ color: '#0F2E51' }}>
                   Pedido #{orderId} criado com sucesso!
                 </h3>
-                <p className="text-gray-600 mb-6">
-                  Escaneie o código QR ou copie o código PIX abaixo para realizar o pagamento.
-                </p>
                 
-                <div className="bg-gray-100 p-6 rounded-lg mb-6">
-                  <div className="bg-white p-4 rounded-lg inline-block mb-4">
-                    <div className="text-8xl">📱</div>
-                    <p className="text-sm text-gray-600 mt-2">QR Code PIX</p>
+                {/* Valor em destaque no topo */}
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl mb-6 border-l-4" style={{ borderLeftColor: '#0F2E51' }}>
+                  <p className="text-sm text-gray-600 mb-1">Valor total a pagar:</p>
+                  <div className="text-3xl md:text-4xl font-bold" style={{ color: '#0F2E51' }}>
+                    R$ {finalTotal.toFixed(2).replace(".", ",")}
+                  </div>
+                </div>
+                
+                {/* QR Code Area */}
+                <div className="bg-gray-50 p-4 md:p-6 rounded-xl mb-6">
+                  <div className="bg-white p-6 rounded-lg shadow-sm mb-4 flex justify-center">
+                    <div className="w-48 h-48 md:w-64 md:h-64 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                      <div className="text-center">
+                        <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-full flex items-center justify-center">
+                          <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-.01M12 12v.01M12 12V8m0 0h4" />
+                          </svg>
+                        </div>
+                        <p className="text-sm font-medium text-gray-700">QR Code PIX</p>
+                        <p className="text-xs text-gray-500 mt-1">Será gerado pelo seu banco</p>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="bg-white p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Código PIX:</p>
-                    <div className="flex items-center justify-center space-x-2">
-                      <code className="bg-gray-100 px-3 py-2 rounded text-sm break-all max-w-xs">
-                        {pixCode}
-                      </code>
+                  {/* Código PIX para copiar */}
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <p className="text-sm font-medium text-gray-700 mb-3">Código PIX para copiar:</p>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="flex-1 bg-gray-50 p-3 rounded-lg border">
+                        <code className="text-xs break-all text-gray-800 font-mono leading-relaxed">
+                          {pixCode}
+                        </code>
+                      </div>
                       <Button 
                         onClick={copyPIXCode}
-                        variant="outline"
-                        size="sm"
+                        className="text-white font-semibold px-6 py-3 hover:opacity-90 whitespace-nowrap"
+                        style={{ backgroundColor: '#0F2E51' }}
                       >
-                        Copiar
+                        Copiar PIX
                       </Button>
                     </div>
                   </div>
-
-                  <div className="text-2xl font-bold mt-4" style={{ color: '#0F2E51' }}>
-                    Valor: R$ {finalTotal.toFixed(2).replace(".", ",")}
+                </div>
+                
+                {/* Instruções */}
+                <div className="text-left bg-blue-50 p-4 md:p-6 rounded-xl mb-6 border" style={{ borderColor: '#DDAF36' }}>
+                  <h4 className="font-semibold mb-3 text-center" style={{ color: '#0F2E51' }}>
+                    Como pagar com PIX:
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>1</div>
+                      <p className="text-sm text-gray-700">Abra o app do seu banco</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>2</div>
+                      <p className="text-sm text-gray-700">Escolha "PIX" → "Pagar com QR Code" ou "Copia e Cola"</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>3</div>
+                      <p className="text-sm text-gray-700">Cole o código PIX ou escaneie o QR Code gerado pelo app</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>4</div>
+                      <p className="text-sm text-gray-700">Confirme o pagamento de <strong>R$ {finalTotal.toFixed(2).replace(".", ",")}</strong></p>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="text-left bg-blue-50 p-4 rounded-lg mb-6">
-                  <h4 className="font-semibold mb-2" style={{ color: '#0F2E51' }}>
-                    Instruções para pagamento:
-                  </h4>
-                  <ol className="text-sm text-gray-600 space-y-1">
-                    <li>1. Abra o aplicativo do seu banco</li>
-                    <li>2. Procure pela opção PIX</li>
-                    <li>3. Escaneie o QR Code ou cole o código PIX</li>
-                    <li>4. Confirme o pagamento de R$ {finalTotal.toFixed(2).replace(".", ",")}</li>
-                  </ol>
-                </div>
-                
-                <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-4">
-                    Após o pagamento, você receberá a confirmação por email e WhatsApp.
-                  </p>
+                {/* Informações finais */}
+                <div className="text-center space-y-4">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <p className="text-sm text-green-700">
+                      <strong>Confirmação instantânea!</strong><br/>
+                      Você receberá a confirmação por email e WhatsApp assim que o pagamento for processado.
+                    </p>
+                  </div>
+                  
                   <Button 
                     onClick={() => setLocation("/")}
-                    className="text-white font-bold px-6 py-2 hover:opacity-90"
-                    style={{ backgroundColor: '#0F2E51' }}
+                    variant="outline"
+                    className="border-2 font-semibold px-8 py-3 hover:opacity-90"
+                    style={{ borderColor: '#0F2E51', color: '#0F2E51' }}
                   >
                     Voltar ao Início
                   </Button>
