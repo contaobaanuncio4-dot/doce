@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
-import { CartSidebar } from "./cart-sidebar";
+import { CartSidebar } from "./cart-sidebar-new";
 
 interface Product {
   id: number;

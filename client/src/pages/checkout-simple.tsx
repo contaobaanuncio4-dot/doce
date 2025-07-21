@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import Header from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { Package } from "lucide-react";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -139,82 +139,265 @@ export default function CheckoutSimple() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-4" style={{ color: '#0F2E51' }}>
-              Finalizar Compra
-            </h1>
-            <div className="flex justify-center items-center space-x-8">
-              <div className={`flex items-center ${step >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 ${step >= 1 ? 'text-white' : 'bg-gray-400 text-white'}`} style={{ backgroundColor: step >= 1 ? '#0F2E51' : '#9CA3AF' }}>
-                  1
-                </div>
-                <span className="font-semibold">Dados</span>
-              </div>
-              <div className={`w-16 h-0.5 ${step >= 2 ? '#0F2E51' : 'bg-gray-400'}`} style={{ backgroundColor: step >= 2 ? '#0F2E51' : '#9CA3AF' }}></div>
-              <div className={`flex items-center ${step >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 text-white`} style={{ backgroundColor: step >= 2 ? '#0F2E51' : '#9CA3AF' }}>
-                  2
-                </div>
-                <span className="font-semibold">Pagamento PIX</span>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen py-8" style={{ backgroundColor: '#F7F3EF' }}>
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="mb-6">
+          <button 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2 hover:opacity-80 transition-colors"
+            style={{ color: '#0F2E51' }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Voltar para o produto
+          </button>
+        </div>
 
           {step === 1 && (
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Formulário */}
+              <div className="lg:col-span-2">
+                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                  <h1 className="text-2xl font-serif font-bold mb-6" style={{ color: '#0F2E51' }}>
+                    Finalizar Pedido
+                  </h1>
+                  
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                      <div>
+                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          Dados Pessoais
+                        </h2>
+                        
+                        <div className="space-y-4">
+                          <FormField
+                            control={form.control}
+                            name="customerName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">Nome Completo *</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    {...field} 
+                                    placeholder="Digite seu nome completo"
+                                    className="w-full px-3 py-2 border rounded-lg border-gray-300"
+                                    style={{ 
+                                      '--tw-ring-color': '#0F2E51',
+                                      focusRingColor: '#0F2E51'
+                                    } as any}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={form.control}
+                              name="customerPhone"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">Telefone *</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="(11) 99999-9999" className="border-gray-300" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name="customerEmail"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">Email *</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} type="email" placeholder="seu@email.com" className="border-gray-300" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Endereço de Entrega
+                        </h2>
+                        
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={form.control}
+                              name="zipCode"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">CEP *</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="00000-000" className="border-gray-300" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name="addressNumber"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">Número *</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="123" className="border-gray-300" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <FormField
+                            control={form.control}
+                            name="address"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">Logradouro</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="Rua, Avenida, etc." className="border-gray-300" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={form.control}
+                              name="neighborhood"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">Bairro</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="Bairro" className="border-gray-300" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name="city"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm font-medium text-gray-700">Cidade</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} placeholder="Cidade" className="border-gray-300" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <FormField
+                            control={form.control}
+                            name="state"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium text-gray-700">Estado</FormLabel>
+                                <FormControl>
+                                  <Input {...field} placeholder="MG" className="border-gray-300" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
+                </div>
+              </div>
+
               {/* Resumo do Pedido */}
-              <Card>
-                <CardHeader>
-                  <CardTitle style={{ color: '#0F2E51' }}>Resumo do Pedido</CardTitle>
-                </CardHeader>
-                <CardContent>
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-4">
+                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                    <Package className="w-5 h-5" />
+                    Resumo do Pedido
+                  </h2>
+                  
                   <div className="space-y-4">
                     {cartItems.map((item: any) => (
-                      <div key={item.id} className="flex items-center space-x-4">
+                      <div key={item.id} className="flex gap-3">
                         <img 
                           src={item.product?.imageUrl} 
                           alt={item.product?.name}
                           className="w-16 h-16 object-cover rounded-lg"
                         />
                         <div className="flex-1">
-                          <h4 className="font-semibold" style={{ color: '#0F2E51' }}>{item.product?.name}</h4>
-                          <p className="text-sm text-gray-600">Quantidade: {item.quantity}</p>
-                          <p className="font-semibold" style={{ color: '#DDAF36' }}>
+                          <h3 className="font-medium text-gray-900 text-sm line-clamp-2">
+                            {item.product?.name}
+                          </h3>
+                          <p className="text-sm text-gray-600">Qtd: {item.quantity}</p>
+                          <p className="text-sm font-bold" style={{ color: '#0F2E51' }}>
                             R$ {(parseFloat(item.price?.replace(",", ".") || "0") * item.quantity).toFixed(2).replace(".", ",")}
                           </p>
                         </div>
                       </div>
                     ))}
+                    
+                    <div className="border-t pt-4 space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Subtotal:</span>
+                        <span>R$ {total.toFixed(2).replace(".", ",")}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Frete:</span>
+                        <span style={{ color: '#0F2E51' }}>R$ 9,90</span>
+                      </div>
+                      <div className="border-t pt-2 flex justify-between text-lg font-bold">
+                        <span>Total:</span>
+                        <span style={{ color: '#0F2E51' }}>
+                          R$ {finalTotal.toFixed(2).replace(".", ",")}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <button
+                      onClick={form.handleSubmit(onSubmit)}
+                      disabled={createOrderMutation.isPending}
+                      className="w-full hover:opacity-90 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      style={{ backgroundColor: '#0F2E51' }}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                        <line x1="2" x2="22" y1="10" y2="10"></line>
+                      </svg>
+                      {createOrderMutation.isPending ? "Gerando PIX..." : "Gerar PIX"}
+                    </button>
+                    
+                    <div className="text-center text-xs text-gray-500">
+                      <p>Pagamento 100% seguro</p>
+                      <p>Seus dados estão protegidos</p>
+                    </div>
                   </div>
-                  
-                  <div className="border-t pt-4 mt-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span>Subtotal:</span>
-                      <span>R$ {total.toFixed(2).replace(".", ",")}</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span>Frete:</span>
-                      <span style={{ color: '#0F2E51' }}>R$ 9,90</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xl font-bold" style={{ color: '#0F2E51' }}>
-                      <span>Total:</span>
-                      <span>R$ {finalTotal.toFixed(2).replace(".", ",")}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Dados do Cliente */}
-              <Card>
-                <CardHeader>
-                  <CardTitle style={{ color: '#0F2E51' }}>Seus Dados</CardTitle>
-                </CardHeader>
-                <CardContent>
+                </div>
+              </div>
+            </div>
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <FormField
