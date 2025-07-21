@@ -103,29 +103,20 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
               </div>
             </div>
 
-            {/* Botões de ação */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                className="text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
-                style={{ backgroundColor: addToCartDirectMutation.isSuccess ? '#059669' : '#DDAF36' }}
-                onClick={() => addToCartDirectMutation.mutate()}
-                disabled={addToCartDirectMutation.isPending}
-              >
-                {addToCartDirectMutation.isPending 
-                  ? "Adicionando..." 
-                  : addToCartDirectMutation.isSuccess 
-                  ? "✓ Adicionado" 
-                  : "Comprar Rápido"
-                }
-              </Button>
-              <Button
-                className="text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
-                style={{ backgroundColor: '#0F2E51' }}
-                onClick={() => setShowCartSidebar(true)}
-              >
-                Ver Opções
-              </Button>
-            </div>
+            {/* Botão de adicionar */}
+            <Button
+              className="w-full text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
+              style={{ backgroundColor: addToCartDirectMutation.isSuccess ? '#059669' : '#0F2E51' }}
+              onClick={() => addToCartDirectMutation.mutate()}
+              disabled={addToCartDirectMutation.isPending}
+            >
+              {addToCartDirectMutation.isPending 
+                ? "Adicionando..." 
+                : addToCartDirectMutation.isSuccess 
+                ? "✓ Adicionado ao Carrinho" 
+                : "Adicionar ao Carrinho"
+              }
+            </Button>
           </div>
         </div>
       </div>
