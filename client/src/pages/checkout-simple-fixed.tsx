@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check } from "lucide-react";
 import { fetchCEP } from "@/lib/cep-api";
+import QRCode from "qrcode";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -38,6 +39,7 @@ export default function CheckoutSimple() {
   const [orderId, setOrderId] = useState<number | null>(null);
   const [showInstructions, setShowInstructions] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const { toast } = useToast();
 
   const form = useForm<CheckoutForm>({
@@ -86,9 +88,25 @@ export default function CheckoutSimple() {
       });
       return response;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setOrderId(data.order.id);
       setPixCode(data.pixCode);
+      
+      // Gerar QR Code
+      try {
+        const qrDataUrl = await QRCode.toDataURL(data.pixCode, {
+          width: 256,
+          margin: 2,
+          color: {
+            dark: '#0F2E51',
+            light: '#FFFFFF'
+          }
+        });
+        setQrCodeDataUrl(qrDataUrl);
+      } catch (error) {
+        console.error('Erro ao gerar QR Code:', error);
+      }
+      
       setStep(2);
       toast({
         title: "Pedido criado com sucesso!",
@@ -512,17 +530,28 @@ export default function CheckoutSimple() {
                 {/* QR Code Area */}
                 <div className="bg-gray-50 p-4 md:p-6 rounded-xl mb-6">
                   <div className="bg-white p-6 rounded-lg shadow-sm mb-4 flex justify-center">
-                    <div className="w-48 h-48 md:w-64 md:h-64 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                    {qrCodeDataUrl ? (
                       <div className="text-center">
-                        <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-full flex items-center justify-center">
-                          <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-.01M12 12v.01M12 12V8m0 0h4" />
-                          </svg>
-                        </div>
-                        <p className="text-sm font-medium text-gray-700">QR Code PIX</p>
-                        <p className="text-xs text-gray-500 mt-1">Será gerado pelo seu banco</p>
+                        <img 
+                          src={qrCodeDataUrl} 
+                          alt="QR Code PIX" 
+                          className="w-48 h-48 md:w-64 md:h-64 rounded-lg border"
+                        />
+                        <p className="text-sm font-medium text-gray-700 mt-3">QR Code PIX</p>
+                        <p className="text-xs text-gray-500 mt-1">Escaneie com o app do seu banco</p>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="w-48 h-48 md:w-64 md:h-64 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <div className="text-center">
+                          <div className="w-12 h-12 mx-auto mb-2 bg-gray-200 rounded-full flex items-center justify-center">
+                            <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-.01M12 12v.01M12 12V8m0 0h4" />
+                            </svg>
+                          </div>
+                          <p className="text-sm font-medium text-gray-700">Gerando QR Code...</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Código PIX para copiar */}
