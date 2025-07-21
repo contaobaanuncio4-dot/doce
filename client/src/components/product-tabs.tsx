@@ -87,7 +87,7 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
                     }`}
                     onClick={() => setActiveTab('clube')}
                   >
-                    Clube Tábua 🧀
+                    Clube Tábua
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
                       NOVO
                     </span>
@@ -121,15 +121,15 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
               {/* Header do Clube */}
               <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F2E51' }}>
-                  Clube de Assinatura Tábua de Minas 🧀
+                  Clube de Assinatura Tábua de Minas
                 </h2>
                 <p className="text-xl text-gray-700 mb-6">
-                  O sabor da roça direto pra sua casa, todo mês! ❤️
+                  O sabor da roça direto pra sua casa, todo mês!
                 </p>
                 
                 {/* Temporizador Promocional */}
                 <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-lg mb-6 mx-auto max-w-md">
-                  <p className="font-bold text-lg mb-2">🔥 OFERTA LIMITADA!</p>
+                  <p className="font-bold text-lg mb-2">OFERTA LIMITADA!</p>
                   <p className="text-sm mb-2">Esta promoção termina em:</p>
                   <div className="flex justify-center space-x-4 text-2xl font-bold">
                     <div className="text-center">
@@ -236,19 +236,42 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
                 </h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="flex items-center space-x-3">
-                    <span className="text-2xl">🧀</span>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 12l2 2 4-4"/>
+                        <circle cx="12" cy="12" r="9"/>
+                      </svg>
+                    </div>
                     <span className="text-gray-700">Queijos artesanais com curadoria</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <span className="text-2xl">📦</span>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="1" y="3" width="15" height="13"/>
+                        <polygon points="16,8 20,8 23,11 23,16 16,16 16,8"/>
+                        <circle cx="5.5" cy="18.5" r="2.5"/>
+                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                      </svg>
+                    </div>
                     <span className="text-gray-700">Entrega garantida mensal</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <span className="text-2xl">📚</span>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                      </svg>
+                    </div>
                     <span className="text-gray-700">Dicas de harmonização exclusivas</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <span className="text-2xl">💰</span>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="8" cy="21" r="1"/>
+                        <circle cx="19" cy="21" r="1"/>
+                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                      </svg>
+                    </div>
                     <span className="text-gray-700">Desconto especial na loja online</span>
                   </div>
                 </div>
