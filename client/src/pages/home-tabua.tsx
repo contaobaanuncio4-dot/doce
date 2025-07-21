@@ -4,7 +4,7 @@ import Header from "@/components/header";
 import PromoBanner from "@/components/promo-banner";
 import ExitIntentModal from "@/components/exit-intent-modal";
 import OrderBumpModal from "@/components/order-bump-modal";
-import { ShippingProgressBar } from "@/components/shipping-progress-bar";
+
 import ProductTabs from "@/components/product-tabs";
 import CartBottomBar from "@/components/cart-bottom-bar";
 import { useState, useEffect } from "react";
@@ -63,12 +63,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     <div className="min-h-screen bg-white">
       <Header onCartToggle={onCartToggle} />
 
-      {/* Informação de Frete */}
-      <div className="bg-gray-50 py-4">
-        <div className="max-w-7xl mx-auto px-4">
-          <ShippingProgressBar />
-        </div>
-      </div>
+
 
       {/* Seção de Produtos com Abas */}
       <ProductTabs doces={doces} queijos={queijos} />
