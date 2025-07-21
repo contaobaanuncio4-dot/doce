@@ -29,6 +29,9 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Customer Reviews Section**: Added comprehensive reviews display with 4.9★ rating and customer testimonials
 - **Trust & Security Section**: Added "Por que escolher a Tábua de Minas" with quality, security, and delivery guarantees
 - **About Company Section**: Added company information highlighting 5,000+ orders and artisanal quality commitment
+- **Subscription Club "Clube Tábua"**: Implemented subscription service with two plans (Semestral R$ 187,90/mês, Anual R$ 139,90/mês)
+- **Promotional Countdown Timer**: Added 24-hour countdown timer for limited-time subscription offers
+- **Three-Tab Navigation**: Enhanced product tabs with Doces, Queijos, and new Clube Tábua sections
 
 ## User Preferences
 
