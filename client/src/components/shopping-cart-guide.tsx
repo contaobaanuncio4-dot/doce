@@ -1,12 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Truck } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function ShoppingCartGuide() {
+  const [location] = useLocation();
   const { data: cartItems = [] } = useQuery({
     queryKey: ['/api/cart']
   });
+
+  // Não mostrar na página de checkout
+  if (location === '/checkout') return null;
 
   const total = cartItems.reduce((sum: number, item: any) => {
     return sum + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
