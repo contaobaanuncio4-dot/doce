@@ -58,7 +58,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     <div className="min-h-screen bg-white">
       <Header onCartToggle={onCartToggle} />
 
-      {/* Barra de Progresso de Frete */}
+      {/* Informação de Frete */}
       <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-4">
           <ShippingProgressBar />

@@ -74,11 +74,8 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
     return total + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
   }, 0);
 
-  const freeShippingThreshold = 30;
-  const freeShipping = cartTotal >= freeShippingThreshold;
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - cartTotal);
-  const progressPercentage = Math.min(100, (cartTotal / freeShippingThreshold) * 100);
-  const shippingCost = freeShipping ? 0 : 9.90;
+  // Frete fixo
+  const shippingCost = 9.90;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -200,30 +197,10 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
               </div>
             </div>
 
-            {/* Barra de Progresso Frete Grátis */}
-            <div className="bg-white border border-gray-200 p-4 rounded-lg space-y-3">
-              <div className="text-sm font-medium" style={{ color: '#0F2E51' }}>
-                {freeShipping ? (
-                  <span className="text-green-600">🎉 Você ganhou frete grátis!</span>
-                ) : (
-                  <span>Faltam R$ {remainingForFreeShipping.toFixed(2).replace(".", ",")} para ganhar frete grátis</span>
-                )}
-              </div>
-              
-              {/* Barra de Progresso */}
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="h-2.5 rounded-full transition-all duration-300"
-                  style={{ 
-                    width: `${progressPercentage}%`,
-                    backgroundColor: freeShipping ? '#059669' : '#2563eb'
-                  }}
-                ></div>
-              </div>
-              
-              <div className="flex justify-between text-xs text-gray-600">
-                <span>R$ 0,00</span>
-                <span>R$ 30,00</span>
+            {/* Informação de Frete */}
+            <div className="bg-white border border-gray-200 p-4 rounded-lg">
+              <div className="text-sm font-medium text-center" style={{ color: '#0F2E51' }}>
+                Frete: R$ {shippingCost.toFixed(2).replace(".", ",")}
               </div>
             </div>
 
@@ -246,8 +223,8 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Frete:</span>
-                  <span className="font-medium" style={{ color: freeShipping ? '#059669' : '#0F2E51' }}>
-                    {freeShipping ? 'Grátis' : `R$ ${shippingCost.toFixed(2).replace(".", ",")}`}
+                  <span className="font-medium" style={{ color: '#0F2E51' }}>
+                    R$ {shippingCost.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-bold pt-1 border-t">
