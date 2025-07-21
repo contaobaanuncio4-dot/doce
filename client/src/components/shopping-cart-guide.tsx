@@ -35,7 +35,7 @@ export default function ShoppingCartGuide() {
               </span>
             </div>
             
-            <div className="font-bold text-[16px]" style={{ color: '#DDAF36' }}>
+            <div className="font-bold text-[16px] text-[#dcae36]" style={{ color: '#DDAF36' }}>
               R$ {finalTotal.toFixed(2).replace('.', ',')}
             </div>
 
