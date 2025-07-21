@@ -12,7 +12,6 @@ import CheckoutSimple from "@/pages/checkout-simple-fixed";
 import { CartSidebar } from "@/components/cart-sidebar-new";
 import Contact from "@/pages/contact";
 import TrackOrder from "@/pages/track-order";
-import ShoppingCart from "@/components/shopping-cart";
 import ShoppingCartGuide from "@/components/shopping-cart-guide";
 
 function Router() {
@@ -34,9 +33,10 @@ function Router() {
       </Switch>
       
       {/* Carrinho lateral */}
-      <ShoppingCart 
+      <CartSidebar 
         isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
+        onClose={() => setIsCartOpen(false)}
+        product={null}
       />
       
       {/* Guia do carrinho na parte inferior */}
