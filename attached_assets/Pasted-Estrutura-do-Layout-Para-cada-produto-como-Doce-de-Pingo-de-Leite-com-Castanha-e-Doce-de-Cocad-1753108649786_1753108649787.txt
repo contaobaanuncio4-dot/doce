@@ -1,0 +1,44 @@
+Estrutura do Layout:
+
+Para cada produto (como "Doce de Pingo de Leite com Castanha" e "Doce de Cocada com Abacaxi"), criar um botão "Adicionar ao Carrinho".
+
+Após o clique no botão, o produto deve ser adicionado ao carrinho e os dados do produto (nome, preço) devem ser salvos em um array ou objeto.
+
+Uma barra de carrinho deverá aparecer na parte inferior da tela, com a exibição do valor total do carrinho e o botão "Comprar Agora".
+
+Valores do Carrinho:
+
+O valor total do carrinho deve ser atualizado automaticamente sempre que um produto for adicionado.
+
+O valor total deve ser exibido de forma clara (ex: "Total: R$ 68,80").
+
+Comportamento do Carrinho:
+
+Sempre que o usuário adicionar um produto ao carrinho, o item deve ser salvo em uma lista (pode ser um array de objetos com as propriedades nome e preço).
+
+O botão "Adicionar ao Carrinho" de cada produto deve ser desativado ou alterado para indicar que o item já foi adicionado (opcional, dependendo da experiência de usuário desejada).
+
+A barra do carrinho deve se manter visível e fixa na parte inferior da tela, sempre mostrando o valor atualizado do carrinho.
+
+Funcionalidade do "Comprar Agora":
+
+Quando o usuário clicar no botão "Comprar Agora", ele deve ser redirecionado para a página de checkout, onde poderá revisar os itens do carrinho e finalizar a compra.
+
+O sistema de carrinho precisa garantir que os itens salvos no carrinho (nome e preço) sejam passados para o checkout para facilitar o processo de compra.
+
+Estilo Visual:
+
+A barra de carrinho deve ser discreta mas visível na parte inferior da tela. Ela pode ter uma cor de destaque como amarela ou azul, com o valor total à esquerda e o botão de "Comprar Agora" à direita.
+
+O botão "Adicionar ao Carrinho" deve ter um design simples, de cor contrastante, para garantir que seja facilmente visível.
+
+Os produtos devem ser exibidos com imagem, nome e preço, seguidos pelo botão de adicionar ao carrinho.
+
+Interatividade:
+
+Adicionar ao carrinho: Quando o usuário clicar no botão "Adicionar ao Carrinho", o produto será adicionado ao carrinho. A lista de produtos no carrinho será atualizada e o valor total será recalculado.
+
+Visualização do Carrinho: Sempre que o valor do carrinho mudar, o valor exibido na barra deve ser atualizado sem precisar recarregar a página.
+
+Finalização da Compra: Quando o usuário clicar em "Comprar Agora", ele será levado à página de checkout, onde todos os itens no carrinho serão mostrados para revisão antes de completar a compra.
+

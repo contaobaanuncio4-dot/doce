@@ -6,6 +6,7 @@ import ExitIntentModal from "@/components/exit-intent-modal";
 import OrderBumpModal from "@/components/order-bump-modal";
 import { ShippingProgressBar } from "@/components/shipping-progress-bar";
 import ProductTabs from "@/components/product-tabs";
+import CartBottomBar from "@/components/cart-bottom-bar";
 import { useState, useEffect } from "react";
 
 interface HomeTabuaProps {
@@ -15,6 +16,10 @@ interface HomeTabuaProps {
 export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/products"]
+  });
+
+  const { data: cartItems = [] } = useQuery({
+    queryKey: ["/api/cart"]
   });
 
   const [showExitIntent, setShowExitIntent] = useState(false);
@@ -71,8 +76,8 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
       {/* Banner Promocional */}
       <PromoBanner />
 
-      {/* Footer simples */}
-      <footer className="bg-gray-900 text-white py-8">
+      {/* Footer simples - com padding bottom para barra de carrinho */}
+      <footer className="bg-gray-900 text-white py-8" style={{ paddingBottom: cartItems.length > 0 ? '80px' : '32px' }}>
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h3 className="text-xl font-bold mb-4">Tábua de Minas</h3>
           <p className="text-gray-400 mb-4">Doces e Queijos Artesanais</p>
@@ -95,6 +100,9 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
         onClose={() => setShowOrderBump(false)} 
         cartItems={[]} 
       />
+
+      {/* Barra de Carrinho Fixa */}
+      <CartBottomBar isVisible={cartItems.length > 0} />
     </div>
   );
 }
