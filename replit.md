@@ -4,6 +4,15 @@
 
 This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a Brazilian artisanal cheese and sweets brand. The application is designed with a focus on accessibility for older users while maintaining modern aesthetics inspired by the interior of Minas Gerais.
 
+## Recent Changes (Updated: January 21, 2025)
+
+- **Complete Queijos Linha Premium Catalog**: Implemented full product line with 16 authentic cheese products using real images and data from tabuademinas.com
+- **Product Gallery System**: Added multi-image galleries for product variations with navigation controls
+- **Customer Review System**: Implemented comprehensive review display with ratings and customer feedback
+- **Banner Integration**: Added promotional banner from tabuademinas.com to homepage
+- **Navigation Improvements**: Removed "VER TODOS OS QUEIJOS" button as requested, kept only for doces section
+- **Product Pages Enhanced**: Individual product pages now feature detailed descriptions, weight information, and review sections
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.

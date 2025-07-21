@@ -12,6 +12,8 @@ export const products = pgTable("products", {
   originalPrice1kg: decimal("original_price_1kg", { precision: 10, scale: 2 }),
   category: text("category").notNull(), // 'queijos', 'doces', 'combos'
   imageUrl: text("image_url").notNull(),
+  imageUrls: text("image_urls").array(),
+  weight: text("weight"),
   stock: integer("stock").default(100),
   featured: boolean("featured").default(false),
   discount: integer("discount").default(0), // percentage

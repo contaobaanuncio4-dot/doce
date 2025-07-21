@@ -65,6 +65,9 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
         </div>
       </div>
 
+      {/* Banner Promocional */}
+      <PromoBanner />
+
       {/* Seção de Produtos com Abas */}
       <ProductTabs doces={doces} queijos={queijos} />
 
