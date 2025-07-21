@@ -7,9 +7,10 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Package, ArrowLeft, User, MapPin, CreditCard } from "lucide-react";
+import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check } from "lucide-react";
 import { fetchCEP } from "@/lib/cep-api";
 
 const checkoutSchema = z.object({
@@ -35,6 +36,8 @@ export default function CheckoutSimple() {
   const [step, setStep] = useState(1);
   const [pixCode, setPixCode] = useState("00020126360014BR.GOV.BCB.PIX0114+5531999887766520400005303986540510.005802BR5925TABUA DE MINAS QUEIJOS6014BELO HORIZONTE62070503***6304ABCD");
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<CheckoutForm>({
@@ -105,12 +108,26 @@ export default function CheckoutSimple() {
     createOrderMutation.mutate(data);
   };
 
-  const copyPIXCode = () => {
-    navigator.clipboard.writeText(pixCode);
-    toast({
-      title: "PIX copiado!",
-      description: "Código PIX copiado para a área de transferência.",
-    });
+  const copyPIXCode = async () => {
+    try {
+      await navigator.clipboard.writeText(pixCode);
+      setCopied(true);
+      setShowInstructions(true);
+      toast({
+        title: "Código PIX copiado!",
+        description: "Agora siga as instruções para pagar.",
+        variant: "default"
+      });
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Erro ao copiar PIX:", error);
+      toast({
+        title: "Erro ao copiar",
+        description: "Tente selecionar e copiar manualmente.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Função para buscar CEP automaticamente
@@ -512,7 +529,10 @@ export default function CheckoutSimple() {
                   <div className="bg-white p-4 rounded-lg shadow-sm">
                     <p className="text-sm font-medium text-gray-700 mb-3">Código PIX para copiar:</p>
                     <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="flex-1 bg-gray-50 p-3 rounded-lg border">
+                      <div 
+                        onClick={copyPIXCode}
+                        className="flex-1 bg-gray-50 p-3 rounded-lg border cursor-pointer hover:bg-gray-100 transition-colors"
+                      >
                         <code className="text-xs break-all text-gray-800 font-mono leading-relaxed">
                           {pixCode}
                         </code>
@@ -522,7 +542,11 @@ export default function CheckoutSimple() {
                         className="text-white font-semibold px-6 py-3 hover:opacity-90 whitespace-nowrap"
                         style={{ backgroundColor: '#0F2E51' }}
                       >
-                        Copiar PIX
+                        {copied ? (
+                          <><Check className="w-4 h-4 mr-1" /> Copiado!</>
+                        ) : (
+                          <><Copy className="w-4 h-4 mr-1" /> Copiar PIX</>
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -576,6 +600,76 @@ export default function CheckoutSimple() {
           </div>
         )}
       </div>
+
+      {/* Modal de Instruções PIX */}
+      <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
+        <DialogContent className="max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-center" style={{ color: '#0F2E51' }}>
+              Como pagar com PIX
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 p-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200 text-center">
+              <Check className="w-8 h-8 mx-auto mb-2 text-green-600" />
+              <p className="text-sm font-semibold text-green-700">
+                Código PIX copiado com sucesso!
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>1</div>
+                <div>
+                  <p className="font-semibold text-gray-900">Abra seu app bancário</p>
+                  <p className="text-sm text-gray-600">Qualquer banco que aceite PIX</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>2</div>
+                <div>
+                  <p className="font-semibold text-gray-900">Escolha "PIX" → "Copia e Cola"</p>
+                  <p className="text-sm text-gray-600">Ou "Pagar com código PIX"</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>3</div>
+                <div>
+                  <p className="font-semibold text-gray-900">Cole o código copiado</p>
+                  <p className="text-sm text-gray-600">O código já está na sua área de transferência</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: '#0F2E51' }}>4</div>
+                <div>
+                  <p className="font-semibold text-gray-900">Confirme o pagamento</p>
+                  <p className="text-sm text-gray-600">
+                    Valor: <strong style={{ color: '#0F2E51' }}>R$ {finalTotal.toFixed(2).replace(".", ",")}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <p className="text-sm text-center text-blue-700">
+                <strong>Pagamento confirmado automaticamente!</strong><br/>
+                Você receberá confirmação por email e WhatsApp.
+              </p>
+            </div>
+            
+            <Button 
+              onClick={() => setShowInstructions(false)}
+              className="w-full text-white font-semibold py-3"
+              style={{ backgroundColor: '#0F2E51' }}
+            >
+              Entendi, vou pagar agora
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
