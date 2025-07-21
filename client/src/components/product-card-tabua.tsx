@@ -32,6 +32,24 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const [quantity, setQuantity] = useState(1);
   const [showCartSidebar, setShowCartSidebar] = useState(false);
   const queryClient = useQueryClient();
+  
+  const addToCartDirectMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("/api/cart", {
+        method: "POST",
+        body: {
+          productId: product.id,
+          quantity: 1,
+          weight: "500g",
+          price: product.price500g || product.price,
+          sessionId: 'default-session'
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+    },
+  });
 
   const discountPercent = product.discount || 20;
   const currentPrice = product.price500g || product.price;
@@ -85,14 +103,29 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
               </div>
             </div>
 
-            {/* Botão de adicionar */}
-            <Button
-              className="w-full text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
-              style={{ backgroundColor: '#0F2E51' }}
-              onClick={() => setShowCartSidebar(true)}
-            >
-              Adicionar à sacola
-            </Button>
+            {/* Botões de ação */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                className="text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
+                style={{ backgroundColor: addToCartDirectMutation.isSuccess ? '#059669' : '#DDAF36' }}
+                onClick={() => addToCartDirectMutation.mutate()}
+                disabled={addToCartDirectMutation.isPending}
+              >
+                {addToCartDirectMutation.isPending 
+                  ? "Adicionando..." 
+                  : addToCartDirectMutation.isSuccess 
+                  ? "✓ Adicionado" 
+                  : "Comprar Rápido"
+                }
+              </Button>
+              <Button
+                className="text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
+                style={{ backgroundColor: '#0F2E51' }}
+                onClick={() => setShowCartSidebar(true)}
+              >
+                Ver Opções
+              </Button>
+            </div>
           </div>
         </div>
       </div>

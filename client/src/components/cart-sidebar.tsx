@@ -48,19 +48,20 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
   const addToCartMutation = useMutation({
     mutationFn: async () => {
       const price = selectedSize === "500g" ? product?.price500g : product?.price1kg;
-      await apiRequest("/api/cart", {
+      return await apiRequest("/api/cart", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           productId: product?.id,
           quantity,
-          size: selectedSize,
+          weight: selectedSize,
           price: price,
-        }),
+          sessionId: 'default-session'
+        },
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-      onClose();
+      // Não fechar automaticamente, deixar o usuário decidir
     },
   });
 
@@ -241,10 +242,15 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
               onClick={() => addToCartMutation.mutate()}
               disabled={addToCartMutation.isPending}
               className="w-full text-white font-medium py-3"
-              style={{ backgroundColor: '#DDAF36' }}
+              style={{ backgroundColor: addToCartMutation.isSuccess ? '#059669' : '#DDAF36' }}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              {addToCartMutation.isPending ? "Adicionando..." : "ADICIONAR AO CARRINHO"}
+              {addToCartMutation.isPending 
+                ? "Adicionando..." 
+                : addToCartMutation.isSuccess 
+                ? "✓ ADICIONADO AO CARRINHO" 
+                : "ADICIONAR AO CARRINHO"
+              }
             </Button>
             
             <div className="grid grid-cols-2 gap-2">

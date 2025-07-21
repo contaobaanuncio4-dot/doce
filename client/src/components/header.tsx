@@ -19,7 +19,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
     <>
       {/* Barra de promoção */}
       <div className="text-white text-center py-2 text-sm font-medium" style={{ backgroundColor: '#0F2E51' }}>
-        Frete Grátis na Tábua de Minas 🧀
+        🧀 Queijos e Doces Artesanais de Minas Gerais 🍯
       </div>
       
       {/* Header principal */}
