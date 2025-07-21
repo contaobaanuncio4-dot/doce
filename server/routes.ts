@@ -9,7 +9,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Product routes
   app.get("/api/products", async (req, res) => {
     try {
-      const products = await storage.getAllProducts();
+      const products = await storage.getProducts();
       res.json(products);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -69,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cart routes
   app.get("/api/cart", async (req, res) => {
     try {
-      const sessionId = req.sessionID;
+      const sessionId = req.session.id || 'default-session';
       const cartItems = await storage.getCartItems(sessionId);
       res.json(cartItems);
     } catch (error) {
@@ -100,15 +100,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const sessionId = req.sessionID;
-      const { productId, quantity, size, price } = req.body;
+      const sessionId = req.session.id || 'default-session';
+      const { productId, quantity, weight } = req.body;
+      
+      const product = await storage.getProductById(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      const price = weight === "1kg" ? product.price1kg : product.price500g;
       
       const cartItem = await storage.addToCart({
         sessionId,
         productId,
         quantity,
-        size: size || "500g",
-        price: price || "0"
+        size: weight,
+        price,
       });
       res.json(cartItem);
     } catch (error) {
