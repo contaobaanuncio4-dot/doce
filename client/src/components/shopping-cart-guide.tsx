@@ -9,14 +9,12 @@ export default function ShoppingCartGuide() {
   });
 
   const total = cartItems.reduce((sum: number, item: any) => {
-    // Assumindo que o item tem preço baseado no peso
-    const price = item.weight === "1kg" ? item.product?.price1kg : item.product?.price500g;
-    return sum + (parseFloat(price || "0") * item.quantity);
+    return sum + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
   }, 0);
 
   const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
-  const freeShippingThreshold = 150;
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - total);
+  const shippingCost = 9.90;
+  const finalTotal = total + shippingCost;
 
   if (totalItems === 0) return null;
 
@@ -34,27 +32,18 @@ export default function ShoppingCartGuide() {
             </div>
             
             <div className="text-xl font-bold" style={{ color: '#DDAF36' }}>
-              R$ {total.toFixed(2).replace('.', ',')}
+              R$ {finalTotal.toFixed(2).replace('.', ',')}
             </div>
 
-            {/* Indicador de Frete Grátis */}
-            {remainingForFreeShipping > 0 ? (
-              <div className="flex items-center gap-2 text-sm">
-                <Truck className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-600">
-                  Faltam <span className="font-medium text-green-600">
-                    R$ {remainingForFreeShipping.toFixed(2).replace('.', ',')}
-                  </span> para frete grátis
+            {/* Informação de Frete Fixo */}
+            <div className="flex items-center gap-2 text-sm">
+              <Truck className="w-4 h-4" style={{ color: '#0F2E51' }} />
+              <span className="text-gray-600">
+                Frete: <span className="font-medium" style={{ color: '#0F2E51' }}>
+                  R$ 9,90
                 </span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-sm">
-                <Truck className="w-4 h-4 text-green-600" />
-                <span className="text-green-600 font-medium">
-                  🎉 Frete grátis garantido!
-                </span>
-              </div>
-            )}
+              </span>
+            </div>
           </div>
 
           {/* Botão Finalizar Compra */}
@@ -68,20 +57,7 @@ export default function ShoppingCartGuide() {
           </Link>
         </div>
 
-        {/* Barra de Progresso para Frete Grátis */}
-        {remainingForFreeShipping > 0 && (
-          <div className="mt-2">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="h-2 rounded-full transition-all duration-300"
-                style={{ 
-                  backgroundColor: '#DDAF36',
-                  width: `${Math.min(100, (total / freeShippingThreshold) * 100)}%`
-                }}
-              />
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );

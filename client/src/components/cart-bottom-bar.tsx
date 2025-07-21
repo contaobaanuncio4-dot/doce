@@ -31,37 +31,38 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 shadow-lg" style={{ borderColor: '#DDAF36' }}>
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Informações do carrinho */}
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <ShoppingCart className="h-5 w-5" style={{ color: '#0F2E51' }} />
+      <div className="px-3 py-2 sm:px-4 sm:py-3">
+        <div className="flex items-center justify-between gap-2">
+          {/* Informações do carrinho - compacta para mobile */}
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: '#0F2E51' }} />
               <Badge 
-                className="text-white text-xs font-bold"
+                className="text-white text-xs font-bold min-w-[20px] h-5 flex items-center justify-center"
                 style={{ backgroundColor: '#DDAF36' }}
               >
                 {totalItems}
               </Badge>
             </div>
             
-            <div className="text-sm">
-              <div className="font-medium" style={{ color: '#0F2E51' }}>
-                Total: R$ {finalTotal.toFixed(2).replace(".", ",")}
+            <div className="text-xs sm:text-sm min-w-0">
+              <div className="font-bold truncate" style={{ color: '#0F2E51' }}>
+                R$ {finalTotal.toFixed(2).replace(".", ",")}
               </div>
-              <div className="text-xs text-gray-600">
-                Produtos: R$ {totalValue.toFixed(2).replace(".", ",")} + Frete: R$ {shippingCost.toFixed(2).replace(".", ",")}
+              <div className="text-xs text-gray-500 hidden sm:block">
+                + Frete R$ {shippingCost.toFixed(2).replace(".", ",")}
               </div>
             </div>
           </div>
 
-          {/* Botão de ação */}
+          {/* Botão de ação - responsivo */}
           <Button
             onClick={() => setLocation('/checkout')}
-            className="text-white font-bold px-6 py-2 rounded-full hover:opacity-90 transition-opacity"
+            className="text-white font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 text-xs sm:text-sm px-4 py-2 sm:px-6"
             style={{ backgroundColor: '#DDAF36' }}
           >
-            COMPRAR AGORA
+            <span className="hidden sm:inline">FINALIZAR COMPRA</span>
+            <span className="sm:hidden">COMPRAR</span>
           </Button>
         </div>
       </div>

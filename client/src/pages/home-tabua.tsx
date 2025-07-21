@@ -72,7 +72,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
       <PromoBanner />
 
       {/* Footer simples - com padding bottom para barra de carrinho */}
-      <footer className="bg-gray-900 text-white py-8" style={{ paddingBottom: cartItems.length > 0 ? '80px' : '32px' }}>
+      <footer className="bg-gray-900 text-white py-8" style={{ paddingBottom: cartItems.length > 0 ? '70px' : '32px' }}>
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h3 className="text-xl font-bold mb-4">Tábua de Minas</h3>
           <p className="text-gray-400 mb-4">Doces e Queijos Artesanais</p>
