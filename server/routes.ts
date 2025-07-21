@@ -69,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cart routes
   app.get("/api/cart", async (req, res) => {
     try {
-      const sessionId = req.session.id || 'default-session';
+      const sessionId = 'default-session';
       const cartItems = await storage.getCartItems(sessionId);
       res.json(cartItems);
     } catch (error) {
@@ -100,8 +100,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const sessionId = req.session.id || 'default-session';
-      const { productId, quantity, weight } = req.body;
+      const { productId, quantity, weight, sessionId } = req.body;
+      const finalSessionId = sessionId || 'default-session';
       
       const product = await storage.getProductById(productId);
       if (!product) {
@@ -111,7 +111,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const price = weight === "1kg" ? product.price1kg : product.price500g;
       
       const cartItem = await storage.addToCart({
-        sessionId,
+        sessionId: finalSessionId,
         productId,
         quantity,
         size: weight,

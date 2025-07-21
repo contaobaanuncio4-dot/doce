@@ -6,10 +6,12 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 
 ## Recent Changes (Updated: January 21, 2025)
 
-- **Complete Queijos Linha Premium Catalog**: Implemented full product line with 16 authentic cheese products using real images and data from tabuademinas.com
+- **Expanded Product Catalog**: Implemented complete catalog with 12 authentic products (6 queijos + 6 doces) using real data from tabuademinas.com
+- **Fixed API Integration**: Resolved TypeScript errors and API endpoints - products now load correctly
 - **Product Gallery System**: Added multi-image galleries for product variations with navigation controls
 - **Customer Review System**: Implemented comprehensive review display with ratings and customer feedback
 - **Banner Integration**: Added promotional banner from tabuademinas.com to homepage
+- **Cart Functionality**: Fixed session handling for shopping cart functionality
 - **Navigation Improvements**: Removed "VER TODOS OS QUEIJOS" button as requested, kept only for doces section
 - **Product Pages Enhanced**: Individual product pages now feature detailed descriptions, weight information, and review sections
 
