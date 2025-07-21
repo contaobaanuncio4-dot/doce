@@ -63,10 +63,22 @@ export default function CheckoutSimple() {
 
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: CheckoutForm) => {
-      return {
-        order: { id: Math.floor(Math.random() * 1000) + 1 },
-        pixCode: "00020126360014BR.GOV.BCB.PIX0114+5531999887766520400005303986540510.005802BR5925TABUA DE MINAS QUEIJOS6014BELO HORIZONTE62070503***6304ABCD"
+      // Adicionar sessionId padrão
+      const orderWithSession = {
+        ...orderData,
+        sessionId: 'default-session',
+        // Limpar CPF para enviar apenas números para a API
+        customerCpf: orderData.customerCpf.replace(/\D/g, ''),
+        // Limpar CEP para enviar apenas números para a API
+        zipCode: orderData.zipCode.replace(/\D/g, ''),
+        total: finalTotal.toFixed(2)
       };
+      
+      const response = await apiRequest('/api/orders', {
+        method: 'POST',
+        body: orderWithSession
+      });
+      return response;
     },
     onSuccess: (data) => {
       setOrderId(data.order.id);
@@ -74,7 +86,7 @@ export default function CheckoutSimple() {
       setStep(2);
       toast({
         title: "Pedido criado com sucesso!",
-        description: "Agora você pode realizar o pagamento via PIX.",
+        description: `Pedido #${data.order.id} criado. PIX disponível para pagamento.`,
       });
     },
     onError: (error) => {

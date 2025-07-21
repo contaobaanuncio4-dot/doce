@@ -22,6 +22,9 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Product Pages Enhanced**: Individual product pages now feature detailed descriptions, weight information, and review sections
 - **CEP Integration**: Implemented automatic address lookup using ViaCEP API - addresses auto-fill when valid CEP is entered
 - **CPF Field Added**: Added CPF field to checkout form with automatic formatting and validation
+- **PIX Payment Integration**: Integrated BlackCat Payment Gateway for real PIX transactions with QR codes
+- **Real-time Payment Processing**: Orders now generate authentic PIX codes for customer payments
+- **Payment Gateway Security**: All transactions secured with BlackCat API authentication
 
 ## User Preferences
 

@@ -1,0 +1,112 @@
+o que precisa: curl --request POST \
+  --url https://api.blackcatpagamentos.com/v1/transactions \
+  --header 'accept: application/json' \
+  --header 'authorization: Basic cGtfMTlHdGV3U3ZfZUVCTEhQbnExYWhRRmp5YndzMlpwNUk3RzFxNEhNMS1lQXZmSmtPOnNrXzJVakRIMGRtT1hzWUNDd0s2WDd3UTNOQzZxb3V6OU5vVWxxSmNPODRCYzh6MUk2VQ==' \
+  --header 'content-type: application/json' \
+  --data '{
+  "amount": 6990,
+  "paymentMethod": "pix",
+  "pix": {
+    "expiresInDays": 5
+  },
+  "items": [
+    {
+      "title": "Manteiga",
+      "unitPrice": 6990,
+      "quantity": 1,
+      "tangible": true
+    }
+  ],
+  "customer": {
+    "name": "Luis Lula da silva",
+    "email": "lula2@gmail.com",
+    "phone": "77998770945",
+    "document": {
+      "number": "11721013656",
+      "type": "cpf"
+    }
+  }
+}'
+
+a resposta:
+
+{
+  "id": 11808558,
+  "tenantId": "ccaca050-bd57-4c10-a050-55d7f8e492e6",
+  "companyId": 12589,
+  "amount": 6990,
+  "currency": "BRL",
+  "paymentMethod": "pix",
+  "status": "waiting_payment",
+  "installments": 1,
+  "paidAt": null,
+  "paidAmount": 0,
+  "refundedAt": null,
+  "refundedAmount": 0,
+  "redirectUrl": null,
+  "returnUrl": null,
+  "postbackUrl": null,
+  "metadata": null,
+  "ip": null,
+  "externalRef": null,
+  "secureId": "b684b6ad-672b-4c9a-b396-041de688a659",
+  "secureUrl": "b684b6ad-672b-4c9a-b396-041de688a659",
+  "createdAt": "2025-07-21T19:21:57.973Z",
+  "updatedAt": "2025-07-21T19:21:57.973Z",
+  "payer": null,
+  "traceable": false,
+  "authorizationCode": null,
+  "basePrice": null,
+  "interestRate": null,
+  "items": [
+    {
+      "title": "Manteiga",
+      "quantity": 1,
+      "tangible": true,
+      "unitPrice": 6990,
+      "externalRef": ""
+    }
+  ],
+  "customer": {
+    "id": 11872247,
+    "name": "Luis Lula da silva",
+    "email": "lula2@gmail.com",
+    "phone": "77998770945",
+    "birthdate": null,
+    "createdAt": "2025-07-21T19:21:56.028Z",
+    "externalRef": null,
+    "document": {
+      "type": "cpf",
+      "number": "36120764500"
+    },
+    "address": null
+  },
+  "fee": {
+    "netAmount": 6441,
+    "estimatedFee": 548,
+    "fixedAmount": 200,
+    "spreadPercent": 499,
+    "currency": "BRL"
+  },
+  "splits": [
+    {
+      "amount": 6990,
+      "netAmount": 6441,
+      "recipientId": 12589,
+      "chargeProcessingFee": false
+    }
+  ],
+  "refunds": [],
+  "pix": {
+    "qrcode": "00020101021226840014br.gov.bcb.pix2562qrcode.owempay.com.br/pix/5d155dbd-0960-4467-a8e2-f93c6d2082c15204000053039865802BR5924PAG INTERMEDIACOES DE VE6015SAO BERNARDO DO62070503***630492AB",
+    "end2EndId": null,
+    "receiptUrl": null,
+    "expirationDate": "2025-07-26"
+  },
+  "boleto": null,
+  "card": null,
+  "refusedReason": null,
+  "shipping": null,
+  "delivery": null,
+  "threeDS": null
+}

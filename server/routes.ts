@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCartItemSchema, insertOrderSchema, insertOrderItemSchema } from "@shared/schema";
 import { z } from "zod";
+import { BlackCatAPI } from "./blackcat-api";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -201,17 +202,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const orderData = insertOrderSchema.parse(req.body);
       
-      // Generate PIX code (mock implementation)
-      const pixCode = `PIX${Date.now()}${Math.random().toString(36).substr(2, 9)}`;
+      // Inicializar BlackCat API
+      const blackCatAPI = new BlackCatAPI();
       
-      const order = await storage.createOrder({
-        ...orderData,
-        pixCode,
-        status: "pending"
+      // Buscar itens do carrinho
+      const cartItems = await storage.getCartItems(orderData.sessionId);
+      if (cartItems.length === 0) {
+        return res.status(400).json({ message: "Carrinho vazio" });
+      }
+      
+      // Calcular total e preparar itens para BlackCat
+      let totalAmount = 0;
+      const blackCatItems = [];
+      
+      for (const cartItem of cartItems) {
+        const product = await storage.getProductById(cartItem.productId);
+        if (product) {
+          const unitPrice = parseFloat(cartItem.price.replace(",", "."));
+          const itemTotal = unitPrice * cartItem.quantity;
+          totalAmount += itemTotal;
+          
+          blackCatItems.push({
+            title: `${product.name} - ${cartItem.size}`,
+            unitPrice: BlackCatAPI.convertToCents(unitPrice),
+            quantity: cartItem.quantity,
+            tangible: true
+          });
+        }
+      }
+      
+      // Adicionar frete
+      const shippingCost = 9.90;
+      totalAmount += shippingCost;
+      
+      blackCatItems.push({
+        title: "Frete",
+        unitPrice: BlackCatAPI.convertToCents(shippingCost),
+        quantity: 1,
+        tangible: false
       });
       
-      // Create order items from cart
-      const cartItems = await storage.getCartItems(orderData.sessionId);
+      // Preparar dados para BlackCat
+      const blackCatRequest = {
+        amount: BlackCatAPI.convertToCents(totalAmount),
+        paymentMethod: "pix" as const,
+        pix: {
+          expiresInDays: 3
+        },
+        items: blackCatItems,
+        customer: {
+          name: orderData.customerName,
+          email: orderData.customerEmail,
+          phone: BlackCatAPI.cleanPhone(orderData.customerPhone),
+          document: {
+            number: BlackCatAPI.cleanCPF(orderData.customerCpf),
+            type: "cpf" as const
+          }
+        },
+        externalRef: `TABUA-${Date.now()}`
+      };
+      
+      // Criar transação PIX no BlackCat
+      const pixTransaction = await blackCatAPI.createPixTransaction(blackCatRequest);
+      
+      // Salvar pedido no banco
+      const order = await storage.createOrder({
+        ...orderData,
+        pixCode: pixTransaction.pix.qrcode,
+        status: "pending",
+        total: totalAmount.toFixed(2),
+        blackCatTransactionId: pixTransaction.id.toString()
+      });
+      
+      // Criar itens do pedido
       for (const cartItem of cartItems) {
         const product = await storage.getProductById(cartItem.productId);
         if (product) {
@@ -219,18 +282,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
             orderId: order.id,
             productId: cartItem.productId,
             quantity: cartItem.quantity,
-            price: product.price
+            price: cartItem.price,
+            size: cartItem.size
           });
         }
       }
       
-      // Clear cart after order creation
+      // Limpar carrinho
       await storage.clearCart(orderData.sessionId);
       
-      res.json({ order, pixCode });
+      res.json({ 
+        order: {
+          ...order,
+          blackCatTransactionId: pixTransaction.id
+        }, 
+        pixCode: pixTransaction.pix.qrcode,
+        pixExpirationDate: pixTransaction.pix.expirationDate,
+        paymentId: pixTransaction.id
+      });
     } catch (error) {
       console.error("Error creating order:", error);
-      res.status(500).json({ message: "Failed to create order" });
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Dados inválidos", errors: error.errors });
+      }
+      res.status(500).json({ message: "Erro ao criar pedido. Tente novamente." });
     }
   });
 

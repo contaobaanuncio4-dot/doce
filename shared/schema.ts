@@ -47,7 +47,7 @@ export const orders = pgTable("orders", {
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
-  customerCpf: text("customer_cpf"),
+  customerCpf: text("customer_cpf").notNull(),
   address: text("address").notNull(),
   addressNumber: text("address_number").notNull(),
   addressComplement: text("address_complement"),
@@ -60,6 +60,7 @@ export const orders = pgTable("orders", {
   status: text("status").default("pending"), // 'pending', 'paid', 'shipped', 'delivered'
   paymentMethod: text("payment_method").default("pix"),
   pixCode: text("pix_code"),
+  blackCatTransactionId: text("blackcat_transaction_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -68,7 +69,8 @@ export const orderItems = pgTable("order_items", {
   orderId: integer("order_id").notNull(),
   productId: integer("product_id").notNull(),
   quantity: integer("quantity").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  price: text("price").notNull().default("0"),
+  size: text("size").notNull().default("500g"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
