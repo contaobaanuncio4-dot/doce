@@ -20,6 +20,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Simplified Product Actions**: Changed from dual buttons to single "Adicionar ao Carrinho" button per user preference
 - **Navigation Improvements**: Removed "VER TODOS OS QUEIJOS" button as requested, kept only for doces section
 - **Product Pages Enhanced**: Individual product pages now feature detailed descriptions, weight information, and review sections
+- **CEP Integration**: Implemented automatic address lookup using ViaCEP API - addresses auto-fill when valid CEP is entered
+- **CPF Field Added**: Added CPF field to checkout form with automatic formatting and validation
 
 ## User Preferences
 

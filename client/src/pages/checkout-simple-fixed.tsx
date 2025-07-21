@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,11 +10,13 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard } from "lucide-react";
+import { fetchCEP } from "@/lib/cep-api";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   customerEmail: z.string().email("Email inválido"),
   customerPhone: z.string().min(10, "Telefone deve ter pelo menos 10 dígitos"),
+  customerCpf: z.string().min(11, "CPF deve ter 11 dígitos").regex(/^\d{11}$/, "CPF deve conter apenas números"),
   zipCode: z.string().min(8, "CEP deve ter 8 dígitos"),
   address: z.string().min(5, "Endereço é obrigatório"),
   addressNumber: z.string().min(1, "Número é obrigatório"),
@@ -38,6 +40,7 @@ export default function CheckoutSimple() {
       customerName: "",
       customerEmail: "",
       customerPhone: "",
+      customerCpf: "",
       zipCode: "",
       address: "",
       addressNumber: "",
@@ -47,7 +50,7 @@ export default function CheckoutSimple() {
     },
   });
 
-  const { data: cartItems = [], isLoading: isLoadingCart } = useQuery({
+  const { data: cartItems = [], isLoading: isLoadingCart } = useQuery<any[]>({
     queryKey: ["/api/cart"],
   });
 
@@ -93,6 +96,51 @@ export default function CheckoutSimple() {
       title: "PIX copiado!",
       description: "Código PIX copiado para a área de transferência.",
     });
+  };
+
+  // Função para buscar CEP automaticamente
+  const handleCepChange = async (cep: string) => {
+    // Remove caracteres não numéricos
+    const cleanCep = cep.replace(/\D/g, '');
+    
+    if (cleanCep.length === 8) {
+      try {
+        const cepData = await fetchCEP(cleanCep);
+        
+        // Preenche os campos automaticamente
+        form.setValue('address', cepData.address);
+        form.setValue('neighborhood', cepData.neighborhood);
+        form.setValue('city', cepData.city);
+        form.setValue('state', cepData.state);
+        
+        toast({
+          title: "CEP encontrado!",
+          description: "Endereço preenchido automaticamente.",
+        });
+      } catch (error) {
+        toast({
+          title: "CEP não encontrado",
+          description: "Verifique se o CEP está correto ou preencha manualmente.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  // Função para formatar CPF
+  const formatCPF = (cpf: string) => {
+    return cpf
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  };
+
+  // Função para formatar CEP
+  const formatCEP = (cep: string) => {
+    return cep
+      .replace(/\D/g, '')
+      .replace(/(\d{5})(\d)/, '$1-$2');
   };
 
   if (isLoadingCart) {
@@ -211,6 +259,29 @@ export default function CheckoutSimple() {
                             )}
                           />
                         </div>
+
+                        <FormField
+                          control={form.control}
+                          name="customerCpf"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium text-gray-700">CPF *</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  {...field} 
+                                  placeholder="000.000.000-00" 
+                                  className="border-gray-300"
+                                  onChange={(e) => {
+                                    const formatted = formatCPF(e.target.value);
+                                    field.onChange(formatted);
+                                  }}
+                                  maxLength={14}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </div>
 
@@ -229,7 +300,17 @@ export default function CheckoutSimple() {
                               <FormItem>
                                 <FormLabel className="text-sm font-medium text-gray-700">CEP *</FormLabel>
                                 <FormControl>
-                                  <Input {...field} placeholder="00000-000" className="border-gray-300" />
+                                  <Input 
+                                    {...field} 
+                                    placeholder="00000-000" 
+                                    className="border-gray-300"
+                                    onChange={(e) => {
+                                      const formatted = formatCEP(e.target.value);
+                                      field.onChange(formatted);
+                                      handleCepChange(e.target.value);
+                                    }}
+                                    maxLength={9}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
