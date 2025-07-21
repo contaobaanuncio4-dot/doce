@@ -77,17 +77,7 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
           )}
         </div>
 
-        {/* Botão de Ver Mais apenas para doces */}
-        {activeTab === 'doces' && (
-          <div className="text-center mt-8">
-            <button 
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              style={{ backgroundColor: '#0F2E51' }}
-            >
-              VER TODOS OS DOCES
-            </button>
-          </div>
-        )}
+
       </div>
     </section>
   );

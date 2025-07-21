@@ -34,9 +34,11 @@ export default function Header({ onCartToggle }: HeaderProps) {
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
               <Link href="/">
-                <h1 className="text-2xl font-bold cursor-pointer hover:opacity-75" style={{ color: '#0F2E51' }}>
-                  Tábua de Minas
-                </h1>
+                <img 
+                  src="https://tabuademinas.com/cdn/shop/files/reeerererer_520x.png?v=1751488897" 
+                  alt="Tábua de Minas" 
+                  className="h-12 w-auto cursor-pointer hover:opacity-75"
+                />
               </Link>
             </div>
 

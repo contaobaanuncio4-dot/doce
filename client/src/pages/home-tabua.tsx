@@ -65,11 +65,11 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
         </div>
       </div>
 
-      {/* Banner Promocional */}
-      <PromoBanner />
-
       {/* Seção de Produtos com Abas */}
       <ProductTabs doces={doces} queijos={queijos} />
+
+      {/* Banner Promocional */}
+      <PromoBanner />
 
       {/* Footer simples */}
       <footer className="bg-gray-900 text-white py-8">
