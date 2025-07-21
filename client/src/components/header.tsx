@@ -88,10 +88,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
                 <Search className="h-5 w-5" />
               </Button>
               
-              <Button variant="ghost" size="sm">
-                <User className="h-5 w-5" />
-                <span className="hidden md:ml-2 md:inline">Conta</span>
-              </Button>
+              
 
               <Button 
                 variant="ghost" 
