@@ -5,6 +5,7 @@ import PromoBanner from "@/components/promo-banner";
 import ExitIntentModal from "@/components/exit-intent-modal";
 import OrderBumpModal from "@/components/order-bump-modal";
 import { ShippingProgressBar } from "@/components/shipping-progress-bar";
+import ProductTabs from "@/components/product-tabs";
 import { useState, useEffect } from "react";
 
 interface HomeTabuaProps {
@@ -57,51 +58,15 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     <div className="min-h-screen bg-white">
       <Header onCartToggle={onCartToggle} />
 
-      {/* Seção de Doces Mais Vendidos */}
-      <section className="py-12 bg-gray-50">
+      {/* Barra de Progresso de Frete */}
+      <div className="bg-gray-50 py-4">
         <div className="max-w-7xl mx-auto px-4">
           <ShippingProgressBar />
-          <div className="text-center mb-8 mt-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              Doces Mais Vendidos - Tábua de Minas
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-            {doces.slice(0, 10).map((product: any) => (
-              <ProductCardTabua key={product.id} product={product} />
-            ))}
-          </div>
-
-          <div className="text-center mt-8">
-            <button className="bg-tabua-green text-white px-8 py-3 rounded-lg font-semibold hover:bg-tabua-green/90 transition-colors">
-              CONFERIR DOCES MAIS VENDIDOS
-            </button>
-          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Seção de Queijos */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              Queijos - Tábua de Minas
-            </h2>
-            <div className="bg-tabua-yellow/20 rounded-lg p-4 inline-block">
-              <p className="font-semibold text-gray-800">
-                🧀 Queijos artesanais direto das montanhas de Minas
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {queijos.slice(0, 12).map((product: any) => (
-              <ProductCardTabua key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Seção de Produtos com Abas */}
+      <ProductTabs doces={doces} queijos={queijos} />
 
       {/* Footer simples */}
       <footer className="bg-gray-900 text-white py-8">
@@ -125,6 +90,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
       <OrderBumpModal 
         isOpen={showOrderBump} 
         onClose={() => setShowOrderBump(false)} 
+        cartItems={[]} 
       />
     </div>
   );

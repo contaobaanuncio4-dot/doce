@@ -2,6 +2,7 @@ import { ShoppingCart, Menu, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 
 interface HeaderProps {
   onCartToggle: () => void;
@@ -32,46 +33,45 @@ export default function Header({ onCartToggle }: HeaderProps) {
 
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold" style={{ color: '#0F2E51' }}>
-                Tábua de Minas
-              </h1>
+              <Link href="/">
+                <h1 className="text-2xl font-bold cursor-pointer hover:opacity-75" style={{ color: '#0F2E51' }}>
+                  Tábua de Minas
+                </h1>
+              </Link>
             </div>
 
             {/* Navegação desktop */}
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
+              <Link href="/" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
                 Início
-              </a>
-              <a href="#" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
-                Clube da Tábua
-              </a>
+              </Link>
               <div className="relative group">
                 <button className="font-medium flex items-center hover:opacity-75" style={{ color: '#0F2E51' }}>
                   Produtos
                 </button>
-                <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="py-2">
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Tudo da Vendinha!
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Doces - Tábua de Minas
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    </Link>
+                    <Link href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Queijos - Tábua de Minas
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    </Link>
+                    <Link href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Queijos Linha Premium
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    </Link>
+                    <Link href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Doces Mais Vendidos
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
-              <a href="#" className="text-gray-700 hover:text-tabua-green font-medium">
+              <Link href="/track-order" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
                 Rastreie seu pedido
-              </a>
+              </Link>
+              <Link href="/contact" className="text-gray-700 font-medium hover:opacity-75" style={{ color: '#0F2E51' }}>
+                Contato
+              </Link>
             </nav>
 
             {/* Ações do usuário */}

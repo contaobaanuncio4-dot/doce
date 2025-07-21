@@ -1,0 +1,39 @@
+<div class="container "><div class="html"><!-- LightWidget WIDGET --><script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script><iframe src="https://cdn.lightwidget.com/widgets/20b00a80a60b5d258c6da2e89f2aa859.html" scrolling="no" allowtransparency="true" class="lightwidget-widget" style="width: 100%; border: 0px; overflow: hidden; height: 590px;"></iframe></div></div>
+
+
+Menu de navegação: Adicione uma barra de navegação mais destacada ou um menu suspenso, com categorias como "Produtos" "Rastreie seu pedido" e "Contato", para que os usuários possam encontrar facilmente o que procuram.
+em contato adicione: Atendimento: Segunda a Sábado: 8:30 às 18:30 horas. Contato: (11) 98645-1646 Email: sac@tabuademinas.com. Em rastreie seu pedido, crie um container com nome "Status de entrega" adicione a opção de verificar pedido, uma aba para adicionar email para verificar o pedido. Preencha nas base de dados os e-mails dos clientes que efetuaram o pagamento. Se a pessoa já fez a compra, cria um progressWrapper dizendo "Postado de Natal, Rio Grande do Norte" cria também uma "progressLine" class="progress-line" barra onde mostra que foi postado, e as próximas etapas é em transito, saiu para entrega e entregue. tipo esse exemplo:
+
+exemplo: 
+            
+<div class="status-container">
+<h1>Status de Entrega</h1>
+<input placeholder="Digite seu e-mail" id="email" type="email" class="is-filled"> <button id="checkStatus">Verificar Status</button>
+<p style="display: block; margin-top: 10px;" id="origin">Postado de Natal, Rio Grande do Norte</p>
+<div id="progressWrapper" class="progress-wrapper" style="display: block;">
+<div id="progressLine" class="progress-line"><div style="
+                    position:absolute;
+                    top:0;
+                    left:0;
+                    height:100%;
+                    width:8%;
+                    background:#28a745;
+                    transition:width 0.5s ease-in-out;"></div></div>
+<div class="status-labels">
+<div>Postado</div>
+<div>Em Trânsito</div>
+<div>Saiu para Entrega</div>
+<div>Entregue</div>
+</div>
+</div>
+</div>
+
+em cima dos produtos vai ter uma aba nessa aba, O sistema exibirá uma seção promocional com duas opções de produtos mais vendidos: "Doces Mais Vendidos" e "Queijos Linha Premium". A ideia é destacar as promoções do mês e os produtos em destaque, com a possibilidade de ganhar um "Queijo Brie" ao comprar três produtos.
+
+separação de produto nesse estilo: <header class="section__header "><div class="text-container"><h3 class="heading h2">DELÍCIAS MINEIRAS - PREMIUM</h3></div><tabs-nav class="tabs-nav tabs-nav--center tabs-nav--edge2edge">
+              <scrollable-content class="tabs-nav__scroller hide-scrollbar">
+                <div class="tabs-nav__scroller-inner">
+                  <div class="tabs-nav__item-list"><button type="button" class="tabs-nav__item heading heading--small" aria-expanded="true" aria-controls="block-template--24542140858666__featured_collections_tyUpTU-collection_bCgmfm" id="db72ef93-fd7f-6e21-fbdb-50b6581a959a">Doces Mais Vendidos</button><button type="button" class="tabs-nav__item heading heading--small" aria-expanded="false" aria-controls="block-template--24542140858666__featured_collections_tyUpTU-collection_x8Vc46" id="fefdf4f1-86a8-32e6-960e-406f21089e7f">Queijos Linha Premium</button></div><span class="tabs-nav__position is-initialized" style="--scale: 0.39565217391304347; --translate: 13.186813186813188%;"></span>
+                </div>
+              </scrollable-content>
+            </tabs-nav></header>
