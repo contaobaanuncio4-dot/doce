@@ -1,524 +1,540 @@
-import type {
-  Product,
-  CartItem,
-  Order,
-  OrderItem,
-  ProductReview,
-  InsertProduct,
-  InsertCartItem,
-  InsertOrder,
-  InsertOrderItem,
+import {
+  type Product,
+  type CartItem,
+  type Order,
+  type OrderItem,
+  type ProductReview,
+  type InsertCartItem,
+  type InsertOrder,
+  type InsertOrderItem,
 } from "@shared/schema";
 
 export interface IStorage {
   // Product operations
-  getAllProducts(): Promise<Product[]>;
+  getProducts(): Promise<Product[]>;
   getProductById(id: number): Promise<Product | undefined>;
   getProductsByCategory(category: string): Promise<Product[]>;
   getFeaturedProducts(): Promise<Product[]>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(
-    id: number,
-    updates: Partial<Product>,
-  ): Promise<Product | undefined>;
+  getProductReviews(productId: number): Promise<ProductReview[]>;
 
   // Cart operations
   getCartItems(sessionId: string): Promise<CartItem[]>;
-  addToCart(item: InsertCartItem): Promise<CartItem>;
-  updateCartItem(id: number, quantity: number): Promise<CartItem | undefined>;
+  addToCart(cartItem: InsertCartItem): Promise<CartItem>;
+  updateCartItem(id: number, updates: Partial<CartItem>): Promise<CartItem | undefined>;
   removeFromCart(id: number): Promise<boolean>;
-  clearCart(sessionId: string): Promise<boolean>;
+  clearCart(sessionId: string): Promise<void>;
 
   // Order operations
   createOrder(order: InsertOrder): Promise<Order>;
-  createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
   getOrderById(id: number): Promise<Order | undefined>;
-  getOrdersBySessionId(sessionId: string): Promise<Order[]>;
+  getOrdersBySession(sessionId: string): Promise<Order[]>;
   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
 
-  // Review operations
-  getProductReviews(productId: number): Promise<ProductReview[]>;
-  addProductReview(
-    review: Omit<ProductReview, "id" | "createdAt">,
-  ): Promise<ProductReview>;
+  // Order item operations
+  createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
+  getOrderItems(orderId: number): Promise<OrderItem[]>;
 }
 
-export class MemStorage implements IStorage {
-  private products: Map<number, Product>;
-  private cartItems: Map<number, CartItem>;
-  private orders: Map<number, Order>;
-  private orderItems: Map<number, OrderItem>;
-  private reviews: Map<number, ProductReview>;
-  private currentProductId: number;
-  private currentCartId: number;
-  private currentOrderId: number;
-  private currentOrderItemId: number;
-  private currentReviewId: number;
+class MemoryStorage implements IStorage {
+  private products: Product[] = [];
+  private cartItems: CartItem[] = [];
+  private orders: Order[] = [];
+  private orderItems: OrderItem[] = [];
+  private reviews: ProductReview[] = [];
 
   constructor() {
-    this.products = new Map();
-    this.cartItems = new Map();
-    this.orders = new Map();
-    this.orderItems = new Map();
-    this.reviews = new Map();
-    this.currentProductId = 1;
-    this.currentCartId = 1;
-    this.currentOrderId = 1;
-    this.currentOrderItemId = 1;
-    this.currentReviewId = 1;
-
     this.initializeProducts();
     this.initializeReviews();
   }
 
   private initializeProducts() {
-    const sweetProducts: InsertProduct[] = [
+    // Produtos completos dos queijos linha premium do tabuademinas.com
+    const initialProducts = [
       {
-        name: "Doce Prestígio Mineiro",
-        description:
-          "Inspirado no famoso doce brasileiro, nossa versão artesanal combina coco fresco com cobertura de chocolate. Uma explosão de sabores que remete à infância.",
-        price500g: "24.90",
-        price1kg: "40.29",
-        originalPrice500g: "46.00",
-        originalPrice1kg: "50.60",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/rpomei_300x.png?v=1751314611",
-        stock: 20,
-        featured: true,
-        discount: 26,
-        rating: "4.9",
-        reviews: 203,
-      },
-      {
-        name: "Doce de Cocada com Abacaxi",
-        description:
-          "Deliciosa cocada artesanal com pedaços frescos de abacaxi. Uma combinação tropical irresistível que une o sabor cremoso do coco com a doçura refrescante do abacaxi.",
-        price500g: "34.90",
-        price1kg: "40.39",
-        originalPrice500g: "60.90",
-        originalPrice1kg: "66.99",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/abacaxi_300x.png?v=1751475432",
+        id: 1,
+        name: "Queijo MinasBri",
+        description: "Queijo tipo Brie artesanal, cremoso e de sabor suave. Produzido com leite fresco das montanhas de Minas Gerais seguindo técnicas tradicionais francesas.",
+        price500g: "33.90",
+        price1kg: "33.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/minasbri_300x.jpg?v=1751561892",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/minasbri_300x.jpg?v=1751561892"],
+        weight: "250g",
         stock: 15,
         featured: true,
-        discount: 43,
+        discount: 0,
         rating: "4.8",
-        reviews: 156,
+        reviews: 92,
+        createdAt: new Date(),
       },
       {
-        name: "Doce de Cocada com Maracujá",
-        description:
-          "Cocada especial com o toque ácido e aromático do maracujá. A combinação perfeita entre o doce do coco e a acidez tropical da fruta da paixão.",
-        price500g: "24.90",
-        price1kg: "27.39",
-        originalPrice500g: "41.90",
-        originalPrice1kg: "46.09",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/maracuja_300x.png?v=1751475750",
-        stock: 30,
-        featured: false,
-        discount: 41,
-        rating: "4.7",
-        reviews: 124,
-      },
-      {
-        name: "Doce Casadinho",
-        description:
-          "Tradicional doce mineiro que combina dois sabores em perfeita harmonia. Uma metade de doce de leite e outra de goiabada, unidos em uma única delícia.",
-        price500g: "32.90",
-        price1kg: "36.19",
-        originalPrice500g: "43.90",
-        originalPrice1kg: "48.29",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/xaaf_300x.png?v=1751314094",
-        stock: 18,
-        featured: true,
-        discount: 25,
-        rating: "4.8",
-        reviews: 89,
-      },
-      {
-        name: "Doce de Leite",
-        description:
-          "Clássico doce de leite artesanal, preparado lentamente para atingir a consistência e sabor perfeitos. O verdadeiro sabor da tradição mineira.",
-        price500g: "22.90",
-        price1kg: "25.19",
-        originalPrice500g: "40.00",
-        originalPrice1kg: "44.00",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/dadas_300x.png?v=1751314249",
-        stock: 25,
-        featured: true,
-        discount: 43,
-        rating: "4.9",
-        reviews: 167,
-      },
-      {
-        name: "Doce de Leite com Café",
-        description:
-          "Inovadora combinação do tradicional doce de leite com o aroma intenso do café mineiro. Para os amantes de sabores marcantes e únicos.",
-        price500g: "26.90",
-        price1kg: "29.59",
-        originalPrice500g: "45.00",
-        originalPrice1kg: "49.50",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/a1_300x.png?v=1751314696",
-        stock: 12,
-        featured: false,
-        discount: 40,
-        rating: "4.7",
-        reviews: 98,
-      },
-      {
-        name: "Doce de Pingo de Leite com Amendoim",
-        description:
-          "Receita especial que combina o cremoso pingo de leite com amendoim crocante. Uma textura única que derrete na boca com explosões de sabor.",
-        price500g: "58.90",
-        price1kg: "64.79",
-        originalPrice500g: "80.90",
-        originalPrice1kg: "88.99",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/37_300x.png?v=1751313980",
-        stock: 35,
-        featured: false,
-        discount: 27,
-        rating: "4.6",
-        reviews: 142,
-      },
-      {
-        name: "Doce de Cocada com Ameixa",
-        description:
-          "Sofisticada cocada que incorpora ameixas selecionadas, criando um contraste perfeito entre o doce do coco e a suavidade da fruta.",
-        price500g: "32.90",
-        price1kg: "36.19",
-        originalPrice500g: "43.90",
-        originalPrice1kg: "48.29",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/1_20935611-0971-4452-982f-143ed99d0ecb_700x.png?v=1751475618",
-        stock: 20,
-        featured: false,
-        discount: 25,
-        rating: "4.8",
-        reviews: 113,
-      },
-      {
-        name: "Doce de Abóbora com Coco",
-        description:
-          "Combinação única de abóbora doce com coco ralado fresco. Um doce nutritivo e saboroso que une tradição e inovação culinária.",
-        price500g: "27.90",
-        price1kg: "30.69",
-        originalPrice500g: "44.00",
-        originalPrice1kg: "48.40",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/14_700x.png?v=1751314396",
-        stock: 40,
-        featured: true,
-        discount: 37,
-        rating: "4.9",
-        reviews: 234,
-      },
-      {
-        name: "Doce Quebra-Queixo",
-        description:
-          "Tradicional doce mineiro de consistência extremamente dura, feito com rapadura pura e amendoim. Um verdadeiro desafio que testa a resistência dos dentes!",
-        price500g: "36.90",
-        price1kg: "40.59",
-        originalPrice500g: "60.90",
-        originalPrice1kg: "66.99",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/quebra_pica_300x.png?v=1751477963",
-        stock: 28,
-        featured: false,
-        discount: 39,
-        rating: "4.7",
-        reviews: 156,
-      },
-      {
-        name: "Figo Ramy",
-        description:
-          "Figos especiais da variedade Ramy, cristalizados com açúcar e especiarias. Uma iguaria refinada com sabor adocicado e textura única.",
-        price500g: "39.90",
-        price1kg: "43.89",
-        originalPrice500g: "60.90",
-        originalPrice1kg: "66.99",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/ramy_300x.png?v=1751476903",
-        stock: 22,
-        featured: false,
-        discount: 34,
-        rating: "4.6",
-        reviews: 87,
-      },
-      {
-        name: "Doce de Goiabada Cascão",
-        description:
-          "Tradicional goiabada cascão com textura firme e sabor intenso de goiaba. Perfeita para acompanhar queijo minas ou saborear pura.",
-        price500g: "24.90",
-        price1kg: "27.39",
-        originalPrice500g: "40.00",
-        originalPrice1kg: "44.00",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/uauaua_300x.png?v=1751314805",
-        stock: 25,
-        featured: true,
-        discount: 38,
-        rating: "4.8",
-        reviews: 176,
-      },
-      {
-        name: "Doce de Goiabada Cascão São Gonçalo",
-        description:
-          "Versão especial da tradicional goiabada cascão, produzida com goiabas da região de São Gonçalo. Sabor autêntico e qualidade superior.",
-        price500g: "24.90",
-        price1kg: "27.39",
-        originalPrice500g: "31.90",
-        originalPrice1kg: "35.09",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/seese_700x.png?v=1751316108",
-        stock: 30,
-        featured: false,
-        discount: 22,
-        rating: "4.7",
-        reviews: 134,
-      },
-      {
-        name: "Bananada São Gonçalo",
-        description:
-          "Doce tradicional de banana da região de São Gonçalo, com textura cremosa e sabor intenso. Feito com bananas maduras selecionadas e açúcar cristal.",
-        price500g: "34.90",
-        price1kg: "38.39",
-        originalPrice500g: "80.90",
-        originalPrice1kg: "88.99",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/1_209aea42-f25e-4555-aa99-9cb418bf28c0_700x.png?v=1751475256",
+        id: 2,
+        name: "Kit 4 Queijos de Alagoa-MG (parmesão)",
+        description: "Kit especial com 4 queijos artesanais tipo parmesão de Alagoa, Minas Gerais. Perfeito para degustação e presente para amantes de queijo.",
+        price500g: "53.90",
+        price1kg: "53.90",
+        originalPrice500g: "63.90",
+        originalPrice1kg: "63.90",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/kit4queijos_300x.png?v=1751561960",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/kit4queijos_300x.png?v=1751561960"],
+        weight: "Kit 4 unidades",
         stock: 8,
         featured: true,
-        discount: 57,
+        discount: 15,
         rating: "4.9",
-        reviews: 92,
+        reviews: 65,
+        createdAt: new Date(),
       },
       {
-        name: "Doce de Banana Zero Açúcar",
-        description:
-          "Versão saudável do tradicional doce de banana, adoçado naturalmente sem adição de açúcar refinado. Ideal para quem busca sabor sem abrir mão da saúde.",
-        price500g: "58.90",
-        price1kg: "64.79",
-        originalPrice500g: "80.90",
-        originalPrice1kg: "88.99",
-        category: "doces",
-        imageUrl:
-          "https://tabuademinas.com/cdn/shop/files/jauja_300x.png?v=1751314881",
-        stock: 35,
-        featured: false,
-        discount: 27,
-        rating: "4.5",
-        reviews: 78,
+        id: 3,
+        name: "Queijo Canastra Meia Cura 1kg/1,2kg",
+        description: "Queijo Canastra tradicional com meia cura, sabor marcante e textura firme. Direto da Serra da Canastra, região patrimônio da humanidade.",
+        price500g: "69.00",
+        price1kg: "69.00",
+        originalPrice500g: "76.00",
+        originalPrice1kg: "76.00",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/4_300x.png?v=1751312328",
+        imageUrls: [
+          "https://tabuademinas.com/cdn/shop/files/4_300x.png?v=1751312328",
+          "https://tabuademinas.com/cdn/shop/files/5_300x.png?v=1751312328"
+        ],
+        weight: "1kg/1,2kg",
+        stock: 12,
+        featured: true,
+        discount: 10,
+        rating: "4.9",
+        reviews: 156,
+        createdAt: new Date(),
       },
+      {
+        id: 4,
+        name: "Queijo Canastra Curado",
+        description: "Queijo Canastra com cura especial, textura firme e sabor intenso. Ideal para quem aprecia queijos de personalidade marcante.",
+        price500g: "79.00",
+        price1kg: "79.00", 
+        originalPrice500g: "86.00",
+        originalPrice1kg: "86.00",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/6_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/6_300x.png?v=1751312328"],
+        weight: "1kg",
+        stock: 10,
+        featured: true,
+        discount: 8,
+        rating: "4.7",
+        reviews: 89,
+        createdAt: new Date(),
+      },
+      {
+        id: 5,
+        name: "Queijo Parmesão Artesanal",
+        description: "Queijo tipo parmesão produzido artesanalmente em Minas Gerais. Perfeito para gratinar ou consumir puro.",
+        price500g: "45.90",
+        price1kg: "85.90",
+        originalPrice500g: "52.00",
+        originalPrice1kg: "97.50",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/parmesao_300x.png?v=1751561960",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/parmesao_300x.png?v=1751561960"],
+        weight: "500g - 1kg",
+        stock: 20,
+        featured: true,
+        discount: 12,
+        rating: "4.8",
+        reviews: 145,
+        createdAt: new Date(),
+      },
+      {
+        id: 6,
+        name: "Queijo Minas Padrão",
+        description: "Tradicional queijo minas padrão, cremoso e suave. Produzido seguindo a receita original mineira.",
+        price500g: "28.90",
+        price1kg: "52.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/minas-padrao_300x.png?v=1751561892",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/minas-padrao_300x.png?v=1751561892"],
+        weight: "500g - 1kg",
+        stock: 25,
+        featured: false,
+        discount: 0,
+        rating: "4.6",
+        reviews: 78,
+        createdAt: new Date(),
+      },
+      {
+        id: 7,
+        name: "Doce de Pingo de Leite com Castanha de Caju",
+        description: "Delicioso doce de pingo de leite artesanal com castanha de caju torrada. Cremoso e saboroso, uma especialidade mineira irresistível.",
+        price500g: "34.90",
+        price1kg: "63.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/taq_700x.png?v=1751478341",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/taq_700x.png?v=1751478341"],
+        weight: "500g - 1kg",
+        stock: 20,
+        featured: true,
+        discount: 0,
+        rating: "4.9",
+        reviews: 203,
+        createdAt: new Date(),
+      },
+      {
+        id: 8,
+        name: "Doce de Cocada com Abacaxi",
+        description: "Cocada artesanal com pedaços de abacaxi fresco. Combinação tropical perfeita, doce tradicional com toque refrescante.",
+        price500g: "33.90",
+        price1kg: "61.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/abacaxi_700x.png?v=1751475432",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/abacaxi_700x.png?v=1751475432"],
+        weight: "500g - 1kg",
+        stock: 25,
+        featured: true,
+        discount: 0,
+        rating: "4.8",
+        reviews: 156,
+        createdAt: new Date(),
+      },
+      {
+        id: 9,
+        name: "Doce de Cocada com Maracujá",
+        description: "Cocada artesanal com polpa de maracujá natural. Sabor tropical e refrescante, perfeita combinação doce e azedinho.",
+        price500g: "32.90",
+        price1kg: "59.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/maracuja_700x.png?v=1751475750",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/maracuja_700x.png?v=1751475750"],
+        weight: "500g - 1kg",
+        stock: 22,
+        featured: true,
+        discount: 0,
+        rating: "4.7",
+        reviews: 89,
+        createdAt: new Date(),
+      },
+      {
+        id: 10,
+        name: "Doce Casadinho",
+        description: "Tradicional doce casadinho mineiro com duas camadas de sabor. Uma mistura harmoniosa que representa a culinária de Minas.",
+        price500g: "27.90",
+        price1kg: "49.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/xaaf_700x.png?v=1751314094",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/xaaf_700x.png?v=1751314094"],
+        weight: "500g - 1kg",
+        stock: 25,
+        featured: false,
+        discount: 0,
+        rating: "4.6",
+        reviews: 134,
+        createdAt: new Date(),
+      },
+      {
+        id: 9,
+        name: "Doce de Cocada com Maracujá",
+        description: "Cocada artesanal com polpa de maracujá natural. Sabor tropical e refrescante, perfeita combinação doce e azedinho.",
+        price500g: "32.90",
+        price1kg: "59.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/maracuja_700x.png?v=1751475750",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/maracuja_700x.png?v=1751475750"],
+        weight: "500g - 1kg",
+        stock: 22,
+        featured: true,
+        discount: 0,
+        rating: "4.7",
+        reviews: 89,
+        createdAt: new Date(),
+      },
+      {
+        id: 10,
+        name: "Doce Casadinho",
+        description: "Tradicional doce casadinho mineiro com duas camadas de sabor. Uma mistura harmoniosa que representa a culinária de Minas.",
+        price500g: "27.90",
+        price1kg: "49.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/xaaf_700x.png?v=1751314094",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/xaaf_700x.png?v=1751314094"],
+        weight: "500g - 1kg",
+        stock: 25,
+        featured: false,
+        discount: 0,
+        rating: "4.6",
+        reviews: 134,
+        createdAt: new Date(),
+      },
+      {
+        id: 11,
+        name: "Doce de Leite Tradicional",
+        description: "Doce de leite artesanal preparado no tacho de cobre. Cremoso e saboroso, perfeito para sobremesas ou consumo puro.",
+        price500g: "22.90",
+        price1kg: "39.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/adssdasd_700x.png?v=1751314259",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/adssdasd_700x.png?v=1751314259", "https://tabuademinas.com/cdn/shop/files/dadas_700x.png?v=1751314249"],
+        weight: "500g - 1kg",
+        stock: 30,
+        featured: true,
+        discount: 0,
+        rating: "4.9",
+        reviews: 312,
+        createdAt: new Date(),
+      },
+      {
+        id: 12,
+        name: "Doce de Leite com Café",
+        description: "Doce de leite especial com café torrado e moído. Combinação perfeita para os amantes de café, sabor intenso e cremoso.",
+        price500g: "26.90",
+        price1kg: "47.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/a1_300x.png?v=1751314696",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/a1_300x.png?v=1751314696"],
+        weight: "500g - 1kg",
+        stock: 18,
+        featured: true,
+        discount: 0,
+        rating: "4.8",
+        reviews: 198,
+        createdAt: new Date(),
+      },
+      {
+        id: 13,
+        name: "Doce de Pingo de Leite com Amendoim",
+        description: "Tradicional doce de pingo de leite com amendoim torrado. Textura cremosa e sabor intenso, uma especialidade mineira premium.",
+        price500g: "57.90",
+        price1kg: "109.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/36_700x.png?v=1751313980",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/36_700x.png?v=1751313980", "https://tabuademinas.com/cdn/shop/files/37_700x.png?v=1751313980"],
+        weight: "500g - 1kg",
+        stock: 12,
+        featured: true,
+        discount: 0,
+        rating: "4.9",
+        reviews: 167,
+        createdAt: new Date(),
+      },
+      {
+        id: 14,
+        name: "Doce de Cocada com Ameixa",
+        description: "Cocada artesanal com ameixas secas selecionadas. Combinação única de texturas e sabores, doce sofisticado e saboroso.",
+        price500g: "32.90",
+        price1kg: "59.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/1_20935611-0971-4452-982f-143ed99d0ecb_700x.png?v=1751475618",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/1_20935611-0971-4452-982f-143ed99d0ecb_700x.png?v=1751475618", "https://tabuademinas.com/cdn/shop/files/2_4de1745d-9583-455e-a299-d0ac9614aba2_700x.png?v=1751475618"],
+        weight: "500g - 1kg",
+        stock: 20,
+        featured: false,
+        discount: 0,
+        rating: "4.6",
+        reviews: 94,
+        createdAt: new Date(),
+      },
+      {
+        id: 15,
+        name: "Doce de Abóbora com Coco",
+        description: "Doce de abóbora tradicional com coco ralado fresco. Preparado no tacho de cobre seguindo receita centenária mineira.",
+        price500g: "27.90",
+        price1kg: "49.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/14_700x.png?v=1751314396",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/14_700x.png?v=1751314396", "https://tabuademinas.com/cdn/shop/files/13_700x.png?v=1751314396"],
+        weight: "500g - 1kg",
+        stock: 22,
+        featured: true,
+        discount: 0,
+        rating: "4.7",
+        reviews: 156,
+        createdAt: new Date(),
+      }
     ];
 
-    sweetProducts.forEach((product) => {
-      const newProduct: Product = {
-        ...product,
-        id: this.currentProductId++,
-        createdAt: new Date(),
-      };
-      this.products.set(newProduct.id, newProduct);
-    });
+    this.products = initialProducts;
   }
 
   private initializeReviews() {
-    const sampleReviews = [
+    const mockReviews = [
       {
+        id: 1,
         productId: 1,
         customerName: "Maria Silva",
         rating: 5,
-        comment: "Produto excelente! Sabor autêntico e entrega rápida.",
+        comment: "Queijo excelente! Muito cremoso e saboroso.",
+        createdAt: new Date("2024-01-15"),
       },
       {
+        id: 2,
         productId: 1,
         customerName: "João Santos",
         rating: 4,
-        comment: "Muito bom, recomendo. Lembra o doce da minha avó.",
+        comment: "Muito bom, lembra os queijos franceses.",
+        createdAt: new Date("2024-01-10"),
       },
       {
+        id: 3,
         productId: 2,
         customerName: "Ana Costa",
         rating: 5,
-        comment: "Simplesmente perfeito! A qualidade é excepcional.",
-      },
-      {
-        productId: 3,
-        customerName: "Carlos Mendes",
-        rating: 5,
-        comment: "O melhor doce que já provei. Super recomendo!",
+        comment: "Kit perfeito para degustação! Todos os queijos são deliciosos.",
+        createdAt: new Date("2024-01-20"),
       },
     ];
 
-    sampleReviews.forEach((review) => {
-      const newReview: ProductReview = {
-        ...review,
-        id: this.currentReviewId++,
-        createdAt: new Date(),
-      };
-      this.reviews.set(newReview.id, newReview);
-    });
+    this.reviews = mockReviews;
   }
 
   // Product operations
-  async getAllProducts(): Promise<Product[]> {
-    return Array.from(this.products.values());
+  async getProducts(): Promise<Product[]> {
+    return this.products;
   }
 
   async getProductById(id: number): Promise<Product | undefined> {
-    return this.products.get(id);
+    return this.products.find(p => p.id === id);
   }
 
   async getProductsByCategory(category: string): Promise<Product[]> {
-    return Array.from(this.products.values()).filter(
-      (p) => p.category === category,
-    );
+    return this.products.filter(p => p.category === category);
   }
 
   async getFeaturedProducts(): Promise<Product[]> {
-    return Array.from(this.products.values()).filter((p) => p.featured);
+    return this.products.filter(p => p.featured);
   }
 
-  async createProduct(product: InsertProduct): Promise<Product> {
-    const newProduct: Product = {
-      ...product,
-      id: this.currentProductId++,
-      createdAt: new Date(),
-    };
-    this.products.set(newProduct.id, newProduct);
-    return newProduct;
-  }
-
-  async updateProduct(
-    id: number,
-    updates: Partial<Product>,
-  ): Promise<Product | undefined> {
-    const product = this.products.get(id);
-    if (!product) return undefined;
-
-    const updatedProduct = { ...product, ...updates };
-    this.products.set(id, updatedProduct);
-    return updatedProduct;
+  async getProductReviews(productId: number): Promise<ProductReview[]> {
+    return this.reviews.filter(r => r.productId === productId);
   }
 
   // Cart operations
   async getCartItems(sessionId: string): Promise<CartItem[]> {
-    return Array.from(this.cartItems.values()).filter(
-      (item) => item.sessionId === sessionId,
-    );
+    return this.cartItems.filter(item => item.sessionId === sessionId);
   }
 
-  async addToCart(item: InsertCartItem): Promise<CartItem> {
+  async addToCart(cartItem: InsertCartItem): Promise<CartItem> {
+    const existingItem = this.cartItems.find(
+      item => 
+        item.sessionId === cartItem.sessionId && 
+        item.productId === cartItem.productId &&
+        item.size === cartItem.size
+    );
+
+    if (existingItem) {
+      existingItem.quantity += cartItem.quantity;
+      return existingItem;
+    }
+
     const newItem: CartItem = {
-      ...item,
-      id: this.currentCartId++,
+      ...cartItem,
+      id: this.cartItems.length + 1,
+      size: cartItem.size || "500g",
+      price: cartItem.price || "0.00",
       createdAt: new Date(),
     };
-    this.cartItems.set(newItem.id, newItem);
+
+    this.cartItems.push(newItem);
     return newItem;
   }
 
-  async updateCartItem(
-    id: number,
-    quantity: number,
-  ): Promise<CartItem | undefined> {
-    const item = this.cartItems.get(id);
-    if (!item) return undefined;
+  async updateCartItem(id: number, updates: Partial<CartItem>): Promise<CartItem | undefined> {
+    const index = this.cartItems.findIndex(item => item.id === id);
+    if (index === -1) return undefined;
 
-    item.quantity = quantity;
-    this.cartItems.set(id, item);
-    return item;
+    this.cartItems[index] = { ...this.cartItems[index], ...updates };
+    return this.cartItems[index];
   }
 
   async removeFromCart(id: number): Promise<boolean> {
-    return this.cartItems.delete(id);
+    const index = this.cartItems.findIndex(item => item.id === id);
+    if (index === -1) return false;
+
+    this.cartItems.splice(index, 1);
+    return true;
   }
 
-  async clearCart(sessionId: string): Promise<boolean> {
-    const items = await this.getCartItems(sessionId);
-    items.forEach((item) => this.cartItems.delete(item.id));
-    return true;
+  async clearCart(sessionId: string): Promise<void> {
+    this.cartItems = this.cartItems.filter(item => item.sessionId !== sessionId);
   }
 
   // Order operations
   async createOrder(order: InsertOrder): Promise<Order> {
     const newOrder: Order = {
       ...order,
-      id: this.currentOrderId++,
+      id: this.orders.length + 1,
+      status: order.status || "pending",
+      customerCpf: order.customerCpf || null,
+      complement: order.complement || null,
+      cep: order.cep || null,
+      state: order.state || null,
+      total: order.total || "0.00",
+      shippingCost: order.shippingCost || "0.00",
+      discount: order.discount || null,
+      pixCode: order.pixCode || null,
       createdAt: new Date(),
     };
-    this.orders.set(newOrder.id, newOrder);
+
+    this.orders.push(newOrder);
     return newOrder;
   }
 
+  async getOrderById(id: number): Promise<Order | undefined> {
+    return this.orders.find(o => o.id === id);
+  }
+
+  async getOrdersBySession(sessionId: string): Promise<Order[]> {
+    return this.orders.filter(o => o.sessionId === sessionId);
+  }
+
+  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    const index = this.orders.findIndex(o => o.id === id);
+    if (index === -1) return undefined;
+
+    this.orders[index].status = status;
+    return this.orders[index];
+  }
+
+  // Order item operations
   async createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem> {
     const newOrderItem: OrderItem = {
       ...orderItem,
-      id: this.currentOrderItemId++,
+      id: this.orderItems.length + 1,
       createdAt: new Date(),
     };
-    this.orderItems.set(newOrderItem.id, newOrderItem);
+
+    this.orderItems.push(newOrderItem);
     return newOrderItem;
   }
 
-  async getOrderById(id: number): Promise<Order | undefined> {
-    return this.orders.get(id);
-  }
-
-  async getOrdersBySessionId(sessionId: string): Promise<Order[]> {
-    return Array.from(this.orders.values()).filter(
-      (order) => order.sessionId === sessionId,
-    );
-  }
-
-  async updateOrderStatus(
-    id: number,
-    status: string,
-  ): Promise<Order | undefined> {
-    const order = this.orders.get(id);
-    if (!order) return undefined;
-
-    order.status = status;
-    this.orders.set(id, order);
-    return order;
-  }
-
-  // Review operations
-  async getProductReviews(productId: number): Promise<ProductReview[]> {
-    return Array.from(this.reviews.values()).filter(
-      (review) => review.productId === productId,
-    );
-  }
-
-  async addProductReview(
-    review: Omit<ProductReview, "id" | "createdAt">,
-  ): Promise<ProductReview> {
-    const newReview: ProductReview = {
-      ...review,
-      id: this.currentReviewId++,
-      createdAt: new Date(),
-    };
-    this.reviews.set(newReview.id, newReview);
-    return newReview;
+  async getOrderItems(orderId: number): Promise<OrderItem[]> {
+    return this.orderItems.filter(item => item.orderId === orderId);
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new MemoryStorage();
