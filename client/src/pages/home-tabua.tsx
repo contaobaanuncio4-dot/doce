@@ -148,6 +148,38 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
         </div>
       </section>
 
+      {/* Seção do Instagram */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-center mb-8" style={{ color: '#0F2E51' }}>
+              Siga nosso Instagram
+            </h2>
+            <p className="text-center text-gray-600 mb-8">
+              Acompanhe as novidades, receitas e bastidores da nossa produção artesanal
+            </p>
+            
+            <div className="container">
+              <div className="html">
+                <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
+                <iframe 
+                  src="https://cdn.lightwidget.com/widgets/20b00a80a60b5d258c6da2e89f2aa859.html" 
+                  scrolling="no" 
+                  allowTransparency={true}
+                  className="lightwidget-widget" 
+                  style={{ 
+                    width: '100%', 
+                    border: '0px', 
+                    overflow: 'hidden', 
+                    height: '834px' 
+                  }}
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Seção de Confiança e Segurança */}
       <section className="py-12" style={{ backgroundColor: '#FEF7E0' }}>
         <div className="container mx-auto px-4">
