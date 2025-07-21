@@ -68,9 +68,7 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                     onClick={() => setActiveTab('doces')}
-                  >
-                    Doces Mais Vendidos
-                  </button>
+                  >Doces </button>
                   <button 
                     type="button" 
                     className={`tabs-nav__item px-6 py-3 rounded-md font-medium transition-all ${
