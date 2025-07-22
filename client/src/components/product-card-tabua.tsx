@@ -53,8 +53,9 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
 
   const discountPercent = product.discount || 20;
   const currentPrice = product.price500g || product.price;
-  const originalPrice = product.originalPrice500g || product.originalPrice || `R$ ${(parseFloat((product.price500g || product.price).replace('R$ ', '').replace(',', '.')) * 1.3).toFixed(2).replace('.', ',')}`;
-  const installmentValue = (parseFloat((product.price500g || product.price).replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
+  const priceValue = (product.price500g || product.price) || 'R$ 0,00';
+  const originalPrice = product.originalPrice500g || product.originalPrice || `R$ ${(parseFloat(priceValue.replace('R$ ', '').replace(',', '.')) * 1.3).toFixed(2).replace('.', ',')}`;
+  const installmentValue = (parseFloat(priceValue.replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group">
@@ -93,13 +94,9 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
                 R$ {currentPrice}
               </div>
 
-              {/* Parcelamento */}
-              <div className="text-xs sm:text-sm text-gray-600">
-                <span>12</span>
-                <span> x de </span>
-                <span className="font-medium">
-                  R$ {installmentValue}
-                </span>
+              {/* Desconto */}
+              <div className="text-xs sm:text-sm text-green-600 font-medium">
+                {discountPercent}% OFF
               </div>
             </div>
 
