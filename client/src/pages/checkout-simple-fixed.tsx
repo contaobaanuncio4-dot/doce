@@ -243,14 +243,7 @@ export default function CheckoutSimple() {
   });
 
   const onSubmit = (data: CheckoutForm) => {
-    // Se não for plano de assinatura, mostrar order bump primeiro
-    if (!selectedPlan && allItems.length > 0 && !showOrderBump) {
-      setShowOrderBump(true);
-      return;
-    } else {
-      // Se for plano de assinatura, criar pedido diretamente
-      createOrderMutation.mutate(data);
-    }
+    createOrderMutation.mutate(data);
   };
 
   const copyPIXCode = async () => {
@@ -463,27 +456,18 @@ export default function CheckoutSimple() {
                     </div>
 
                     {/* Order Bump - Produtos Recomendados */}
-                    {showOrderBump && !selectedPlan && suggestedProducts.length > 0 && (
+                    {!selectedPlan && suggestedProducts.length > 0 && (
                       <div className="border-t pt-6 mt-6">
                         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border" style={{ borderColor: '#DDAF36' }}>
-                          <div className="flex items-center justify-between mb-4">
-                            <div>
-                              <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: '#0F2E51' }}>
-                                <ShoppingBag className="w-5 h-5" />
-                                🎯 Aproveite esta Oferta Especial!
-                              </h3>
-                              <p className="text-sm text-gray-600 mt-1">
-                                Produtos Premium com 40% OFF - Oferta exclusiva para você
-                              </p>
-                            </div>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => setShowOrderBump(false)}
-                              className="text-gray-500 hover:text-gray-700"
-                            >
-                              <X className="w-4 h-4" />
-                            </Button>
+                          <div className="mb-4">
+                            <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                              <ShoppingBag className="w-5 h-5" />
+                              🎯 Aproveite esta Oferta Especial!
+                            </h3>
+                            <p className="text-sm text-gray-600 mt-1">
+                              Produtos Premium com 40% OFF - Oferta exclusiva para você
+                            </p>
+
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
