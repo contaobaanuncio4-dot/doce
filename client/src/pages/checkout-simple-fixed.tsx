@@ -95,55 +95,14 @@ export default function CheckoutSimple() {
   const shippingCost = selectedPlan ? 0 : 9.90; // Sem frete para planos de assinatura
   const finalTotal = total + shippingCost;
 
-  // Lógica do Order Bump
-  const hasQueijos = cartItems.some(item => item.product?.category === 'queijos');
-  const hasDoces = cartItems.some(item => item.product?.category === 'doces');
-
-  let targetCategory = '';
-  if (hasQueijos && hasDoces) {
-    targetCategory = 'mixed'; // Mostra produtos de ambas as categorias
-  } else if (hasQueijos) {
-    targetCategory = 'doces'; // Mostra doces para quem compra queijos
-  } else if (hasDoces) {
-    targetCategory = 'queijos'; // Mostra queijos para quem compra doces
-  }
-
-  // Filtrar produtos mais caros por categoria para order bump
-  const getExpensiveProducts = (category: string) => {
-    if (category === 'mixed') {
-      // Se carrinho tem ambos, mostrar os mais caros de cada categoria
-      const expensiveQueijos = allProducts
-        .filter(product => product.category === 'queijos')
-        .sort((a, b) => {
-          const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
-          const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
-          return priceB - priceA;
-        })
-        .slice(0, 2);
-      
-      const expensiveDoces = allProducts
-        .filter(product => product.category === 'doces')
-        .sort((a, b) => {
-          const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
-          const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
-          return priceB - priceA;
-        })
-        .slice(0, 1);
-      
-      return [...expensiveQueijos, ...expensiveDoces];
-    }
-    
-    return allProducts
-      .filter(product => product.category === category)
-      .sort((a, b) => {
-        const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
-        const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
-        return priceB - priceA;
-      })
-      .slice(0, 3);
-  };
-
-  const suggestedProducts = targetCategory ? getExpensiveProducts(targetCategory) : [];
+  // Order Bump: Mostrar todos os produtos mais caros da loja com 50% OFF
+  const suggestedProducts = allProducts
+    .sort((a, b) => {
+      const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
+      const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
+      return priceB - priceA;
+    })
+    .slice(0, 6); // Mostrar os 6 produtos mais caros
 
   // Mutation para adicionar produtos do order bump ao carrinho
   const addBumpProductMutation = useMutation({
@@ -152,7 +111,7 @@ export default function CheckoutSimple() {
       if (!product) throw new Error('Product not found');
       
       const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
-      const discountedPrice = originalPrice * 0.6; // 40% de desconto
+      const discountedPrice = originalPrice * 0.5; // 50% de desconto
       
       return await apiRequest("/api/cart", {
         method: 'POST',
@@ -567,9 +526,9 @@ export default function CheckoutSimple() {
                           <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
                             <h3 className="text-lg font-bold mb-2 flex items-center gap-2" style={{ color: '#0F2E51' }}>
                               <ShoppingBag className="w-4 h-4" />
-                              🎯 Ofertas Especiais
+                              🎯 Produtos Premium com 50% OFF
                             </h3>
-                            <p className="text-xs text-gray-600 mb-3">Produtos Premium com 40% OFF</p>
+                            <p className="text-xs text-gray-600 mb-3">Oferta exclusiva - Adicione agora ao seu pedido</p>
 
                             {/* Lista compacta de produtos */}
                             <div className="space-y-2">
@@ -600,8 +559,8 @@ export default function CheckoutSimple() {
                                         <span className="font-bold text-sm" style={{ color: '#0F2E51' }}>
                                           R$ {discountedPrice.toFixed(2).replace('.', ',')}
                                         </span>
-                                        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-medium">
-                                          40% OFF
+                                        <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-bold">
+                                          50% OFF
                                         </span>
                                       </div>
                                     </div>
@@ -613,31 +572,6 @@ export default function CheckoutSimple() {
                                   </div>
                                 );
                               })}
-                            </div>
-
-                            {/* Clube Tábua compacto */}
-                            <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
-                                  <span className="text-white text-lg">🧀</span>
-                                </div>
-                                <div className="flex-1">
-                                  <h4 className="font-bold text-sm" style={{ color: '#0F2E51' }}>Clube Tábua</h4>
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-xs text-gray-500 line-through">R$ 349,90</span>
-                                    <span className="font-bold text-green-600">R$ 139,90/mês</span>
-                                    <span className="bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold">60% OFF</span>
-                                  </div>
-                                </div>
-                                <Button 
-                                  onClick={() => setLocation('/checkout?plan=anual&price=139.90')}
-                                  size="sm"
-                                  className="text-white font-medium"
-                                  style={{ backgroundColor: '#0F2E51' }}
-                                >
-                                  Assinar
-                                </Button>
-                              </div>
                             </div>
                           </div>
                         </div>
