@@ -183,7 +183,7 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
                       3 queijos selecionados por 6 meses
                     </p>
                     <button 
-                      onClick={() => setLocation('/checkout')}
+                      onClick={() => setLocation('/checkout?plan=semestral&price=187.90')}
                       className="w-full py-3 px-6 rounded-lg font-bold text-white transition-all hover:transform hover:scale-105"
                       style={{ backgroundColor: '#0F2E51' }}
                     >
@@ -219,7 +219,7 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
                       3 queijos por 12 meses, com desconto especial
                     </p>
                     <button 
-                      onClick={() => setLocation('/checkout')}
+                      onClick={() => setLocation('/checkout?plan=anual&price=139.90')}
                       className="w-full py-3 px-6 rounded-lg font-bold text-white transition-all hover:transform hover:scale-105"
                       style={{ backgroundColor: '#DDAF36' }}
                     >

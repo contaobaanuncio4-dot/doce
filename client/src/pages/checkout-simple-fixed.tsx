@@ -41,6 +41,11 @@ export default function CheckoutSimple() {
   const [copied, setCopied] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const { toast } = useToast();
+  
+  // Detectar plano de assinatura na URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedPlan = urlParams.get('plan');
+  const planPrice = parseFloat(urlParams.get('price') || '0');
 
   const form = useForm<CheckoutForm>({
     resolver: zodResolver(checkoutSchema),
@@ -62,11 +67,24 @@ export default function CheckoutSimple() {
     queryKey: ["/api/cart"],
   });
 
-  const total = cartItems.reduce((sum: number, item: any) => {
+  // Se existe um plano selecionado, criar item virtual para o carrinho
+  const subscriptionItem = selectedPlan ? [{
+    id: `subscription-${selectedPlan}`,
+    name: selectedPlan === 'semestral' ? 'Clube Tábua - Plano Semestral' : 'Clube Tábua - Plano Anual',
+    description: selectedPlan === 'semestral' ? '3 queijos selecionados por 6 meses' : '3 queijos por 12 meses, com desconto especial',
+    price: planPrice.toFixed(2).replace('.', ','),
+    quantity: 1,
+    isSubscription: true
+  }] : [];
+
+  // Combinar itens do carrinho com plano de assinatura
+  const allItems = selectedPlan ? subscriptionItem : cartItems;
+
+  const total = allItems.reduce((sum: number, item: any) => {
     return sum + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
   }, 0);
 
-  const shippingCost = 9.90;
+  const shippingCost = selectedPlan ? 0 : 9.90; // Sem frete para planos de assinatura
   const finalTotal = total + shippingCost;
 
   const createOrderMutation = useMutation({
@@ -203,7 +221,7 @@ export default function CheckoutSimple() {
     );
   }
 
-  if (cartItems.length === 0) {
+  if (allItems.length === 0) {
     return (
       <div className="min-h-screen py-8" style={{ backgroundColor: '#F7F3EF' }}>
         <div className="container mx-auto px-4 max-w-4xl">
@@ -455,20 +473,31 @@ export default function CheckoutSimple() {
                 </h2>
                 
                 <div className="space-y-4">
-                  {cartItems.map((item: any) => (
+                  {allItems.map((item: any) => (
                     <div key={item.id} className="flex gap-3">
-                      <img 
-                        src={item.product?.imageUrl} 
-                        alt={item.product?.name}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
+                      {item.isSubscription ? (
+                        <div className="w-16 h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                          <span className="text-white text-2xl">🧀</span>
+                        </div>
+                      ) : (
+                        <img 
+                          src={item.product?.imageUrl} 
+                          alt={item.product?.name}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
+                      )}
                       <div className="flex-1">
                         <h3 className="font-medium text-gray-900 text-sm line-clamp-2">
-                          {item.product?.name}
+                          {item.isSubscription ? item.name : item.product?.name}
                         </h3>
-                        <p className="text-sm text-gray-600">Qtd: {item.quantity}</p>
+                        {item.isSubscription ? (
+                          <p className="text-xs text-gray-600">{item.description}</p>
+                        ) : (
+                          <p className="text-sm text-gray-600">Qtd: {item.quantity}</p>
+                        )}
                         <p className="text-sm font-bold" style={{ color: '#0F2E51' }}>
                           R$ {(parseFloat(item.price?.replace(",", ".") || "0") * item.quantity).toFixed(2).replace(".", ",")}
+                          {item.isSubscription && <span className="text-xs">/mês</span>}
                         </p>
                       </div>
                     </div>
@@ -481,7 +510,9 @@ export default function CheckoutSimple() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Frete:</span>
-                      <span style={{ color: '#0F2E51' }}>R$ 9,90</span>
+                      <span style={{ color: '#0F2E51' }}>
+                        {selectedPlan ? 'Grátis' : 'R$ 9,90'}
+                      </span>
                     </div>
                     <div className="border-t pt-2 flex justify-between text-lg font-bold">
                       <span>Total:</span>
