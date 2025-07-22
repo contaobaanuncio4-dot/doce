@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import OrderBumpModal from "./order-bump-modal";
 
 interface Product {
   id: number;
@@ -40,7 +39,6 @@ interface CartSidebarProps {
 export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
   const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
   const [quantity, setQuantity] = useState(1);
-  const [showOrderBump, setShowOrderBump] = useState(false);
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
@@ -207,28 +205,18 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
               
               <button
                 onClick={() => {
-                  setShowOrderBump(true);
+                  setLocation('/checkout');
+                  onClose();
                 }}
                 className="w-full hover:opacity-90 text-white font-bold py-3 px-6 rounded-lg transition-colors mt-6"
                 style={{ backgroundColor: '#0F2E51' }}
               >
-                COMPRAR AGORA
+                FINALIZAR COMPRA
               </button>
             </>
           )}
         </div>
       </div>
-      
-      {/* Order Bump Modal */}
-      <OrderBumpModal
-        isOpen={showOrderBump}
-        onClose={() => {
-          setShowOrderBump(false);
-          setLocation('/checkout');
-          onClose();
-        }}
-        cartItems={cartItems}
-      />
     </div>
   );
 }

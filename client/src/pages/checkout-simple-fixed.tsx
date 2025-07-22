@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check } from "lucide-react";
 import { fetchCEP } from "@/lib/cep-api";
 import QRCode from "qrcode";
+import OrderBumpModal from "@/components/order-bump-modal";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -40,6 +41,8 @@ export default function CheckoutSimple() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [copied, setCopied] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+  const [showOrderBump, setShowOrderBump] = useState(false);
+  const [formData, setFormData] = useState<CheckoutForm | null>(null);
   const { toast } = useToast();
   
   // Detectar plano de assinatura na URL
@@ -141,7 +144,22 @@ export default function CheckoutSimple() {
   });
 
   const onSubmit = (data: CheckoutForm) => {
-    createOrderMutation.mutate(data);
+    // Se não for plano de assinatura, mostrar order bump primeiro
+    if (!selectedPlan && allItems.length > 0) {
+      setFormData(data);
+      setShowOrderBump(true);
+    } else {
+      // Se for plano de assinatura ou carrinho vazio, criar pedido diretamente
+      createOrderMutation.mutate(data);
+    }
+  };
+
+  const handleOrderBumpClose = () => {
+    setShowOrderBump(false);
+    // Criar pedido após fechar order bump
+    if (formData) {
+      createOrderMutation.mutate(formData);
+    }
   };
 
   const copyPIXCode = async () => {
@@ -660,6 +678,13 @@ export default function CheckoutSimple() {
           </div>
         )}
       </div>
+
+      {/* Order Bump Modal */}
+      <OrderBumpModal
+        isOpen={showOrderBump}
+        onClose={handleOrderBumpClose}
+        cartItems={allItems}
+      />
 
       {/* Modal de Instruções PIX */}
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
