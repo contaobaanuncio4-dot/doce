@@ -89,7 +89,10 @@ export default function CheckoutSimple() {
   const allItems = selectedPlan ? subscriptionItem : cartItems;
 
   const total = allItems.reduce((sum: number, item: any) => {
-    return sum + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
+    // Limpar o preço removendo "R$ " se existir e convertendo vírgula para ponto
+    const cleanPrice = item.price?.toString().replace("R$ ", "").replace(",", ".") || "0";
+    const price = parseFloat(cleanPrice);
+    return sum + (isNaN(price) ? 0 : price * item.quantity);
   }, 0);
 
   const shippingCost = selectedPlan ? 0 : 9.90; // Sem frete para planos de assinatura
@@ -119,7 +122,7 @@ export default function CheckoutSimple() {
           productId: product.id,
           quantity: 1,
           size: "500g",
-          price: `R$ ${discountedPrice.toFixed(2).replace('.', ',')}`
+          price: discountedPrice.toFixed(2).replace('.', ',')
         }
       });
     },
@@ -614,7 +617,11 @@ export default function CheckoutSimple() {
                           <p className="text-sm text-gray-600">Qtd: {item.quantity}</p>
                         )}
                         <p className="text-sm font-bold" style={{ color: '#0F2E51' }}>
-                          R$ {(parseFloat(item.price?.replace(",", ".") || "0") * item.quantity).toFixed(2).replace(".", ",")}
+                          R$ {(() => {
+                            const cleanPrice = item.price?.toString().replace("R$ ", "").replace(",", ".") || "0";
+                            const price = parseFloat(cleanPrice);
+                            return (isNaN(price) ? 0 : price * item.quantity).toFixed(2).replace(".", ",");
+                          })()}
                           {item.isSubscription && <span className="text-xs">/mês</span>}
                         </p>
                       </div>
