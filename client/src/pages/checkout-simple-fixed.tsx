@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,10 +10,9 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check } from "lucide-react";
+import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check, ShoppingBag, X, Plus } from "lucide-react";
 import { fetchCEP } from "@/lib/cep-api";
 import QRCode from "qrcode";
-import OrderBumpModal from "@/components/order-bump-modal";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -42,8 +41,9 @@ export default function CheckoutSimple() {
   const [copied, setCopied] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const [showOrderBump, setShowOrderBump] = useState(false);
-  const [formData, setFormData] = useState<CheckoutForm | null>(null);
+  const [selectedBumpProducts, setSelectedBumpProducts] = useState<number[]>([]);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   // Detectar plano de assinatura na URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -70,6 +70,11 @@ export default function CheckoutSimple() {
     queryKey: ["/api/cart"],
   });
 
+  // Query para carregar todos os produtos para order bump
+  const { data: allProducts = [] } = useQuery<any[]>({
+    queryKey: ["/api/products"],
+  });
+
   // Se existe um plano selecionado, criar item virtual para o carrinho
   const subscriptionItem = selectedPlan ? [{
     id: `subscription-${selectedPlan}`,
@@ -89,6 +94,100 @@ export default function CheckoutSimple() {
 
   const shippingCost = selectedPlan ? 0 : 9.90; // Sem frete para planos de assinatura
   const finalTotal = total + shippingCost;
+
+  // Lógica do Order Bump
+  const hasQueijos = cartItems.some(item => item.product?.category === 'queijos');
+  const hasDoces = cartItems.some(item => item.product?.category === 'doces');
+
+  let targetCategory = '';
+  if (hasQueijos && hasDoces) {
+    targetCategory = 'mixed'; // Mostra produtos de ambas as categorias
+  } else if (hasQueijos) {
+    targetCategory = 'doces'; // Mostra doces para quem compra queijos
+  } else if (hasDoces) {
+    targetCategory = 'queijos'; // Mostra queijos para quem compra doces
+  }
+
+  // Filtrar produtos mais caros por categoria para order bump
+  const getExpensiveProducts = (category: string) => {
+    if (category === 'mixed') {
+      // Se carrinho tem ambos, mostrar os mais caros de cada categoria
+      const expensiveQueijos = allProducts
+        .filter(product => product.category === 'queijos')
+        .sort((a, b) => {
+          const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
+          const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
+          return priceB - priceA;
+        })
+        .slice(0, 2);
+      
+      const expensiveDoces = allProducts
+        .filter(product => product.category === 'doces')
+        .sort((a, b) => {
+          const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
+          const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
+          return priceB - priceA;
+        })
+        .slice(0, 1);
+      
+      return [...expensiveQueijos, ...expensiveDoces];
+    }
+    
+    return allProducts
+      .filter(product => product.category === category)
+      .sort((a, b) => {
+        const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
+        const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
+        return priceB - priceA;
+      })
+      .slice(0, 3);
+  };
+
+  const suggestedProducts = targetCategory ? getExpensiveProducts(targetCategory) : [];
+
+  // Mutation para adicionar produtos do order bump ao carrinho
+  const addBumpProductMutation = useMutation({
+    mutationFn: async (productId: number) => {
+      const product = allProducts.find(p => p.id === productId);
+      if (!product) throw new Error('Product not found');
+      
+      const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
+      const discountedPrice = originalPrice * 0.6; // 40% de desconto
+      
+      return await apiRequest("/api/cart", {
+        method: 'POST',
+        body: {
+          productId: product.id,
+          quantity: 1,
+          size: "500g",
+          price: `R$ ${discountedPrice.toFixed(2).replace('.', ',')}`
+        }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      toast({
+        title: "Produto adicionado!",
+        description: "Item com desconto especial adicionado ao pedido.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erro",
+        description: "Não foi possível adicionar o produto.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleBumpProductToggle = (productId: number) => {
+    if (selectedBumpProducts.includes(productId)) {
+      setSelectedBumpProducts(prev => prev.filter(id => id !== productId));
+    } else {
+      setSelectedBumpProducts(prev => [...prev, productId]);
+      addBumpProductMutation.mutate(productId);
+    }
+  };
 
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: CheckoutForm) => {
@@ -145,20 +244,12 @@ export default function CheckoutSimple() {
 
   const onSubmit = (data: CheckoutForm) => {
     // Se não for plano de assinatura, mostrar order bump primeiro
-    if (!selectedPlan && allItems.length > 0) {
-      setFormData(data);
+    if (!selectedPlan && allItems.length > 0 && !showOrderBump) {
       setShowOrderBump(true);
+      return;
     } else {
-      // Se for plano de assinatura ou carrinho vazio, criar pedido diretamente
+      // Se for plano de assinatura, criar pedido diretamente
       createOrderMutation.mutate(data);
-    }
-  };
-
-  const handleOrderBumpClose = () => {
-    setShowOrderBump(false);
-    // Criar pedido após fechar order bump
-    if (formData) {
-      createOrderMutation.mutate(formData);
     }
   };
 
@@ -370,6 +461,110 @@ export default function CheckoutSimple() {
                         />
                       </div>
                     </div>
+
+                    {/* Order Bump - Produtos Recomendados */}
+                    {showOrderBump && !selectedPlan && suggestedProducts.length > 0 && (
+                      <div className="border-t pt-6 mt-6">
+                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border" style={{ borderColor: '#DDAF36' }}>
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                                <ShoppingBag className="w-5 h-5" />
+                                🎯 Aproveite esta Oferta Especial!
+                              </h3>
+                              <p className="text-sm text-gray-600 mt-1">
+                                Produtos Premium com 40% OFF - Oferta exclusiva para você
+                              </p>
+                            </div>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setShowOrderBump(false)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {suggestedProducts.map((product) => {
+                              const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
+                              const discountedPrice = originalPrice * 0.6;
+                              const isSelected = selectedBumpProducts.includes(product.id);
+                              
+                              return (
+                                <div 
+                                  key={product.id}
+                                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                    isSelected ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
+                                  }`}
+                                  onClick={() => handleBumpProductToggle(product.id)}
+                                >
+                                  <img 
+                                    src={product.imageUrl} 
+                                    alt={product.name}
+                                    className="w-full h-32 object-cover rounded-lg mb-3"
+                                  />
+                                  <h4 className="font-semibold text-sm mb-2">{product.name}</h4>
+                                  <div className="space-y-1">
+                                    <div className="text-xs text-gray-500 line-through">
+                                      R$ {originalPrice.toFixed(2).replace('.', ',')}
+                                    </div>
+                                    <div className="text-lg font-bold" style={{ color: '#0F2E51' }}>
+                                      R$ {discountedPrice.toFixed(2).replace('.', ',')}
+                                    </div>
+                                    <div className="text-xs text-green-600 font-medium">
+                                      40% OFF
+                                    </div>
+                                  </div>
+                                  {isSelected ? (
+                                    <div className="mt-2 text-center">
+                                      <span className="text-green-600 font-medium text-sm">✓ Adicionado</span>
+                                    </div>
+                                  ) : (
+                                    <div className="mt-2 text-center">
+                                      <div className="flex items-center justify-center text-sm font-medium" style={{ color: '#0F2E51' }}>
+                                        <Plus className="w-4 h-4 mr-1" />
+                                        Adicionar
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Clube Tábua com 60% OFF */}
+                          <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border" style={{ borderColor: '#0F2E51' }}>
+                            <div className="flex items-center gap-4">
+                              <div className="w-16 h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                                <span className="text-white text-2xl">🧀</span>
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-lg" style={{ color: '#0F2E51' }}>Clube Tábua - Assinatura Premium</h4>
+                                <p className="text-sm text-gray-600">3 queijos artesanais selecionados mensalmente</p>
+                                <div className="flex items-center gap-4 mt-2">
+                                  <div>
+                                    <span className="text-xs text-gray-500 line-through">R$ 349,90/mês</span>
+                                    <div className="text-xl font-bold text-green-600">R$ 139,90/mês</div>
+                                  </div>
+                                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                    60% OFF
+                                  </div>
+                                </div>
+                              </div>
+                              <Button 
+                                onClick={() => setLocation('/checkout?plan=anual&price=139.90')}
+                                className="text-white font-semibold px-6 py-3"
+                                style={{ backgroundColor: '#0F2E51' }}
+                              >
+                                Assinar Agora
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <div>
                       <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#0F2E51' }}>
@@ -678,13 +873,6 @@ export default function CheckoutSimple() {
           </div>
         )}
       </div>
-
-      {/* Order Bump Modal */}
-      <OrderBumpModal
-        isOpen={showOrderBump}
-        onClose={handleOrderBumpClose}
-        cartItems={allItems}
-      />
 
       {/* Modal de Instruções PIX */}
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
