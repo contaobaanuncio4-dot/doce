@@ -544,7 +544,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                             <div className="space-y-2">
                               {suggestedProducts.map((product) => {
                                 const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
-                                const discountedPrice = originalPrice * 0.6;
+                                const discountedPrice = originalPrice * 0.5;
                                 const isSelected = selectedBumpProducts.includes(product.id);
                                 
                                 return (
