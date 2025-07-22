@@ -455,101 +455,6 @@ export default function CheckoutSimple() {
                       </div>
                     </div>
 
-                    {/* Order Bump - Produtos Recomendados */}
-                    {!selectedPlan && suggestedProducts.length > 0 && (
-                      <div className="border-t pt-6 mt-6">
-                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border" style={{ borderColor: '#DDAF36' }}>
-                          <div className="mb-4">
-                            <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: '#0F2E51' }}>
-                              <ShoppingBag className="w-5 h-5" />
-                              🎯 Aproveite esta Oferta Especial!
-                            </h3>
-                            <p className="text-sm text-gray-600 mt-1">
-                              Produtos Premium com 40% OFF - Oferta exclusiva para você
-                            </p>
-
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {suggestedProducts.map((product) => {
-                              const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
-                              const discountedPrice = originalPrice * 0.6;
-                              const isSelected = selectedBumpProducts.includes(product.id);
-                              
-                              return (
-                                <div 
-                                  key={product.id}
-                                  className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                                    isSelected ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
-                                  }`}
-                                  onClick={() => handleBumpProductToggle(product.id)}
-                                >
-                                  <img 
-                                    src={product.imageUrl} 
-                                    alt={product.name}
-                                    className="w-full h-32 object-cover rounded-lg mb-3"
-                                  />
-                                  <h4 className="font-semibold text-sm mb-2">{product.name}</h4>
-                                  <div className="space-y-1">
-                                    <div className="text-xs text-gray-500 line-through">
-                                      R$ {originalPrice.toFixed(2).replace('.', ',')}
-                                    </div>
-                                    <div className="text-lg font-bold" style={{ color: '#0F2E51' }}>
-                                      R$ {discountedPrice.toFixed(2).replace('.', ',')}
-                                    </div>
-                                    <div className="text-xs text-green-600 font-medium">
-                                      40% OFF
-                                    </div>
-                                  </div>
-                                  {isSelected ? (
-                                    <div className="mt-2 text-center">
-                                      <span className="text-green-600 font-medium text-sm">✓ Adicionado</span>
-                                    </div>
-                                  ) : (
-                                    <div className="mt-2 text-center">
-                                      <div className="flex items-center justify-center text-sm font-medium" style={{ color: '#0F2E51' }}>
-                                        <Plus className="w-4 h-4 mr-1" />
-                                        Adicionar
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-
-                          {/* Clube Tábua com 60% OFF */}
-                          <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border" style={{ borderColor: '#0F2E51' }}>
-                            <div className="flex items-center gap-4">
-                              <div className="w-16 h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
-                                <span className="text-white text-2xl">🧀</span>
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="font-bold text-lg" style={{ color: '#0F2E51' }}>Clube Tábua - Assinatura Premium</h4>
-                                <p className="text-sm text-gray-600">3 queijos artesanais selecionados mensalmente</p>
-                                <div className="flex items-center gap-4 mt-2">
-                                  <div>
-                                    <span className="text-xs text-gray-500 line-through">R$ 349,90/mês</span>
-                                    <div className="text-xl font-bold text-green-600">R$ 139,90/mês</div>
-                                  </div>
-                                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                    60% OFF
-                                  </div>
-                                </div>
-                              </div>
-                              <Button 
-                                onClick={() => setLocation('/checkout?plan=anual&price=139.90')}
-                                className="text-white font-semibold px-6 py-3"
-                                style={{ backgroundColor: '#0F2E51' }}
-                              >
-                                Assinar Agora
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
                     <div>
                       <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#0F2E51' }}>
                         <MapPin className="w-5 h-5" />
@@ -655,6 +560,88 @@ export default function CheckoutSimple() {
                           )}
                         />
                       </div>
+
+                      {/* Order Bump - Produtos Recomendados (Compacto) */}
+                      {!selectedPlan && suggestedProducts.length > 0 && (
+                        <div className="mt-6 pt-4 border-t">
+                          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
+                            <h3 className="text-lg font-bold mb-2 flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                              <ShoppingBag className="w-4 h-4" />
+                              🎯 Ofertas Especiais
+                            </h3>
+                            <p className="text-xs text-gray-600 mb-3">Produtos Premium com 40% OFF</p>
+
+                            {/* Lista compacta de produtos */}
+                            <div className="space-y-2">
+                              {suggestedProducts.map((product) => {
+                                const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
+                                const discountedPrice = originalPrice * 0.6;
+                                const isSelected = selectedBumpProducts.includes(product.id);
+                                
+                                return (
+                                  <div 
+                                    key={product.id}
+                                    className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-all ${
+                                      isSelected ? 'bg-yellow-100 border border-yellow-300' : 'bg-white hover:bg-gray-50 border border-gray-200'
+                                    }`}
+                                    onClick={() => handleBumpProductToggle(product.id)}
+                                  >
+                                    <img 
+                                      src={product.imageUrl} 
+                                      alt={product.name}
+                                      className="w-12 h-12 object-cover rounded"
+                                    />
+                                    <div className="flex-1">
+                                      <h4 className="font-medium text-sm">{product.name}</h4>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs text-gray-500 line-through">
+                                          R$ {originalPrice.toFixed(2).replace('.', ',')}
+                                        </span>
+                                        <span className="font-bold text-sm" style={{ color: '#0F2E51' }}>
+                                          R$ {discountedPrice.toFixed(2).replace('.', ',')}
+                                        </span>
+                                        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-medium">
+                                          40% OFF
+                                        </span>
+                                      </div>
+                                    </div>
+                                    {isSelected ? (
+                                      <span className="text-green-600 font-medium text-xs">✓ Adicionado</span>
+                                    ) : (
+                                      <Plus className="w-4 h-4 text-gray-400" />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Clube Tábua compacto */}
+                            <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: '#DDAF36' }}>
+                                  <span className="text-white text-lg">🧀</span>
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-sm" style={{ color: '#0F2E51' }}>Clube Tábua</h4>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500 line-through">R$ 349,90</span>
+                                    <span className="font-bold text-green-600">R$ 139,90/mês</span>
+                                    <span className="bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold">60% OFF</span>
+                                  </div>
+                                </div>
+                                <Button 
+                                  onClick={() => setLocation('/checkout?plan=anual&price=139.90')}
+                                  size="sm"
+                                  className="text-white font-medium"
+                                  style={{ backgroundColor: '#0F2E51' }}
+                                >
+                                  Assinar
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </form>
                 </Form>
