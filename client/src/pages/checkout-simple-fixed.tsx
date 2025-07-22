@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check, ShoppingBag, X, Plus } from "lucide-react";
 import { fetchCEP } from "@/lib/cep-api";
 import QRCode from "qrcode";
+import Header from "@/components/header";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -32,7 +33,11 @@ const checkoutSchema = z.object({
 
 type CheckoutForm = z.infer<typeof checkoutSchema>;
 
-export default function CheckoutSimple() {
+interface CheckoutSimpleProps {
+  onCartToggle?: () => void;
+}
+
+export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
   const [pixCode, setPixCode] = useState("00020126360014BR.GOV.BCB.PIX0114+5531999887766520400005303986540510.005802BR5925TABUA DE MINAS QUEIJOS6014BELO HORIZONTE62070503***6304ABCD");
@@ -313,8 +318,10 @@ export default function CheckoutSimple() {
   }
 
   return (
-    <div className="min-h-screen py-8" style={{ backgroundColor: '#F7F3EF' }}>
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="min-h-screen" style={{ backgroundColor: '#F7F3EF' }}>
+      <Header onCartToggle={onCartToggle || (() => {})} />
+      
+      <div className="container mx-auto px-4 max-w-4xl py-8">
         <div className="mb-6">
           <button 
             onClick={() => setLocation("/")}
@@ -322,7 +329,7 @@ export default function CheckoutSimple() {
             style={{ color: '#0F2E51' }}
           >
             <ArrowLeft className="w-5 h-5" />
-            Voltar para o produto
+            Voltar para a loja
           </button>
         </div>
 
