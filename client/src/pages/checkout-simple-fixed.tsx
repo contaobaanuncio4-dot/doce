@@ -538,7 +538,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                               <ShoppingBag className="w-4 h-4" />
                               🎯 Produtos Premium com 50% OFF
                             </h3>
-                            <p className="text-xs text-gray-600 mb-3">Oferta exclusiva - Adicione agora ao seu pedido</p>
+                            <p className="text-xs text-gray-600 mb-3">Leva mais um produto nosso com desconto</p>
 
                             {/* Lista compacta de produtos */}
                             <div className="space-y-2">
