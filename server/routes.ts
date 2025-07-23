@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertCartItemSchema, insertOrderSchema, insertOrderItemSchema } from "@shared/schema";
 import { z } from "zod";
 import { BlackCatAPI } from "./blackcat-api";
+import { notifyUTMifyOrderCreated } from "./utmify-integration";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -291,6 +292,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (orderItemsToAdd.length > 0) {
         await storage.addOrderItems(orderItemsToAdd);
+      }
+      
+      // Enviar para UTMify (PIX gerado - waiting_payment)
+      try {
+        const orderItems = await storage.getOrderItems(order.id);
+        const referer = req.get('referer');
+        const userIP = req.ip || req.connection.remoteAddress;
+        
+        await notifyUTMifyOrderCreated(order, orderItems, referer, userIP);
+        console.log(`UTMify notificado: Pedido ${order.id} criado`);
+      } catch (utmifyError) {
+        console.error('Erro ao notificar UTMify:', utmifyError);
+        // Não falhar o pedido por erro do UTMify
       }
       
       // Limpar carrinho

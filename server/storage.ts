@@ -36,6 +36,7 @@ export interface IStorage {
   getOrder(id: number): Promise<Order | undefined>;
   getOrdersByCustomer(email: string): Promise<Order[]>;
   addOrderItems(orderItems: InsertOrderItem[]): Promise<OrderItem[]>;
+  getOrderItems(orderId: number): Promise<OrderItem[]>;
   
   // Review operations
   getReviewsByProduct(productId: number): Promise<ProductReview[]>;
@@ -616,6 +617,7 @@ export class MemoryStorage implements IStorage {
     const product: Product = {
       id: this.nextProductId++,
       ...productData,
+      reviews: productData.reviews ?? null,
       createdAt: new Date(),
     };
     this.products.push(product);
@@ -643,6 +645,8 @@ export class MemoryStorage implements IStorage {
     const cartItem: CartItem = {
       id: this.nextCartItemId++,
       ...itemData,
+      size: itemData.size || '500g',
+      price: itemData.price || '0.00',
       createdAt: new Date(),
     };
     this.cartItems.push(cartItem);
@@ -677,6 +681,8 @@ export class MemoryStorage implements IStorage {
     const order: Order = {
       id: this.nextOrderId++,
       ...orderData,
+      discount: orderData.discount || null,
+      blackCatTransactionId: orderData.blackCatTransactionId || null,
       createdAt: new Date(),
     };
     this.orders.push(order);
@@ -695,10 +701,16 @@ export class MemoryStorage implements IStorage {
     const orderItems = orderItemsData.map(itemData => ({
       id: this.nextOrderItemId++,
       ...itemData,
+      size: itemData.size || '500g',
+      price: itemData.price || '0.00',
       createdAt: new Date(),
     }));
     this.orderItems.push(...orderItems);
     return orderItems;
+  }
+
+  async getOrderItems(orderId: number): Promise<OrderItem[]> {
+    return this.orderItems.filter(item => item.orderId === orderId);
   }
 
   // Review operations
@@ -710,6 +722,7 @@ export class MemoryStorage implements IStorage {
     const review: ProductReview = {
       id: this.nextReviewId++,
       ...reviewData,
+      comment: reviewData.comment || null,
       createdAt: new Date(),
     };
     this.reviews.push(review);
