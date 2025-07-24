@@ -4,7 +4,7 @@
 
 This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a Brazilian artisanal cheese and sweets brand. The application is designed with a focus on accessibility for older users while maintaining modern aesthetics inspired by the interior of Minas Gerais.
 
-## Recent Changes (Updated: January 21, 2025)
+## Recent Changes (Updated: January 24, 2025)
 
 - **Expanded Product Catalog**: Implemented complete catalog with 26 authentic products (17 queijos + 9 doces) using real data from tabuademinas.com
 - **Fixed API Integration**: Resolved TypeScript errors and API endpoints - products now load correctly
@@ -36,6 +36,10 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Professional Design Updates**: Removed emojis from subscription section for cleaner, more professional appearance
 - **Netlify Deployment Ready**: Complete project organization for Netlify hosting with serverless functions and optimized build process
 - **Production Architecture**: Configured dual deployment strategy supporting both Replit and Netlify platforms
+- **Updated Product Images**: All product images updated with fresh Imgur links - resolved expired image issues
+- **Expanded Sweet Catalog**: Added 5 new sweet products from Imgur album (Prestígio Mineiro, Quebra-Queixo, Banana Zero Açúcar, Doce de Leite Dom, Goiabada Tia Carla)  
+- **Complete Image Refresh**: All 32 products now use working Imgur image links (17 queijos + 15 doces)
+- **Netlify Build Fix**: Simplified build commands in netlify.toml for reliable deployment
 
 ## User Preferences
 
