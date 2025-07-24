@@ -6,7 +6,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 
 ## Recent Changes (Updated: January 24, 2025)
 
-- **Expanded Product Catalog**: Implemented complete catalog with 26 authentic products (17 queijos + 9 doces) using real data from tabuademinas.com
+- **Expanded Product Catalog**: Implemented complete catalog with 34 authentic products (17 queijos + 17 doces) using real data from tabuademinas.com and Imgur albums
 - **Fixed API Integration**: Resolved TypeScript errors and API endpoints - products now load correctly
 - **Product Gallery System**: Added multi-image galleries for product variations with navigation controls
 - **Customer Review System**: Implemented comprehensive review display with ratings and customer feedback
@@ -38,7 +38,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Production Architecture**: Configured dual deployment strategy supporting both Replit and Netlify platforms
 - **Updated Product Images**: All product images updated with fresh Imgur links - resolved expired image issues
 - **Expanded Sweet Catalog**: Added 5 new sweet products from Imgur album (Prestígio Mineiro, Quebra-Queixo, Banana Zero Açúcar, Doce de Leite Dom, Goiabada Tia Carla)  
-- **Complete Image Refresh**: All 32 products now use working Imgur image links (17 queijos + 15 doces)
+- **Complete Image Refresh**: All 34 products now use working Imgur image links (17 queijos + 17 doces)
 - **Netlify Build Fix**: Simplified build commands in netlify.toml for reliable deployment
 
 ## User Preferences

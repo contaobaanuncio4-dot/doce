@@ -653,11 +653,50 @@ export class MemoryStorage implements IStorage {
         rating: "4.8",
         reviews: 203,
         createdAt: new Date(),
+      },
+      // NOVOS DOCES ADICIONAIS DO IMGUR
+      {
+        id: 33,
+        name: "Doce de Cocada com Maracujá",
+        description: "Cocada artesanal com polpa de maracujá fresco. Combinação tropical única, doce refrescante com acidez equilibrada do maracujá.",
+        price500g: "32.90",
+        price1kg: "59.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://i.imgur.com/p6wwtEt.png",
+        imageUrls: ["https://i.imgur.com/p6wwtEt.png"],
+        weight: "500g - 1kg",
+        stock: 16,
+        featured: true,
+        discount: 0,
+        rating: "4.7",
+        reviews: 134,
+        createdAt: new Date(),
+      },
+      {
+        id: 34,
+        name: "Doce Casadinho",
+        description: "Tradicional doce casadinho mineiro com duas camadas de sabores. Combinação perfeita de doce de leite e cocada, receita centenária.",
+        price500g: "27.90",
+        price1kg: "49.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://i.imgur.com/WoKuC7T.png",
+        imageUrls: ["https://i.imgur.com/WoKuC7T.png"],
+        weight: "500g - 1kg",
+        stock: 22,
+        featured: true,
+        discount: 0,
+        rating: "4.8",
+        reviews: 176,
+        createdAt: new Date(),
       }
     ];
 
     this.products = initialProducts;
-    this.nextProductId = 33;
+    this.nextProductId = 35;
   }
 
   private initializeReviews() {
