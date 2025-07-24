@@ -1,69 +1,37 @@
-import {
-  products,
-  cartItems,
-  orders,
-  orderItems,
-  productReviews,
-  type Product,
-  type CartItem,
-  type Order,
-  type OrderItem,
-  type ProductReview,
-  type InsertProduct,
-  type InsertCartItem,
-  type InsertOrder,
-  type InsertOrderItem,
-  type InsertProductReview,
-} from "@shared/schema";
-
-export interface IStorage {
-  // Product operations
-  getProducts(): Promise<Product[]>;
-  getProductById(id: number): Promise<Product | undefined>;
-  getProductsByCategory(category: string): Promise<Product[]>;
-  getFeaturedProducts(): Promise<Product[]>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  
-  // Cart operations
-  getCartItems(sessionId: string): Promise<CartItem[]>;
-  addToCart(item: InsertCartItem): Promise<CartItem>;
-  updateCartItem(id: number, quantity: number): Promise<CartItem | undefined>;
-  removeFromCart(id: number): Promise<boolean>;
-  clearCart(sessionId: string): Promise<boolean>;
-  
-  // Order operations
-  createOrder(order: InsertOrder): Promise<Order>;
-  getOrder(id: number): Promise<Order | undefined>;
-  getOrdersByCustomer(email: string): Promise<Order[]>;
-  addOrderItems(orderItems: InsertOrderItem[]): Promise<OrderItem[]>;
-  getOrderItems(orderId: number): Promise<OrderItem[]>;
-  
-  // Review operations
-  getReviewsByProduct(productId: number): Promise<ProductReview[]>;
-  addReview(review: InsertProductReview): Promise<ProductReview>;
+// Simplified storage for Netlify
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price500g: string;
+  price1kg: string;
+  originalPrice500g?: string;
+  originalPrice1kg?: string;
+  category: string;
+  imageUrl: string;
+  imageUrls: string[];
+  weight: string;
+  stock: number;
+  featured: boolean;
+  discount?: number;
+  rating: string;
+  reviews: number;
+  createdAt?: Date;
 }
 
-export class MemoryStorage implements IStorage {
-  private products: Product[] = [];
-  private cartItems: CartItem[] = [];
-  private orders: Order[] = [];
-  private orderItems: OrderItem[] = [];
-  private reviews: ProductReview[] = [];
-  private nextProductId = 1;
-  private nextCartItemId = 1;
-  private nextOrderId = 1;
-  private nextOrderItemId = 1;
-  private nextReviewId = 1;
+interface CartItem {
+  id: number;
+  sessionId: string;
+  productId: number;
+  quantity: number;
+  size: string;
+  price: string;
+  product?: Product;
+}
 
-  constructor() {
-    this.initializeProducts();
-    this.initializeReviews();
-  }
-
-  private initializeProducts() {
-    const initialProducts = [
-      // QUEIJOS AUTÊNTICOS (IDs 1-17)
-      {
+// In-memory storage (resets on each function call)
+const products: Product[] = [
+  {
     id: 1,
     name: "Queijo MinasBri",
     description: "Queijo tipo Brie artesanal, cremoso e de sabor suave. Produzido com leite fresco das montanhas de Minas Gerais seguindo técnicas tradicionais francesas.",
@@ -424,8 +392,7 @@ export class MemoryStorage implements IStorage {
     reviews: 83,
     createdAt: new Date(),
   },
-
-  // DOCES (14 produtos)
+  // DOCES
   {
     id: 20,
     name: "Doce de Pingo de Leite com Castanha de Caju",
@@ -693,183 +660,54 @@ export class MemoryStorage implements IStorage {
     createdAt: new Date(),
   }
 ];
-    this.products = initialProducts;
-    this.nextProductId = 35;
-  }
 
-  private initializeReviews() {
-    const mockReviews = [
-      {
-        id: 1,
-        productId: 1,
-        customerName: "Maria Silva",
-        rating: 5,
-        comment: "Queijo excelente! Muito cremoso e saboroso.",
-        createdAt: new Date("2024-01-15"),
-      },
-      {
-        id: 2,
-        productId: 1,
-        customerName: "João Santos",
-        rating: 4,
-        comment: "Muito bom, lembra os queijos franceses.",
-        createdAt: new Date("2024-01-10"),
-      },
-      {
-        id: 3,
-        productId: 2,
-        customerName: "Ana Costa",
-        rating: 5,
-        comment: "Kit perfeito para degustação! Todos os queijos são deliciosos.",
-        createdAt: new Date("2024-01-20"),
-      },
-    ];
+let cartItems: CartItem[] = [];
+let cartIdCounter = 1;
 
-    this.reviews = mockReviews;
-    this.nextReviewId = mockReviews.length + 1;
-  }
+export const storage = {
+  getAllProducts: async (): Promise<Product[]> => {
+    return products;
+  },
 
-  // Product operations
-  async getProducts(): Promise<Product[]> {
-    return this.products;
-  }
-
-  async getProductById(id: number): Promise<Product | undefined> {
-    return this.products.find(p => p.id === id);
-  }
-
-  async getProductsByCategory(category: string): Promise<Product[]> {
-    return this.products.filter(p => p.category === category);
-  }
-
-  async getFeaturedProducts(): Promise<Product[]> {
-    return this.products.filter(p => p.featured);
-  }
-
-  async createProduct(productData: InsertProduct): Promise<Product> {
-    const product: Product = {
-      id: this.nextProductId++,
-      ...productData,
-      reviews: productData.reviews ?? null,
-      originalPrice500g: productData.originalPrice500g ?? null,
-      originalPrice1kg: productData.originalPrice1kg ?? null,
-      imageUrls: productData.imageUrls ?? null,
-      weight: productData.weight ?? null,
-      stock: productData.stock ?? null,
-      createdAt: new Date(),
-    };
-    this.products.push(product);
-    return product;
-  }
-
-  // Cart operations
-  async getCartItems(sessionId: string): Promise<CartItem[]> {
-    return this.cartItems.filter(item => item.sessionId === sessionId);
-  }
-
-  async addToCart(itemData: InsertCartItem): Promise<CartItem> {
-    const existingItem = this.cartItems.find(
-      item => 
-        item.sessionId === itemData.sessionId && 
-        item.productId === itemData.productId &&
-        item.size === itemData.size
-    );
-
-    if (existingItem) {
-      existingItem.quantity += itemData.quantity;
-      return existingItem;
-    }
-
-    const cartItem: CartItem = {
-      id: this.nextCartItemId++,
-      ...itemData,
-      size: itemData.size || '500g',
-      price: itemData.price || '0.00',
-      createdAt: new Date(),
-    };
-    this.cartItems.push(cartItem);
-    return cartItem;
-  }
-
-  async updateCartItem(id: number, quantity: number): Promise<CartItem | undefined> {
-    const item = this.cartItems.find(item => item.id === id);
-    if (item) {
-      item.quantity = quantity;
-    }
-    return item;
-  }
-
-  async removeFromCart(id: number): Promise<boolean> {
-    const index = this.cartItems.findIndex(item => item.id === id);
-    if (index !== -1) {
-      this.cartItems.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-
-  async clearCart(sessionId: string): Promise<boolean> {
-    const initialLength = this.cartItems.length;
-    this.cartItems = this.cartItems.filter(item => item.sessionId !== sessionId);
-    return this.cartItems.length < initialLength;
-  }
-
-  // Order operations
-  async createOrder(orderData: InsertOrder): Promise<Order> {
-    const order: Order = {
-      id: this.nextOrderId++,
-      ...orderData,
-      discount: orderData.discount || null,
-      status: orderData.status || null,
-      addressComplement: orderData.addressComplement || null,
-      paymentMethod: orderData.paymentMethod || null,
-      pixCode: orderData.pixCode || null,
-      blackCatTransactionId: orderData.blackCatTransactionId || null,
-      createdAt: new Date(),
-    };
-    this.orders.push(order);
-    return order;
-  }
-
-  async getOrder(id: number): Promise<Order | undefined> {
-    return this.orders.find(order => order.id === id);
-  }
-
-  async getOrdersByCustomer(email: string): Promise<Order[]> {
-    return this.orders.filter(order => order.customerEmail === email);
-  }
-
-  async addOrderItems(orderItemsData: InsertOrderItem[]): Promise<OrderItem[]> {
-    const orderItems = orderItemsData.map(itemData => ({
-      id: this.nextOrderItemId++,
-      ...itemData,
-      size: itemData.size || '500g',
-      price: itemData.price || '0.00',
-      createdAt: new Date(),
+  getCartItems: async (sessionId: string): Promise<CartItem[]> => {
+    const items = cartItems.filter(item => item.sessionId === sessionId);
+    // Add product details
+    return items.map(item => ({
+      ...item,
+      product: products.find(p => p.id === item.productId)
     }));
-    this.orderItems.push(...orderItems);
-    return orderItems;
-  }
+  },
 
-  async getOrderItems(orderId: number): Promise<OrderItem[]> {
-    return this.orderItems.filter(item => item.orderId === orderId);
-  }
-
-  // Review operations
-  async getReviewsByProduct(productId: number): Promise<ProductReview[]> {
-    return this.reviews.filter(review => review.productId === productId);
-  }
-
-  async addReview(reviewData: InsertProductReview): Promise<ProductReview> {
-    const review: ProductReview = {
-      id: this.nextReviewId++,
-      ...reviewData,
-      comment: reviewData.comment || null,
-      createdAt: new Date(),
+  addToCart: async (cartData: {
+    sessionId: string;
+    productId: number;
+    quantity: number;
+    size: string;
+    price: string;
+  }): Promise<CartItem> => {
+    const newItem: CartItem = {
+      id: cartIdCounter++,
+      ...cartData
     };
-    this.reviews.push(review);
-    return review;
-  }
-}
+    cartItems.push(newItem);
+    return newItem;
+  },
 
-export const storage = new MemoryStorage();
+  removeFromCart: async (itemId: number): Promise<void> => {
+    cartItems = cartItems.filter(item => item.id !== itemId);
+  },
+
+  clearCart: async (sessionId: string): Promise<void> => {
+    cartItems = cartItems.filter(item => item.sessionId !== sessionId);
+  },
+
+  createOrder: async (orderData: any): Promise<any> => {
+    // Simplified order creation for demo
+    return {
+      id: Math.floor(Math.random() * 10000),
+      ...orderData,
+      createdAt: new Date(),
+      status: 'pending'
+    };
+  }
+};
