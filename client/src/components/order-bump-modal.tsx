@@ -34,10 +34,10 @@ export default function OrderBumpModal({ isOpen, onClose, cartItems }: OrderBump
     targetCategory = 'doces';
   }
 
-  // Filtrar produtos mais caros por categoria
+  // Filtrar produtos mais caros por categoria (exceto Queijo Chabichou)
   const getExpensiveProducts = (category: string) => {
     return allProducts
-      .filter(product => product.category === category)
+      .filter(product => product.category === category && product.name !== "Queijo Chabichou")
       .sort((a, b) => {
         const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
         const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));

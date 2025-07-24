@@ -103,8 +103,9 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   const shippingCost = selectedPlan ? 0 : 9.90; // Sem frete para planos de assinatura
   const finalTotal = total + shippingCost;
 
-  // Order Bump: Mostrar todos os produtos mais caros da loja com 50% OFF
+  // Order Bump: Mostrar todos os produtos mais caros da loja com 50% OFF (exceto Queijo Chabichou)
   const suggestedProducts = allProducts
+    .filter(product => product.name !== "Queijo Chabichou") // Excluir Queijo Chabichou
     .sort((a, b) => {
       const priceA = parseFloat(a.price500g.replace('R$ ', '').replace(',', '.'));
       const priceB = parseFloat(b.price500g.replace('R$ ', '').replace(',', '.'));
