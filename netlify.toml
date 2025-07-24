@@ -26,6 +26,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/cep/*"
+  to = "/.netlify/functions/cep"
+  status = 200
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api"
   status = 200
