@@ -40,6 +40,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Expanded Sweet Catalog**: Added 5 new sweet products from Imgur album (Prestígio Mineiro, Quebra-Queixo, Banana Zero Açúcar, Doce de Leite Dom, Goiabada Tia Carla)  
 - **Complete Image Refresh**: All 34 products now use working Imgur image links (17 queijos + 17 doces)
 - **Netlify Build Fix**: Simplified build commands in netlify.toml for reliable deployment
+- **Netlify Products Fix**: Fixed missing products issue on Netlify deployment - updated storage functions to include all 22 products (6 queijos + 16 doces) instead of only 4, resolving the "products disappearing" problem
 
 ## User Preferences
 
