@@ -5,7 +5,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { CartSidebar } from "./cart-sidebar-new";
-// ImageSkeleton removido para resolver problema de build no Netlify
 
 interface Product {
   id: number;
@@ -53,19 +52,32 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   });
 
   const discountPercent = product.discount || 20;
-  const currentPrice = product.price500g || product.price;
-  const priceValue = (product.price500g || product.price) || 'R$ 0,00';
-  const originalPrice = product.originalPrice500g || product.originalPrice || `R$ ${(parseFloat(priceValue.replace('R$ ', '').replace(',', '.')) * 1.3).toFixed(2).replace('.', ',')}`;
-  const installmentValue = (parseFloat(priceValue.replace('R$ ', '').replace(',', '.')) / 12).toFixed(2).replace('.', ',');
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group">
-      <div className="relative overflow-hidden">
-        {/* Labels/Badges */}
-        <div className="labels js-labels-floating-group labels-floating absolute top-2 left-2 z-10">
-          {discountPercent > 0 && (
-            <div className="label label-circle text-white text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: '#0F2E51' }}>
-              {discountPercent}% OFF
+    <div className="group">
+      <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-0 bg-white rounded-3xl overflow-hidden">
+        <div className="relative">
+          {/* Badge de desconto */}
+          {product.featured && (
+            <div className="absolute top-4 left-4 z-10">
+              <Badge 
+                variant="destructive" 
+                className="bg-red-500 text-white px-3 py-1 text-sm font-bold rounded-full shadow-md"
+              >
+                -{discountPercent}%
+              </Badge>
+            </div>
+          )}
+
+          {/* Badge "Mais Vendido" */}
+          {product.featured && (
+            <div className="absolute top-4 right-4 z-10">
+              <Badge 
+                variant="secondary" 
+                className="bg-[#DDAF36] text-[#0F2E51] px-3 py-1 text-xs font-bold rounded-full shadow-md"
+              >
+                MAIS VENDIDO
+              </Badge>
             </div>
           )}
         </div>
@@ -86,49 +98,103 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
           />
         </div>
 
-        {/* Container das informações */}
-        <div className="p-3 sm:p-4">
-          <div>
-            {/* Nome do produto */}
-            <h3 className="text-sm sm:text-base font-medium mb-2 leading-tight line-clamp-2 transition-colors hover:opacity-75" style={{ color: '#0F2E51' }}>
-              {product.name}
-            </h3>
-
-            {/* Container de preços */}
-            <div className="mb-3">
-              {/* Preço principal */}
-              <div className="text-lg sm:text-xl font-bold mb-1" style={{ color: '#DDAF36' }}>
-                R$ {currentPrice}
+        <CardContent className="p-6">
+          {/* Rating */}
+          {product.rating && (
+            <div className="flex items-center gap-1 mb-2">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <svg
+                    key={star}
+                    className="w-4 h-4 fill-yellow-400"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
               </div>
-
-              {/* Desconto */}
-              <div className="text-xs sm:text-sm text-green-600 font-medium">
-                {discountPercent}% OFF
-              </div>
+              <span className="text-sm text-gray-600 ml-1">
+                {product.rating} ({product.reviews || 0})
+              </span>
             </div>
+          )}
 
-            {/* Botão de adicionar */}
-            <Button
-              className="w-full text-white font-medium py-2 px-3 text-xs sm:text-sm rounded-md transition-colors hover:opacity-90"
-              style={{ backgroundColor: addToCartDirectMutation.isSuccess ? '#059669' : '#0F2E51' }}
-              onClick={() => addToCartDirectMutation.mutate()}
-              disabled={addToCartDirectMutation.isPending}
-            >
-              {addToCartDirectMutation.isPending 
-                ? "Adicionando..." 
-                : addToCartDirectMutation.isSuccess 
-                ? "✓ Adicionado ao Carrinho" 
-                : "Adicionar ao Carrinho"
-              }
-            </Button>
+          {/* Nome do produto */}
+          <h3 className="font-bold text-lg text-[#0F2E51] mb-2 line-clamp-2">
+            {product.name}
+          </h3>
+
+          {/* Descrição */}
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {product.description}
+          </p>
+
+          {/* Preços */}
+          <div className="space-y-1 mb-4">
+            {product.category === "doces" ? (
+              <div className="space-y-1">
+                {/* Preço 500g */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">500g:</span>
+                  <div className="flex items-center gap-2">
+                    {product.featured && product.originalPrice500g && (
+                      <span className="text-sm text-gray-400 line-through">
+                        {product.originalPrice500g}
+                      </span>
+                    )}
+                    <span className="font-bold text-lg text-[#0F2E51]">
+                      {product.price500g}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Preço 1kg */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">1kg:</span>
+                  <div className="flex items-center gap-2">
+                    {product.featured && product.originalPrice1kg && (
+                      <span className="text-sm text-gray-400 line-through">
+                        {product.originalPrice1kg}
+                      </span>
+                    )}
+                    <span className="font-bold text-lg text-[#0F2E51]">
+                      {product.price1kg}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                {product.featured && product.originalPrice500g && (
+                  <span className="text-lg text-gray-400 line-through">
+                    {product.originalPrice500g}
+                  </span>
+                )}
+                <span className="font-bold text-xl text-[#0F2E51]">
+                  {product.price500g || product.price}
+                </span>
+              </div>
+            )}
           </div>
-        </div>
-      </div>
-      
-      <CartSidebar
-        isOpen={showCartSidebar}
-        onClose={() => setShowCartSidebar(false)}
-        product={product}
+
+          {/* Botão de adicionar ao carrinho */}
+          <Button
+            onClick={() => {
+              addToCartDirectMutation.mutate();
+              setShowCartSidebar(true);
+            }}
+            disabled={addToCartDirectMutation.isPending}
+            className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300"
+          >
+            {addToCartDirectMutation.isPending ? "Adicionando..." : "Adicionar ao Carrinho"}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={showCartSidebar} 
+        onClose={() => setShowCartSidebar(false)} 
       />
     </div>
   );

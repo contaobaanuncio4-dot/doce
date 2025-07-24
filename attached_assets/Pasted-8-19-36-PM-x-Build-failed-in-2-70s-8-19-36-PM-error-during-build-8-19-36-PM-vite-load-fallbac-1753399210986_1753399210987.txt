@@ -1,0 +1,62 @@
+8:19:36 PM: x Build failed in 2.70s
+8:19:36 PM: error during build:
+8:19:36 PM: [vite:load-fallback] Could not load /opt/build/repo/client/src/components/image-skeleton (imported by client/src/components/product-card-tabua.tsx): ENOENT: no such file or directory, open '/opt/build/repo/client/src/components/image-skeleton'
+8:19:36 PM:     at async open (node:internal/fs/promises:639:25)
+8:19:36 PM:     at async Object.readFile (node:internal/fs/promises:1246:14)
+8:19:36 PM:     at async Object.load (file:///opt/build/repo/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65341:25)
+8:19:36 PM:     at async PluginDriver.hookFirstAndGetPlugin (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20689:28)
+8:19:36 PM:     at async file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:19809:33
+8:19:36 PM:     at async Queue.work (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20899:32)
+8:19:36 PM: ​
+8:19:36 PM: "build.command" failed                                        
+8:19:36 PM: ────────────────────────────────────────────────────────────────
+8:19:36 PM: ​
+8:19:36 PM:   Error message
+8:19:36 PM:   Command failed with exit code 1: rm -rf node_modules/.vite client/.vite dist && vite build && cp _redirects dist/public/_redirects (https://ntl.fyi/exit-code-1)
+8:19:36 PM: ​
+8:19:36 PM:   Error location
+8:19:36 PM:   In build.command from netlify.toml:
+8:19:36 PM:   rm -rf node_modules/.vite client/.vite dist && vite build && cp _redirects dist/public/_redirects
+8:19:36 PM: ​
+8:19:36 PM:   Resolved config
+8:19:36 PM:   build:
+8:19:36 PM:     command: rm -rf node_modules/.vite client/.vite dist && vite build && cp
+8:19:36 PM:       _redirects dist/public/_redirects
+8:19:36 PM:     commandOrigin: config
+8:19:36 PM:     environment:
+8:19:36 PM:       - BLACKCAT_API_KEY
+8:19:36 PM:       - BLACKCAT_API_SECRET
+8:19:36 PM:       - UTMIFY_API_TOKEN
+8:19:36 PM:       - NODE_VERSION
+8:19:36 PM:     publish: /opt/build/repo/dist/public
+8:19:36 PM:     publishOrigin: config
+8:19:36 PM:   functions:
+8:19:36 PM:     "*":
+8:19:36 PM:       node_bundler: esbuild
+8:19:36 PM:   functionsDirectory: /opt/build/repo/netlify/functions
+8:19:36 PM:   redirects:
+8:19:36 PM:     - from: /api/products
+8:19:36 PM:       status: 200
+8:19:36 PM:       to: /.netlify/functions/products
+8:19:36 PM:     - from: /api/cart
+8:19:36 PM:       status: 200
+8:19:36 PM:       to: /.netlify/functions/cart
+8:19:36 PM:     - from: /api/cart/*
+      status: 200
+      to: /.netlify/functions/cart
+    - from: /api/orders
+      status: 200
+      to: /.netlify/functions/orders
+    - from: /api/cep/*
+      status: 200
+      to: /.netlify/functions/cep
+    - from: /api/*
+      status: 200
+      to: /.netlify/functions/api
+    - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+8:19:36 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+8:19:36 PM: Failing build: Failed to build site
+8:19:37 PM: Finished processing build request in 16.97s
