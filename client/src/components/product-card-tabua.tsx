@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { CartSidebar } from "./cart-sidebar-new";
-import ImageSkeleton from "@/components/image-skeleton";
+// ImageSkeleton removido para resolver problema de build no Netlify
 
 interface Product {
   id: number;
@@ -72,10 +72,17 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
 
         {/* Container da imagem */}
         <div className="relative aspect-square overflow-hidden">
-          <ImageSkeleton
+          <img
             src={product.imageUrl}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              if (!e.currentTarget.src.includes('fallback')) {
+                e.currentTarget.src = product.imageUrl + '?fallback=1';
+              }
+            }}
           />
         </div>
 

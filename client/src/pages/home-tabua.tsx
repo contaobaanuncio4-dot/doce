@@ -8,7 +8,7 @@ import OrderBumpModal from "@/components/order-bump-modal";
 import ProductTabs from "@/components/product-tabs";
 import CartBottomBar from "@/components/cart-bottom-bar";
 import { useState, useEffect } from "react";
-import { preloadCriticalImages } from "@/hooks/use-image-preload";
+// Preload removido para resolver problemas de build no Netlify
 import ProductSkeleton from "@/components/product-skeleton";
 import type { Product, CartItem } from "@shared/schema";
 
@@ -21,13 +21,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     queryKey: ["/api/products"]
   });
 
-  // Precarregar imagens críticas quando os produtos carregarem
-  useEffect(() => {
-    if (products.length > 0) {
-      const imageUrls = products.slice(0, 8).map(p => p.imageUrl);
-      preloadCriticalImages(imageUrls);
-    }
-  }, [products]);
+  // Preload de imagens removido para resolver problemas de build
 
   const { data: cartItems = [] } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"]

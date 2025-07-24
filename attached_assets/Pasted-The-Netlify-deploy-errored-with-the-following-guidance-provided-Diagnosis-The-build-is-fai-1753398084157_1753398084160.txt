@@ -1,0 +1,94 @@
+The Netlify deploy errored, with the following guidance provided:
+
+### Diagnosis
+The build is failing with an error message:
+```
+[vite:load-fallback] Could not load /opt/build/repo/client/src/components/image-skeleton (imported by client/src/components
+```
+This error indicates that Vite is unable to load the `image-skeleton` component during the build process.
+
+### Solution
+1. **Check file existence**: Verify that the `image-skeleton` component exists in the specified path `client/src/components/image-skeleton`.
+2. **Commit the file**: Ensure the `image-skeleton` file is committed to the repository.
+3. **Update import path**: If the file exists but the import path is incorrect, update the import path in the file where it is being imported from.
+
+By following these steps, you should be able to resolve the error related to the `image-skeleton` component.
+
+The relevant error logs are:
+
+Line 10: Custom build command detected. Proceeding with the specified command: 'vite build && cp _redirects dist/public/_redirects'
+Line 11: Starting to install dependencies
+Line 12: Started restoring cached python cache
+Line 13: Finished restoring cached python cache
+Line 14: Started restoring cached ruby cache
+Line 15: Finished restoring cached ruby cache
+Line 16: Started restoring cached go cache
+Line 17: Finished restoring cached go cache
+Line 18: Started restoring cached Node.js version
+Line 19: Finished restoring cached Node.js version
+Line 20: Failed during stage 'building site': Build script returned non-zero exit code: 2
+Line 21: v20.19.4 is already installed.
+Line 22: Now using node v20.19.4 (npm v10.8.2)
+Line 23: Enabling Node.js Corepack
+Line 24: Started restoring cached build plugins
+Line 25: Finished restoring cached build plugins
+Line 26: Started restoring cached corepack dependencies
+Line 27: Finished restoring cached corepack dependencies
+Line 28: No npm workspaces detected
+Line 29: Started restoring cached node modules
+Line 30: Finished restoring cached node modules
+Line 61: [96m[1mbuild.command from netlify.toml                               [22m[39m
+Line 62: [96m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 63: ​
+Line 64: [36m$ vite build && cp _redirects dist/public/_redirects[39m
+Line 65: [36mvite v5.4.19 [32mbuilding for production...[36m[39m
+Line 66: transforming...
+Line 67: Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+Line 68:   npx update-browserslist-db@latest
+Line 69:   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Line 70: [32m✓[39m 1711 modules transformed.
+Line 71: [31mx[39m Build failed in 1.91s
+Line 72: [31merror during build:
+Line 73: [31m[vite:load-fallback] Could not load /opt/build/repo/client/src/components/image-skeleton (imported by client/src/components
+Line 74:     at async open (node:internal/fs/promises:639:25)
+Line 75:     at async Object.readFile (node:internal/fs/promises:1246:14)
+Line 76:     at async Object.load (file:///opt/build/repo/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65341:25)
+Line 77:     at async PluginDriver.hookFirstAndGetPlugin (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20689:2
+Line 78:     at async file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:19809:33
+Line 79:     at async Queue.work (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20899:32)[39m
+Line 80: [91m[1m​[22m[39m
+Line 81: [91m[1m"build.command" failed                                        [22m[39m
+Line 82: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 83: ​
+Line 84:   [31m[1mError message[22m[39m
+Line 85:   Command failed with exit code 1: vite build && cp _redirects dist/public/_redirects
+Line 86: ​
+Line 87:   [31m[1mError location[22m[39m
+Line 88:   In build.command from netlify.toml:
+Line 89:   vite build && cp _redirects dist/public/_redirects
+Line 90: ​
+Line 91:   [31m[1mResolved config[22m[39m
+Line 92:   build:
+Line 93:     command: vite build && cp _redirects dist/public/_redirects
+Line 94:     commandOrigin: config
+Line 95:     environment:
+Line 96:       - BLACKCAT_API_KEY
+Line 97:       - BLACKCAT_API_SECRET
+Line 104:       node_bundler: esbuild
+Line 105:   functionsDirectory: /opt/build/repo/netlify/functions
+Line 106:   redirects:
+Line 107:     - from: /api/products
+Line 108:       status: 200
+Line 109:       to: /.netlify/functions/products
+Line 110:     - from: /api/cart
+Line 111:       status: 200
+Line 112:       to: /.netlify/functions/cart
+Line 113:     - from: /api/cart/*
+      status: 200
+      to: /.netlify/functions/cart
+    - from: /api/orders
+      status: 200
+      to:
+Line 114: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 115: Failing build: Failed to build site
+Line 116: Finished processing build request in 21.98s
