@@ -67,7 +67,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
                 <img 
                   src="https://i.imgur.com/a0LOvhf.png" 
                   alt="Tábua de Minas" 
-                  className="h-12 w-auto cursor-pointer hover:opacity-75"
+                  className="h-20 w-auto cursor-pointer hover:opacity-75"
                 />
               </Link>
             </div>
