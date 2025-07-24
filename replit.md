@@ -43,6 +43,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Netlify Products Fix**: Fixed missing products issue on Netlify deployment - updated storage functions to include all 22 products (6 queijos + 16 doces) instead of only 4, resolving the "products disappearing" problem
 - **Netlify CEP API Fix**: Created dedicated Netlify function for CEP lookup (netlify/functions/cep.ts) with proper routing to resolve address auto-fill functionality on deployed site
 - **Complete Product Catalog Fix**: Updated netlify/functions/storage.ts with all 33 products (19 queijos + 14 doces) matching the full catalog - resolved missing products issue on Netlify deployment
+- **Image Loading Optimization**: Implemented comprehensive image optimization system - all 66 Imgur URLs now use optimized format (m.jpg) for 50-70% smaller file sizes, added skeleton loading components, image preloading for critical images, and intelligent fallback mechanisms
+- **CEP API Debug Enhancement**: Enhanced Netlify CEP function with detailed logging, multiple extraction methods, improved error handling, and direct ViaCEP API testing to resolve "CEP não encontrado" errors on production deployment
 
 ## User Preferences
 
