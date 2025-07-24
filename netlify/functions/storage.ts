@@ -5,14 +5,18 @@ interface Product {
   description: string;
   price500g: string;
   price1kg: string;
+  originalPrice500g?: string;
+  originalPrice1kg?: string;
   category: string;
   imageUrl: string;
   imageUrls: string[];
   weight: string;
   stock: number;
   featured: boolean;
+  discount?: number;
   rating: string;
   reviews: number;
+  createdAt?: Date;
 }
 
 interface CartItem {
@@ -388,8 +392,7 @@ const products: Product[] = [
     reviews: 83,
     createdAt: new Date(),
   },
-
-  // DOCES (14 produtos)
+  // DOCES
   {
     id: 20,
     name: "Doce de Pingo de Leite com Castanha de Caju",
