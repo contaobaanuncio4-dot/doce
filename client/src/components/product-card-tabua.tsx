@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { CartSidebar } from "./cart-sidebar-new";
+import ImageSkeleton from "@/components/image-skeleton";
 
 interface Product {
   id: number;
@@ -71,11 +72,10 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
 
         {/* Container da imagem */}
         <div className="relative aspect-square overflow-hidden">
-          <img
+          <ImageSkeleton
             src={product.imageUrl}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
           />
         </div>
 

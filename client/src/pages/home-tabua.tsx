@@ -8,6 +8,8 @@ import OrderBumpModal from "@/components/order-bump-modal";
 import ProductTabs from "@/components/product-tabs";
 import CartBottomBar from "@/components/cart-bottom-bar";
 import { useState, useEffect } from "react";
+import { preloadCriticalImages } from "@/hooks/use-image-preload";
+import ProductSkeleton from "@/components/product-skeleton";
 import type { Product, CartItem } from "@shared/schema";
 
 interface HomeTabuaProps {
@@ -18,6 +20,14 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"]
   });
+
+  // Precarregar imagens críticas quando os produtos carregarem
+  useEffect(() => {
+    if (products.length > 0) {
+      const imageUrls = products.slice(0, 8).map(p => p.imageUrl);
+      preloadCriticalImages(imageUrls);
+    }
+  }, [products]);
 
   const { data: cartItems = [] } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"]
@@ -42,10 +52,12 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     return (
       <div className="min-h-screen bg-white">
         <Header onCartToggle={onCartToggle} />
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-tabua-green mx-auto"></div>
-            <p className="mt-4 text-gray-600">Carregando produtos...</p>
+        <PromoBanner />
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <ProductSkeleton key={i} />
+            ))}
           </div>
         </div>
       </div>

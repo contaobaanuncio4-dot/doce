@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ShoppingCart, Plus, Minus } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
+import ImageSkeleton from "@/components/image-skeleton";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -59,16 +60,10 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   return (
     <Card className="product-card">
       <div className="relative">
-        <img 
-          src={product.imageUrl} 
+        <ImageSkeleton
+          src={product.imageUrl}
           alt={product.name}
           className="w-full h-64 object-cover rounded-t-2xl"
-          loading="lazy"
-          onError={(e) => {
-            console.log('Error loading image:', product.imageUrl);
-            // Fallback para uma imagem padrão se houver erro
-            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjVmNWY1Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbSBub24gZGlzcG9uw61ibGU8L3RleHQ+PC9zdmc+';
-          }}
         />
         {product.discount && product.discount > 0 && (
           <Badge className="discount-badge absolute top-4 left-4">
