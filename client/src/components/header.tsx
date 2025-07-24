@@ -65,7 +65,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
             <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center">
               <Link href="/">
                 <img 
-                  src="https://imgur.com/a0LOvhf" 
+                  src="https://i.imgur.com/a0LOvhf.png" 
                   alt="Tábua de Minas" 
                   className="h-12 w-auto cursor-pointer hover:opacity-75"
                 />
