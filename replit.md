@@ -42,6 +42,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Netlify Build Fix**: Simplified build commands in netlify.toml for reliable deployment
 - **Netlify Products Fix**: Fixed missing products issue on Netlify deployment - updated storage functions to include all 22 products (6 queijos + 16 doces) instead of only 4, resolving the "products disappearing" problem
 - **Netlify CEP API Fix**: Created dedicated Netlify function for CEP lookup (netlify/functions/cep.ts) with proper routing to resolve address auto-fill functionality on deployed site
+- **Complete Product Catalog Fix**: Updated netlify/functions/storage.ts with all 33 products (19 queijos + 14 doces) matching the full catalog - resolved missing products issue on Netlify deployment
 
 ## User Preferences
 
