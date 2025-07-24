@@ -12,13 +12,16 @@ export default function ShoppingCartGuide() {
   // Não mostrar na página de checkout
   if (location === '/checkout') return null;
 
-  const total = cartItems.reduce((sum: number, item: any) => {
+  const subtotal = cartItems.reduce((sum: number, item: any) => {
     return sum + (parseFloat(item.price?.replace(",", ".") || "0") * item.quantity);
   }, 0);
 
   const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
   const shippingCost = 9.90;
-  const finalTotal = total + shippingCost;
+  
+  // Simular desconto: subtotal mostra valor original (20% maior) e total mostra valor com desconto
+  const originalSubtotal = subtotal * 1.2; // 20% a mais para mostrar como "valor original"
+  const finalTotal = subtotal + shippingCost; // Valor real já com desconto aplicado
 
   if (totalItems === 0) return null;
 
@@ -28,7 +31,7 @@ export default function ShoppingCartGuide() {
         <div className="flex items-center gap-3">
           <div className="text-center">
             <p className="text-sm text-gray-500 line-through">
-              Subtotal: R$ {total.toFixed(2).replace('.', ',')}
+              Subtotal: R$ {originalSubtotal.toFixed(2).replace('.', ',')}
             </p>
             <p className="text-2xl font-bold" style={{ color: '#DDAF36' }}>
               Total: R$ {finalTotal.toFixed(2).replace('.', ',')}
