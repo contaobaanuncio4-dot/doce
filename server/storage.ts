@@ -622,6 +622,7 @@ export class MemoryStorage implements IStorage {
       originalPrice1kg: productData.originalPrice1kg ?? null,
       imageUrls: productData.imageUrls ?? null,
       weight: productData.weight ?? null,
+      stock: productData.stock ?? null,
       createdAt: new Date(),
     };
     this.products.push(product);
@@ -689,6 +690,7 @@ export class MemoryStorage implements IStorage {
       status: orderData.status || null,
       addressComplement: orderData.addressComplement || null,
       paymentMethod: orderData.paymentMethod || null,
+      pixCode: orderData.pixCode || null,
       blackCatTransactionId: orderData.blackCatTransactionId || null,
       createdAt: new Date(),
     };

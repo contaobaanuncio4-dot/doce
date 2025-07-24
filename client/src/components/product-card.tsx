@@ -14,14 +14,22 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
   const { addToCart } = useCart();
   const { toast } = useToast();
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    const price = product.category === "doces" 
+      ? (selectedSize === "500g" ? product.price500g : product.price1kg)
+      : product.price500g;
+    const size = product.category === "doces" ? selectedSize : "500g";
+    
+    addToCart(product, quantity, size, price);
     toast({
       title: "Produto adicionado!",
-      description: `${product.name} foi adicionado ao carrinho.`,
+      description: product.category === "doces" 
+        ? `${product.name} (${selectedSize}) foi adicionado ao carrinho.`
+        : `${product.name} foi adicionado ao carrinho.`,
     });
     onAddToCart?.();
   };
@@ -38,8 +46,13 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     }
   };
 
-  const originalPrice = parseFloat(product.price);
-  const discountedPrice = product.discount 
+  // Preço baseado no tamanho selecionado (para doces) ou preço padrão (para queijos)
+  const currentPrice = product.category === "doces" 
+    ? (selectedSize === "500g" ? product.price500g : product.price1kg)
+    : product.price500g;
+  
+  const originalPrice = parseFloat(currentPrice.replace("R$ ", "").replace(",", "."));
+  const discountedPrice = (product.discount && product.discount > 0)
     ? originalPrice - (originalPrice * product.discount / 100)
     : originalPrice;
 
@@ -71,17 +84,64 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           {product.description}
         </p>
         
+        {/* Seleção de tamanho para doces */}
+        {product.category === "doces" && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium mb-2" style={{ color: '#0F2E51' }}>
+              Escolha o tamanho:
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setSelectedSize("500g")}
+                className={`p-2 border-2 rounded-lg text-center transition-colors text-xs ${
+                  selectedSize === "500g"
+                    ? "border-yellow-500 bg-yellow-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+                style={{
+                  borderColor: selectedSize === "500g" ? "#DDAF36" : undefined,
+                  backgroundColor: selectedSize === "500g" ? "#DDAF36" : undefined,
+                  color: selectedSize === "500g" ? "white" : "#0F2E51"
+                }}
+              >
+                <div className="font-medium">500g</div>
+                <div className="text-xs">
+                  R$ {product.price500g}
+                </div>
+              </button>
+              <button
+                onClick={() => setSelectedSize("1kg")}
+                className={`p-2 border-2 rounded-lg text-center transition-colors text-xs ${
+                  selectedSize === "1kg"
+                    ? "border-yellow-500 bg-yellow-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+                style={{
+                  borderColor: selectedSize === "1kg" ? "#DDAF36" : undefined,
+                  backgroundColor: selectedSize === "1kg" ? "#DDAF36" : undefined,
+                  color: selectedSize === "1kg" ? "white" : "#0F2E51"
+                }}
+              >
+                <div className="font-medium">1kg</div>
+                <div className="text-xs">
+                  R$ {product.price1kg}
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-4">
           <div>
-            {product.discount > 0 && (
+            {product.discount && product.discount > 0 && (
               <span className="text-gray-500 line-through text-sm">
-                R$ {originalPrice.toFixed(2)}
+                R$ {originalPrice.toFixed(2).replace(".", ",")}
               </span>
             )}
             <span className="text-2xl font-bold text-minas-green ml-2">
-              R$ {discountedPrice.toFixed(2)}
+              R$ {discountedPrice.toFixed(2).replace(".", ",")}
             </span>
-            {product.weight && (
+            {product.weight && product.category !== "doces" && (
               <span className="text-gray-500 text-sm ml-2">
                 {product.weight}
               </span>

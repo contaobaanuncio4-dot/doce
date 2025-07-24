@@ -21,16 +21,25 @@ export function useCart() {
   }, []);
 
   const addToCartMutation = useMutation({
-    mutationFn: async ({ productId, quantity }: { productId: number; quantity: number }) => {
-      const response = await apiRequest("POST", "/api/cart", {
-        sessionId,
-        productId,
-        quantity,
+    mutationFn: async ({ productId, quantity, size, price }: { 
+      productId: number; 
+      quantity: number; 
+      size?: string; 
+      price?: string; 
+    }) => {
+      return await apiRequest("/api/cart", {
+        method: "POST",
+        body: {
+          sessionId: sessionId || "default-session",
+          productId,
+          quantity,
+          size: size || "500g",
+          price: price || "0,00"
+        }
       });
-      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     },
     onError: (error) => {
       toast({
@@ -43,13 +52,13 @@ export function useCart() {
 
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ cartItemId, quantity }: { cartItemId: number; quantity: number }) => {
-      const response = await apiRequest("PUT", `/api/cart/${cartItemId}`, {
-        quantity,
+      return await apiRequest(`/api/cart/${cartItemId}`, {
+        method: "PUT",
+        body: { quantity }
       });
-      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     },
     onError: (error) => {
       toast({
@@ -62,11 +71,12 @@ export function useCart() {
 
   const removeFromCartMutation = useMutation({
     mutationFn: async (cartItemId: number) => {
-      const response = await apiRequest("DELETE", `/api/cart/${cartItemId}`);
-      return response.json();
+      return await apiRequest(`/api/cart/${cartItemId}`, {
+        method: "DELETE"
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
       toast({
         title: "Produto removido",
         description: "O produto foi removido do carrinho.",
@@ -81,8 +91,9 @@ export function useCart() {
     },
   });
 
-  const addToCart = (product: Product, quantity: number = 1) => {
-    addToCartMutation.mutate({ productId: product.id, quantity });
+  const addToCart = (product: Product, quantity: number = 1, size: string = "500g", price?: string) => {
+    const finalPrice = price || (size === "500g" ? product.price500g : product.price1kg);
+    addToCartMutation.mutate({ productId: product.id, quantity, size, price: finalPrice });
   };
 
   const updateQuantity = (cartItemId: number, quantity: number) => {
