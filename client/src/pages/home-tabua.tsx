@@ -8,17 +8,18 @@ import OrderBumpModal from "@/components/order-bump-modal";
 import ProductTabs from "@/components/product-tabs";
 import CartBottomBar from "@/components/cart-bottom-bar";
 import { useState, useEffect } from "react";
+import type { Product, CartItem } from "@shared/schema";
 
 interface HomeTabuaProps {
   onCartToggle: () => void;
 }
 
 export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
-  const { data: products = [], isLoading } = useQuery({
+  const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"]
   });
 
-  const { data: cartItems = [] } = useQuery({
+  const { data: cartItems = [] } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"]
   });
 
@@ -52,10 +53,10 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   }
 
   // Separar produtos por categoria baseado no site original
-  const doces = products.filter((product: any) => 
+  const doces = products.filter((product: Product) => 
     product.category === 'doces' || product.name.toLowerCase().includes('doce')
   );
-  const queijos = products.filter((product: any) => 
+  const queijos = products.filter((product: Product) => 
     product.category === 'queijos' || product.name.toLowerCase().includes('queijo')
   );
 
