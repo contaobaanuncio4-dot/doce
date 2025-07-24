@@ -1,0 +1,40 @@
+[build]
+  publish = "dist"
+  command = "./build-netlify.sh"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/api/products"
+  to = "/.netlify/functions/products"
+  status = 200
+
+[[redirects]]
+  from = "/api/cart"
+  to = "/.netlify/functions/cart"
+  status = 200
+
+[[redirects]]
+  from = "/api/cart/*"
+  to = "/.netlify/functions/cart"
+  status = 200
+
+[[redirects]]
+  from = "/api/orders"
+  to = "/.netlify/functions/orders"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
+  directory = "netlify/functions"

@@ -1,0 +1,6 @@
+/api/products  /.netlify/functions/products  200
+/api/cart     /.netlify/functions/cart     200
+/api/cart/*   /.netlify/functions/cart     200
+/api/orders   /.netlify/functions/orders   200
+/api/orders/* /.netlify/functions/orders   200
+/*            /index.html                  200

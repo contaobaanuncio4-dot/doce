@@ -34,6 +34,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Three-Tab Navigation**: Enhanced product tabs with Doces, Queijos, and new Clube Tábua sections
 - **Instagram Widget Integration**: Added LightWidget Instagram feed display after reviews section on homepage
 - **Professional Design Updates**: Removed emojis from subscription section for cleaner, more professional appearance
+- **Netlify Deployment Ready**: Complete project organization for Netlify hosting with serverless functions and optimized build process
+- **Production Architecture**: Configured dual deployment strategy supporting both Replit and Netlify platforms
 
 ## User Preferences
 
@@ -127,10 +129,19 @@ The backend uses **Express.js** with **TypeScript** running on Node.js:
 
 ## Deployment Strategy
 
-The application is configured for deployment on Replit with:
+The application supports multiple deployment platforms:
+
+### Replit Deployment (Current)
 - **Development**: Hot module replacement with Vite dev server
 - **Production**: Express serves static files built by Vite
 - **Database**: Neon Database provides managed PostgreSQL
 - **Environment**: Node.js with ES modules throughout
 
-The build process creates optimized bundles for both client and server code, with the server serving the React application as static files in production mode.
+### Netlify Deployment (Ready)
+- **Build**: Configured with `netlify.toml` and `build-netlify.sh`
+- **Functions**: Serverless functions for API endpoints (`/api/products`, `/api/cart`, `/api/orders`)
+- **Storage**: In-memory storage for demo (can be upgraded to external database)
+- **Static Files**: Optimized client build served via CDN
+- **Environment**: Node.js serverless functions with TypeScript support
+
+The build process creates optimized bundles for both client and server code, with platform-specific configurations for seamless deployment.
