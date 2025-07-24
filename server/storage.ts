@@ -1,3 +1,249 @@
+import {
+  type Product,
+  type CartItem,
+  type Order,
+  type OrderItem,
+  type ProductReview,
+  type InsertCartItem,
+  type InsertOrder,
+  type InsertOrderItem,
+  type InsertProduct,
+  type InsertProductReview,
+} from "@shared/schema";
+
+export interface IStorage {
+  // Product operations
+  getProducts(): Promise<Product[]>;
+  getProductById(id: number): Promise<Product | undefined>;
+  getProductsByCategory(category: string): Promise<Product[]>;
+  getFeaturedProducts(): Promise<Product[]>;
+  createProduct(productData: InsertProduct): Promise<Product>;
+
+  // Cart operations
+  getCartItems(sessionId: string): Promise<CartItem[]>;
+  addToCart(itemData: InsertCartItem): Promise<CartItem>;
+  updateCartItem(id: number, quantity: number): Promise<CartItem | undefined>;
+  removeFromCart(id: number): Promise<boolean>;
+  clearCart(sessionId: string): Promise<boolean>;
+
+  // Order operations
+  createOrder(orderData: InsertOrder): Promise<Order>;
+  getOrder(id: number): Promise<Order | undefined>;
+  getOrdersByCustomer(email: string): Promise<Order[]>;
+  addOrderItems(orderItemsData: InsertOrderItem[]): Promise<OrderItem[]>;
+  getOrderItems(orderId: number): Promise<OrderItem[]>;
+
+  // Review operations
+  getReviewsByProduct(productId: number): Promise<ProductReview[]>;
+  addReview(reviewData: InsertProductReview): Promise<ProductReview>;
+}
+
+class MemoryStorage implements IStorage {
+  private products: Product[] = [];
+  private cartItems: CartItem[] = [];
+  private orders: Order[] = [];
+  private orderItems: OrderItem[] = [];
+  private reviews: ProductReview[] = [];
+  private nextProductId = 1;
+  private nextCartItemId = 1;
+  private nextOrderId = 1;
+  private nextOrderItemId = 1;
+  private nextReviewId = 1;
+
+  constructor() {
+    this.initializeProducts();
+    this.initializeReviews();
+  }
+
+  private initializeProducts() {
+    // Produtos completos dos queijos linha premium do tabuademinas.com
+    const initialProducts = [
+      {
+        id: 1,
+        name: "Queijo MinasBri",
+        description: "Queijo tipo Brie artesanal, cremoso e de sabor suave. Produzido com leite fresco das montanhas de Minas Gerais seguindo técnicas tradicionais francesas.",
+        price500g: "33.90",
+        price1kg: "33.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/minasbri_300x.jpg?v=1751561892",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/minasbri_300x.jpg?v=1751561892"],
+        weight: "250g",
+        stock: 15,
+        featured: true,
+        discount: 0,
+        rating: "4.8",
+        reviews: 92,
+        createdAt: new Date(),
+      },
+      {
+        id: 2,
+        name: "Kit 4 Queijos de Alagoa-MG (parmesão)",
+        description: "Kit especial com 4 queijos artesanais tipo parmesão de Alagoa, Minas Gerais. Perfeito para degustação e presente para amantes de queijo.",
+        price500g: "53.90",
+        price1kg: "53.90",
+        originalPrice500g: "63.90",
+        originalPrice1kg: "63.90",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/kit4queijos_300x.png?v=1751561960",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/kit4queijos_300x.png?v=1751561960"],
+        weight: "Kit 4 unidades",
+        stock: 8,
+        featured: true,
+        discount: 15,
+        rating: "4.9",
+        reviews: 65,
+        createdAt: new Date(),
+      },
+      {
+        id: 3,
+        name: "Queijo Canastra Meia Cura 1kg/1,2kg",
+        description: "Queijo Canastra tradicional com meia cura, sabor marcante e textura firme. Direto da Serra da Canastra, região patrimônio da humanidade.",
+        price500g: "69.00",
+        price1kg: "69.00",
+        originalPrice500g: "76.00",
+        originalPrice1kg: "76.00",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/4_300x.png?v=1751312328",
+        imageUrls: [
+          "https://tabuademinas.com/cdn/shop/files/4_300x.png?v=1751312328",
+          "https://tabuademinas.com/cdn/shop/files/5_300x.png?v=1751312328"
+        ],
+        weight: "1kg/1,2kg",
+        stock: 12,
+        featured: true,
+        discount: 10,
+        rating: "4.9",
+        reviews: 156,
+        createdAt: new Date(),
+      },
+      {
+        id: 4,
+        name: "Queijo Canastra Curado",
+        description: "Queijo Canastra com cura especial, textura firme e sabor intenso. Ideal para quem aprecia queijos de personalidade marcante.",
+        price500g: "79.00",
+        price1kg: "79.00", 
+        originalPrice500g: "86.00",
+        originalPrice1kg: "86.00",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/6_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/6_300x.png?v=1751312328"],
+        weight: "1kg",
+        stock: 10,
+        featured: true,
+        discount: 8,
+        rating: "4.8",
+        reviews: 134,
+        createdAt: new Date(),
+      },
+      {
+        id: 5,
+        name: "Queijo Canastra Fresco 1kg",
+        description: "Queijo Canastra fresco, textura macia e sabor suave. Perfeito para quem busca o sabor autêntico da Serra da Canastra.",
+        price500g: "59.00",
+        price1kg: "59.00",
+        originalPrice500g: "65.00",
+        originalPrice1kg: "65.00",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/7_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/7_300x.png?v=1751312328"],
+        weight: "1kg",
+        stock: 18,
+        featured: false,
+        discount: 9,
+        rating: "4.7",
+        reviews: 89,
+        createdAt: new Date(),
+      },
+      {
+        id: 6,
+        name: "Queijo Reino 1kg/1,5kg",
+        description: "Queijo Reino artesanal com sabor acentuado e textura firme. Tradição mineira para paladares exigentes.",
+        price500g: "75.00",
+        price1kg: "75.00",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/8_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/8_300x.png?v=1751312328"],
+        weight: "1kg/1,5kg",
+        stock: 14,
+        featured: true,
+        discount: 0,
+        rating: "4.6",
+        reviews: 72,
+        createdAt: new Date(),
+      },
+      {
+        id: 7,
+        name: "Queijo Colonial 1kg/1,2kg",
+        description: "Queijo Colonial tradicional com sabor marcante e textura consistente. Produzido artesanalmente seguindo receitas familiares.",
+        price500g: "49.00",
+        price1kg: "49.00",
+        originalPrice500g: "55.00",
+        originalPrice1kg: "55.00",
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/9_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/9_300x.png?v=1751312328"],
+        weight: "1kg/1,2kg",
+        stock: 20,
+        featured: false,
+        discount: 11,
+        rating: "4.5",
+        reviews: 63,
+        createdAt: new Date(),
+      },
+      {
+        id: 8,
+        name: "Requeijão Cremoso 1kg",
+        description: "Requeijão cremoso artesanal, ideal para lanches e receitas. Textura aveludada e sabor autêntico mineiro.",
+        price500g: "39.90",
+        price1kg: "39.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "queijos",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/10_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/10_300x.png?v=1751312328"],
+        weight: "1kg",
+        stock: 25,
+        featured: true,
+        discount: 0,
+        rating: "4.9",
+        reviews: 187,
+        createdAt: new Date(),
+      },
+      {
+        id: 9,
+        name: "Doce de Leite Cremoso 1kg",
+        description: "Doce de leite artesanal cremoso, preparado com leite fresco. Tradição mineira em cada colherada, ideal para sobremesas.",
+        price500g: "42.90",
+        price1kg: "74.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/11_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/11_300x.png?v=1751312328"],
+        weight: "500g - 1kg",
+        stock: 30,
+        featured: true,
+        discount: 0,
+        rating: "4.8",
+        reviews: 203,
+        createdAt: new Date(),
+      },
+      {
+        id: 10,
+        name: "Doce de Abóbora com Coco",
+        description: "Doce tradicional de abóbora com coco ralado, textura cremosa e sabor caseiro. Receita familiar passada por gerações.",
+        price500g: "32.90",
+        price1kg: "59.90",
+        originalPrice500g: null,
+        originalPrice1kg: null,
+        category: "doces",
+        imageUrl: "https://tabuademinas.com/cdn/shop/files/12_300x.png?v=1751312328",
+        imageUrls: ["https://tabuademinas.com/cdn/shop/files/12_300x.png?v=1751312328"],
+        weight: "500g - 1kg",
         stock: 22,
         featured: true,
         discount: 0,
@@ -205,6 +451,9 @@
       imageUrls: productData.imageUrls ?? null,
       weight: productData.weight ?? null,
       stock: productData.stock ?? null,
+      featured: productData.featured ?? null,
+      discount: productData.discount ?? null,
+      rating: productData.rating ?? null,
       createdAt: new Date(),
     };
     this.products.push(product);
