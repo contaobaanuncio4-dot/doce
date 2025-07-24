@@ -1,6 +1,6 @@
 [build]
   publish = "dist/public"
-  command = "vite build && cp _redirects dist/public/_redirects"
+  command = "rm -rf node_modules/.vite client/.vite dist && vite build && cp _redirects dist/public/_redirects"
 
 [build.environment]
   NODE_VERSION = "20"

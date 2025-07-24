@@ -46,6 +46,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Image Loading Optimization**: Implemented comprehensive image optimization system - all 66 Imgur URLs now use optimized format (m.jpg) for 50-70% smaller file sizes, added skeleton loading components, image preloading for critical images, and intelligent fallback mechanisms
 - **CEP API Debug Enhancement**: Enhanced Netlify CEP function with detailed logging, multiple extraction methods, improved error handling, and direct ViaCEP API testing to resolve "CEP não encontrado" errors on production deployment
 - **Build Fix for Netlify**: Removed ImageSkeleton and image preload components that were causing build failures on Netlify deployment - replaced with simple img tags with error handling to ensure reliable builds
+- **Cache Clearing Enhancement**: Added comprehensive cache clearing to Netlify build command and updated browserslist to resolve persistent build failures
 
 ## User Preferences
 
