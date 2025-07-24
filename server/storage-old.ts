@@ -7,6 +7,8 @@ import {
   type InsertCartItem,
   type InsertOrder,
   type InsertOrderItem,
+  type InsertProduct,
+  type InsertProductReview,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -15,24 +17,25 @@ export interface IStorage {
   getProductById(id: number): Promise<Product | undefined>;
   getProductsByCategory(category: string): Promise<Product[]>;
   getFeaturedProducts(): Promise<Product[]>;
-  getProductReviews(productId: number): Promise<ProductReview[]>;
+  createProduct(productData: InsertProduct): Promise<Product>;
 
   // Cart operations
   getCartItems(sessionId: string): Promise<CartItem[]>;
-  addToCart(cartItem: InsertCartItem): Promise<CartItem>;
-  updateCartItem(id: number, updates: Partial<CartItem>): Promise<CartItem | undefined>;
+  addToCart(itemData: InsertCartItem): Promise<CartItem>;
+  updateCartItem(id: number, quantity: number): Promise<CartItem | undefined>;
   removeFromCart(id: number): Promise<boolean>;
-  clearCart(sessionId: string): Promise<void>;
+  clearCart(sessionId: string): Promise<boolean>;
 
   // Order operations
-  createOrder(order: InsertOrder): Promise<Order>;
-  getOrderById(id: number): Promise<Order | undefined>;
-  getOrdersBySession(sessionId: string): Promise<Order[]>;
-  updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
-
-  // Order item operations
-  createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem>;
+  createOrder(orderData: InsertOrder): Promise<Order>;
+  getOrder(id: number): Promise<Order | undefined>;
+  getOrdersByCustomer(email: string): Promise<Order[]>;
+  addOrderItems(orderItemsData: InsertOrderItem[]): Promise<OrderItem[]>;
   getOrderItems(orderId: number): Promise<OrderItem[]>;
+
+  // Review operations
+  getReviewsByProduct(productId: number): Promise<ProductReview[]>;
+  addReview(reviewData: InsertProductReview): Promise<ProductReview>;
 }
 
 class MemoryStorage implements IStorage {
@@ -41,6 +44,11 @@ class MemoryStorage implements IStorage {
   private orders: Order[] = [];
   private orderItems: OrderItem[] = [];
   private reviews: ProductReview[] = [];
+  private nextProductId = 1;
+  private nextCartItemId = 1;
+  private nextOrderId = 1;
+  private nextOrderItemId = 1;
+  private nextReviewId = 1;
 
   constructor() {
     this.initializeProducts();
@@ -48,7 +56,7 @@ class MemoryStorage implements IStorage {
   }
 
   private initializeProducts() {
-    // Produtos completos dos queijos linha premium do tabuademinas.com
+    // Produtos completos - 33 produtos (19 queijos + 14 doces)
     const initialProducts = [
       {
     id: 1,
@@ -680,7 +688,9 @@ class MemoryStorage implements IStorage {
     createdAt: new Date(),
   }
 ];
+
     this.products = initialProducts;
+    this.nextProductId = 34;
   }
 
   private initializeReviews() {
@@ -712,6 +722,7 @@ class MemoryStorage implements IStorage {
     ];
 
     this.reviews = mockReviews;
+    this.nextReviewId = mockReviews.length + 1;
   }
 
   // Product operations
@@ -731,8 +742,23 @@ class MemoryStorage implements IStorage {
     return this.products.filter(p => p.featured);
   }
 
-  async getProductReviews(productId: number): Promise<ProductReview[]> {
-    return this.reviews.filter(r => r.productId === productId);
+  async createProduct(productData: InsertProduct): Promise<Product> {
+    const product: Product = {
+      id: this.nextProductId++,
+      ...productData,
+      reviews: productData.reviews ?? null,
+      originalPrice500g: productData.originalPrice500g ?? null,
+      originalPrice1kg: productData.originalPrice1kg ?? null,
+      imageUrls: productData.imageUrls ?? null,
+      weight: productData.weight ?? null,
+      stock: productData.stock ?? null,
+      featured: productData.featured ?? null,
+      discount: productData.discount ?? null,
+      rating: productData.rating ?? null,
+      createdAt: new Date(),
+    };
+    this.products.push(product);
+    return product;
   }
 
   // Cart operations
@@ -740,102 +766,108 @@ class MemoryStorage implements IStorage {
     return this.cartItems.filter(item => item.sessionId === sessionId);
   }
 
-  async addToCart(cartItem: InsertCartItem): Promise<CartItem> {
+  async addToCart(itemData: InsertCartItem): Promise<CartItem> {
     const existingItem = this.cartItems.find(
       item => 
-        item.sessionId === cartItem.sessionId && 
-        item.productId === cartItem.productId &&
-        item.size === cartItem.size
+        item.sessionId === itemData.sessionId && 
+        item.productId === itemData.productId &&
+        item.size === itemData.size
     );
 
     if (existingItem) {
-      existingItem.quantity += cartItem.quantity;
+      existingItem.quantity += itemData.quantity;
       return existingItem;
     }
 
-    const newItem: CartItem = {
-      ...cartItem,
-      id: this.cartItems.length + 1,
-      size: cartItem.size || "500g",
-      price: cartItem.price || "0.00",
+    const cartItem: CartItem = {
+      id: this.nextCartItemId++,
+      ...itemData,
+      size: itemData.size || '500g',
+      price: itemData.price || '0.00',
       createdAt: new Date(),
     };
-
-    this.cartItems.push(newItem);
-    return newItem;
+    this.cartItems.push(cartItem);
+    return cartItem;
   }
 
-  async updateCartItem(id: number, updates: Partial<CartItem>): Promise<CartItem | undefined> {
-    const index = this.cartItems.findIndex(item => item.id === id);
-    if (index === -1) return undefined;
-
-    this.cartItems[index] = { ...this.cartItems[index], ...updates };
-    return this.cartItems[index];
+  async updateCartItem(id: number, quantity: number): Promise<CartItem | undefined> {
+    const item = this.cartItems.find(item => item.id === id);
+    if (item) {
+      item.quantity = quantity;
+    }
+    return item;
   }
 
   async removeFromCart(id: number): Promise<boolean> {
     const index = this.cartItems.findIndex(item => item.id === id);
-    if (index === -1) return false;
-
-    this.cartItems.splice(index, 1);
-    return true;
+    if (index !== -1) {
+      this.cartItems.splice(index, 1);
+      return true;
+    }
+    return false;
   }
 
-  async clearCart(sessionId: string): Promise<void> {
+  async clearCart(sessionId: string): Promise<boolean> {
+    const initialLength = this.cartItems.length;
     this.cartItems = this.cartItems.filter(item => item.sessionId !== sessionId);
+    return this.cartItems.length < initialLength;
   }
 
   // Order operations
-  async createOrder(order: InsertOrder): Promise<Order> {
-    const newOrder: Order = {
-      ...order,
-      id: this.orders.length + 1,
-      status: order.status || "pending",
-      customerCpf: order.customerCpf || null,
-      complement: order.complement || null,
-      cep: order.cep || null,
-      state: order.state || null,
-      total: order.total || "0.00",
-      shippingCost: order.shippingCost || "0.00",
-      discount: order.discount || null,
-      pixCode: order.pixCode || null,
+  async createOrder(orderData: InsertOrder): Promise<Order> {
+    const order: Order = {
+      id: this.nextOrderId++,
+      ...orderData,
+      discount: orderData.discount || null,
+      status: orderData.status || null,
+      addressComplement: orderData.addressComplement || null,
+      paymentMethod: orderData.paymentMethod || null,
+      pixCode: orderData.pixCode || null,
+      blackCatTransactionId: orderData.blackCatTransactionId || null,
       createdAt: new Date(),
     };
-
-    this.orders.push(newOrder);
-    return newOrder;
+    this.orders.push(order);
+    return order;
   }
 
-  async getOrderById(id: number): Promise<Order | undefined> {
-    return this.orders.find(o => o.id === id);
+  async getOrder(id: number): Promise<Order | undefined> {
+    return this.orders.find(order => order.id === id);
   }
 
-  async getOrdersBySession(sessionId: string): Promise<Order[]> {
-    return this.orders.filter(o => o.sessionId === sessionId);
+  async getOrdersByCustomer(email: string): Promise<Order[]> {
+    return this.orders.filter(order => order.customerEmail === email);
   }
 
-  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
-    const index = this.orders.findIndex(o => o.id === id);
-    if (index === -1) return undefined;
-
-    this.orders[index].status = status;
-    return this.orders[index];
-  }
-
-  // Order item operations
-  async createOrderItem(orderItem: InsertOrderItem): Promise<OrderItem> {
-    const newOrderItem: OrderItem = {
-      ...orderItem,
-      id: this.orderItems.length + 1,
+  async addOrderItems(orderItemsData: InsertOrderItem[]): Promise<OrderItem[]> {
+    const orderItems = orderItemsData.map(itemData => ({
+      id: this.nextOrderItemId++,
+      ...itemData,
+      size: itemData.size || '500g',
+      price: itemData.price || '0.00',
       createdAt: new Date(),
-    };
-
-    this.orderItems.push(newOrderItem);
-    return newOrderItem;
+    }));
+    this.orderItems.push(...orderItems);
+    return orderItems;
   }
 
   async getOrderItems(orderId: number): Promise<OrderItem[]> {
     return this.orderItems.filter(item => item.orderId === orderId);
+  }
+
+  // Review operations
+  async getReviewsByProduct(productId: number): Promise<ProductReview[]> {
+    return this.reviews.filter(review => review.productId === productId);
+  }
+
+  async addReview(reviewData: InsertProductReview): Promise<ProductReview> {
+    const review: ProductReview = {
+      id: this.nextReviewId++,
+      ...reviewData,
+      comment: reviewData.comment || null,
+      createdAt: new Date(),
+    };
+    this.reviews.push(review);
+    return review;
   }
 }
 
