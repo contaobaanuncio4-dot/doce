@@ -6,6 +6,10 @@ echo "Building for Netlify..."
 echo "Building client..."
 npx vite build
 
+# Copy redirects file to the publish directory
+echo "Copying redirects..."
+cp _redirects dist/public/_redirects
+
 # Create netlify functions directory
 echo "Preparing Netlify functions..."
 mkdir -p netlify/functions
