@@ -4,7 +4,7 @@ export default function PromoBanner() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-center">
           <img 
-            src="https://imgur.com/a/LScWqxs"
+            src="https://i.imgur.com/ED3AJEr.png"
             alt="Promoção Tábua de Minas"
             className="max-w-full h-auto rounded-lg shadow-md"
             style={{ maxHeight: '300px' }}
