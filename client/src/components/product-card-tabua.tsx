@@ -30,24 +30,30 @@ interface ProductCardTabuaProps {
 
 export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
   const [showCartSidebar, setShowCartSidebar] = useState(false);
   const queryClient = useQueryClient();
   
   const addToCartDirectMutation = useMutation({
     mutationFn: async () => {
+      const price = selectedSize === "500g" 
+        ? (product.price500g || product.price)
+        : (product.price1kg || product.price);
+        
       return await apiRequest("/api/cart", {
         method: "POST",
         body: {
           productId: product.id,
-          quantity: 1,
-          weight: "500g",
-          price: product.price500g || product.price,
+          quantity: quantity,
+          size: selectedSize,
+          price: price,
           sessionId: 'default-session'
         },
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      setShowCartSidebar(true);
     },
   });
 
@@ -129,64 +135,81 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             {product.description}
           </p>
 
-          {/* Preços */}
-          <div className="space-y-1 mb-4">
-            {product.category === "doces" ? (
-              <div className="space-y-1">
-                {/* Preço 500g */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">500g:</span>
-                  <div className="flex items-center gap-2">
-                    {product.featured && product.originalPrice500g && (
-                      <span className="text-sm text-gray-400 line-through">
-                        {product.originalPrice500g}
-                      </span>
-                    )}
-                    <span className="font-bold text-lg text-[#0F2E51]">
-                      {product.price500g}
-                    </span>
+          {/* Seleção de tamanho */}
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Escolha o tamanho:</h4>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setSelectedSize("500g")}
+                className={`p-3 rounded-xl border transition-all duration-200 ${
+                  selectedSize === "500g"
+                    ? "border-[#DDAF36] bg-[#DDAF36]/10 text-[#0F2E51]"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="text-center">
+                  <div className="text-sm font-medium">500g</div>
+                  <div className="text-lg font-bold text-[#0F2E51]">
+                    R$ {product.price500g || product.price}
                   </div>
+                  {product.featured && product.originalPrice500g && (
+                    <div className="text-xs text-gray-400 line-through">
+                      R$ {product.originalPrice500g}
+                    </div>
+                  )}
                 </div>
-                
-                {/* Preço 1kg */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">1kg:</span>
-                  <div className="flex items-center gap-2">
-                    {product.featured && product.originalPrice1kg && (
-                      <span className="text-sm text-gray-400 line-through">
-                        {product.originalPrice1kg}
-                      </span>
-                    )}
-                    <span className="font-bold text-lg text-[#0F2E51]">
-                      {product.price1kg}
-                    </span>
+              </button>
+              
+              <button
+                onClick={() => setSelectedSize("1kg")}
+                className={`p-3 rounded-xl border transition-all duration-200 ${
+                  selectedSize === "1kg"
+                    ? "border-[#DDAF36] bg-[#DDAF36]/10 text-[#0F2E51]"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="text-center">
+                  <div className="text-sm font-medium">1kg</div>
+                  <div className="text-lg font-bold text-[#0F2E51]">
+                    R$ {product.price1kg || product.price}
                   </div>
+                  {product.featured && product.originalPrice1kg && (
+                    <div className="text-xs text-gray-400 line-through">
+                      R$ {product.originalPrice1kg}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                {product.featured && product.originalPrice500g && (
-                  <span className="text-lg text-gray-400 line-through">
-                    {product.originalPrice500g}
-                  </span>
-                )}
-                <span className="font-bold text-xl text-[#0F2E51]">
-                  {product.price500g || product.price}
-                </span>
-              </div>
-            )}
+              </button>
+            </div>
+          </div>
+
+          {/* Seleção de quantidade */}
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Quantidade:</h4>
+            <div className="flex items-center justify-center border border-gray-200 rounded-xl w-24 mx-auto">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="px-3 py-2 text-gray-600 hover:text-[#0F2E51] transition-colors"
+              >
+                -
+              </button>
+              <span className="px-4 py-2 font-medium text-[#0F2E51]">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-3 py-2 text-gray-600 hover:text-[#0F2E51] transition-colors"
+              >
+                +
+              </button>
+            </div>
           </div>
 
           {/* Botão de adicionar ao carrinho */}
           <Button
-            onClick={() => {
-              addToCartDirectMutation.mutate();
-              setShowCartSidebar(true);
-            }}
+            onClick={() => addToCartDirectMutation.mutate()}
             disabled={addToCartDirectMutation.isPending}
             className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300"
           >
-            {addToCartDirectMutation.isPending ? "Adicionando..." : "Adicionar ao Carrinho"}
+            {addToCartDirectMutation.isPending ? "Adicionando..." : `Adicionar ${quantity}x ao Carrinho`}
           </Button>
         </CardContent>
       </Card>
