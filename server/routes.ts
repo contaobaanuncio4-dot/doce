@@ -169,34 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // CEP API
-  app.get("/api/cep/:cep", async (req, res) => {
-    try {
-      const cep = req.params.cep.replace(/\D/g, '');
-      
-      if (cep.length !== 8) {
-        return res.status(400).json({ message: "Invalid CEP format" });
-      }
-      
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await response.json();
-      
-      if (data.erro) {
-        return res.status(404).json({ message: "CEP not found" });
-      }
-      
-      res.json({
-        address: data.logradouro,
-        neighborhood: data.bairro,
-        city: data.localidade,
-        state: data.uf,
-        zipCode: data.cep
-      });
-    } catch (error) {
-      console.error("Error fetching CEP:", error);
-      res.status(500).json({ message: "Failed to fetch CEP data" });
-    }
-  });
+  // CEP API removida a pedido do usuário
 
   // Order routes
   app.post("/api/orders", async (req, res) => {
