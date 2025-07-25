@@ -18,8 +18,10 @@ https://seu-dominio.replit.dev/api/webhooks/blackcat
 
 ### No Netlify:
 ```
-https://seu-site.netlify.app/.netlify/functions/webhook-blackcat
+https://tabuademinas.fun/api/webhooks/blackcat
 ```
+
+**⚠️ IMPORTANTE**: O webhook no Netlify precisa ser reimplantado para funcionar. Após fazer push das alterações, a função webhook-blackcat.ts será automaticamente implantada.
 
 ## Como Configurar no BlackCat
 

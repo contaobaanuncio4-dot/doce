@@ -59,6 +59,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Netlify Environment Setup Guide**: Created NETLIFY-ENV-SETUP.md with instructions for configuring BlackCat API key on Netlify deployment
 - **BlackCat Webhook Integration**: Implemented complete webhook system for payment status updates - webhook handlers for both Replit (/api/webhooks/blackcat) and Netlify (/.netlify/functions/webhook-blackcat) with automatic order status updates when payments are confirmed or cancelled
 - **Webhook Documentation**: Created WEBHOOK-SETUP.md with complete instructions for configuring webhooks in BlackCat dashboard and testing payment notifications
+- **Netlify Webhook Configuration**: Added redirect rule to netlify.toml for /api/webhooks/blackcat → /.netlify/functions/webhook-blackcat mapping
+- **Webhook Deployment Guide**: Created DEPLOY-WEBHOOK.md with troubleshooting steps for Netlify webhook deployment - function needs to be redeployed to work properly
 
 ## User Preferences
 
