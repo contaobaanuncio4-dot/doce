@@ -1,207 +1,225 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, ShoppingCart, Plus, Minus } from "lucide-react";
-import { useCart } from "@/hooks/use-cart";
-import { useToast } from "@/hooks/use-toast";
-// ImageSkeleton removido para resolver problema de build no Netlify
-import type { Product } from "@shared/schema";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useState } from "react";
+import { CartSidebar } from "./cart-sidebar-new";
 
-interface ProductCardProps {
-  product: Product;
-  onAddToCart?: () => void;
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price?: string;
+  price500g?: string;
+  price1kg?: string;
+  originalPrice?: string;
+  originalPrice500g?: string;
+  originalPrice1kg?: string;
+  imageUrl: string;
+  category: string;
+  discount?: number;
+  featured?: boolean;
+  rating?: string;
+  reviews?: number;
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+interface ProductCardTabuaProps {
+  product: Product;
+}
+
+export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
-  const { addToCart } = useCart();
-  const { toast } = useToast();
-
-  const handleAddToCart = () => {
-    const price = product.category === "doces" 
-      ? (selectedSize === "500g" ? product.price500g : product.price1kg)
-      : product.price500g;
-    const size = product.category === "doces" ? selectedSize : "500g";
-    
-    addToCart(product, quantity, size, price);
-    toast({
-      title: "Produto adicionado!",
-      description: product.category === "doces" 
-        ? `${product.name} (${selectedSize}) foi adicionado ao carrinho.`
-        : `${product.name} foi adicionado ao carrinho.`,
-    });
-    onAddToCart?.();
-  };
-
-  const increaseQuantity = () => {
-    if (quantity < 10) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  // Preço baseado no tamanho selecionado (para doces) ou preço padrão (para queijos)
-  const currentPrice = product.category === "doces" 
-    ? (selectedSize === "500g" ? product.price500g : product.price1kg)
-    : product.price500g;
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
+  const queryClient = useQueryClient();
   
-  const originalPrice = parseFloat(currentPrice.replace("R$ ", "").replace(",", "."));
-  const discountedPrice = (product.discount && product.discount > 0)
-    ? originalPrice - (originalPrice * product.discount / 100)
-    : originalPrice;
+  const addToCartDirectMutation = useMutation({
+    mutationFn: async () => {
+      const price = selectedSize === "500g" 
+        ? (product.price500g || product.price)
+        : (product.price1kg || product.price);
+        
+      return await apiRequest("/api/cart", {
+        method: "POST",
+        body: {
+          productId: product.id,
+          quantity: quantity,
+          size: selectedSize,
+          price: price,
+          sessionId: 'default-session'
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      setShowCartSidebar(true);
+    },
+  });
+
+  const discountPercent = product.discount || 20;
 
   return (
-    <Card className="product-card">
-      <div className="relative">
-        <img 
-          src={product.imageUrl} 
-          alt={product.name}
-          className="w-full h-64 object-cover rounded-t-2xl"
-          loading="lazy"
-          decoding="async"
-          onError={(e) => {
-            if (!e.currentTarget.src.includes('fallback')) {
-              e.currentTarget.src = product.imageUrl + '?fallback=1';
-            }
-          }}
-        />
-        {product.discount && product.discount > 0 && (
-          <Badge className="discount-badge absolute top-4 left-4">
-            -{product.discount}%
-          </Badge>
-        )}
-        {product.featured && (
-          <Badge className="absolute top-4 right-4 bg-minas-green text-white">
-            Destaque
-          </Badge>
-        )}
-      </div>
-      
-      <CardContent className="p-6">
-        <h3 className="text-xl font-bold text-traditional-blue mb-2">
-          {product.name}
-        </h3>
-        <p className="text-gray-600 mb-4 text-sm leading-relaxed">
-          {product.description}
-        </p>
-        
-        {/* Seleção de tamanho para doces */}
-        {product.category === "doces" && (
+    <div className="group">
+      <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-0 bg-white rounded-3xl overflow-hidden">
+        <div className="relative">
+          {/* Badge de desconto */}
+          {product.featured && (
+            <div className="absolute top-4 left-4 z-10">
+              <Badge 
+                variant="destructive" 
+                className="bg-red-500 text-white px-3 py-1 text-sm font-bold rounded-full shadow-md"
+              >
+                -{discountPercent}%
+              </Badge>
+            </div>
+          )}
+
+          {/* Badge "Mais Vendido" */}
+          {product.featured && (
+            <div className="absolute top-4 right-4 z-10">
+              <Badge 
+                variant="secondary" 
+                className="bg-[#DDAF36] text-[#0F2E51] px-3 py-1 text-xs font-bold rounded-full shadow-md"
+              >
+                MAIS VENDIDO
+              </Badge>
+            </div>
+          )}
+        </div>
+
+        {/* Container da imagem */}
+        <div className="relative aspect-square overflow-hidden">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              if (!e.currentTarget.src.includes('fallback')) {
+                e.currentTarget.src = product.imageUrl + '?fallback=1';
+              }
+            }}
+          />
+        </div>
+
+        <CardContent className="p-6">
+          {/* Rating */}
+          {product.rating && (
+            <div className="flex items-center gap-1 mb-2">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <svg
+                    key={star}
+                    className="w-4 h-4 fill-yellow-400"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-sm text-gray-600 ml-1">
+                {product.rating} ({product.reviews || 0})
+              </span>
+            </div>
+          )}
+
+          {/* Nome do produto */}
+          <h3 className="font-bold text-lg text-[#0F2E51] mb-2 line-clamp-2">
+            {product.name}
+          </h3>
+
+          {/* Descrição */}
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {product.description}
+          </p>
+
+          {/* Seleção de tamanho */}
           <div className="mb-4">
-            <h4 className="text-sm font-medium mb-2" style={{ color: '#0F2E51' }}>
-              Escolha o tamanho:
-            </h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Escolha o tamanho:</h4>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setSelectedSize("500g")}
-                className={`p-2 border-2 rounded-lg text-center transition-colors text-xs ${
+                className={`p-3 rounded-xl border transition-all duration-200 ${
                   selectedSize === "500g"
-                    ? "border-yellow-500 bg-yellow-50"
+                    ? "border-[#DDAF36] bg-[#DDAF36]/10 text-[#0F2E51]"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
-                style={{
-                  borderColor: selectedSize === "500g" ? "#DDAF36" : undefined,
-                  backgroundColor: selectedSize === "500g" ? "#DDAF36" : undefined,
-                  color: selectedSize === "500g" ? "white" : "#0F2E51"
-                }}
               >
-                <div className="font-medium">500g</div>
-                <div className="text-xs">
-                  R$ {product.price500g}
+                <div className="text-center">
+                  <div className="text-sm font-medium">500g</div>
+                  <div className="text-lg font-bold text-[#0F2E51]">
+                    R$ {product.price500g || product.price}
+                  </div>
+                  {product.featured && product.originalPrice500g && (
+                    <div className="text-xs text-gray-400 line-through">
+                      R$ {product.originalPrice500g}
+                    </div>
+                  )}
                 </div>
               </button>
+              
               <button
                 onClick={() => setSelectedSize("1kg")}
-                className={`p-2 border-2 rounded-lg text-center transition-colors text-xs ${
+                className={`p-3 rounded-xl border transition-all duration-200 ${
                   selectedSize === "1kg"
-                    ? "border-yellow-500 bg-yellow-50"
+                    ? "border-[#DDAF36] bg-[#DDAF36]/10 text-[#0F2E51]"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
-                style={{
-                  borderColor: selectedSize === "1kg" ? "#DDAF36" : undefined,
-                  backgroundColor: selectedSize === "1kg" ? "#DDAF36" : undefined,
-                  color: selectedSize === "1kg" ? "white" : "#0F2E51"
-                }}
               >
-                <div className="font-medium">1kg</div>
-                <div className="text-xs">
-                  R$ {product.price1kg}
+                <div className="text-center">
+                  <div className="text-sm font-medium">1kg</div>
+                  <div className="text-lg font-bold text-[#0F2E51]">
+                    R$ {product.price1kg || product.price}
+                  </div>
+                  {product.featured && product.originalPrice1kg && (
+                    <div className="text-xs text-gray-400 line-through">
+                      R$ {product.originalPrice1kg}
+                    </div>
+                  )}
                 </div>
               </button>
             </div>
           </div>
-        )}
 
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            {product.discount && product.discount > 0 && (
-              <span className="text-gray-500 line-through text-sm">
-                R$ {originalPrice.toFixed(2).replace(".", ",")}
-              </span>
-            )}
-            <span className="text-2xl font-bold text-minas-green ml-2">
-              R$ {discountedPrice.toFixed(2).replace(".", ",")}
-            </span>
-            {product.weight && product.category !== "doces" && (
-              <span className="text-gray-500 text-sm ml-2">
-                {product.weight}
-              </span>
-            )}
+          {/* Seleção de quantidade */}
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Quantidade:</h4>
+            <div className="flex items-center justify-center border border-gray-200 rounded-xl w-24 mx-auto">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="px-3 py-2 text-gray-600 hover:text-[#0F2E51] transition-colors"
+              >
+                -
+              </button>
+              <span className="px-4 py-2 font-medium text-[#0F2E51]">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-3 py-2 text-gray-600 hover:text-[#0F2E51] transition-colors"
+              >
+                +
+              </button>
+            </div>
           </div>
-          
-          <div className="flex items-center text-yellow-400">
-            <Star className="w-4 h-4 fill-current" />
-            <span className="text-sm text-gray-600 ml-1">
-              {product.rating} ({product.reviews})
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <div className="quantity-selector">
-            <button 
-              className="quantity-btn"
-              onClick={decreaseQuantity}
-              disabled={quantity <= 1}
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <input 
-              type="number" 
-              className="quantity-input"
-              value={quantity}
-              onChange={(e) => {
-                const value = parseInt(e.target.value) || 1;
-                setQuantity(Math.max(1, Math.min(10, value)));
-              }}
-              min="1"
-              max="10"
-            />
-            <button 
-              className="quantity-btn"
-              onClick={increaseQuantity}
-              disabled={quantity >= 10}
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-          
-          <Button 
-            className="btn-primary flex items-center"
-            onClick={handleAddToCart}
+
+          {/* Botão de adicionar ao carrinho */}
+          <Button
+            onClick={() => addToCartDirectMutation.mutate()}
+            disabled={addToCartDirectMutation.isPending}
+            className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300"
           >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Comprar
+            {addToCartDirectMutation.isPending ? "Adicionando..." : `Adicionar ${quantity}x ao Carrinho`}
           </Button>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Cart Sidebar */}
+      <CartSidebar 
+        isOpen={showCartSidebar} 
+        onClose={() => setShowCartSidebar(false)}
+        product={product}
+      />
+    </div>
   );
 }
