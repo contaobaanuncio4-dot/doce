@@ -13,7 +13,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/use-cart";
 import { apiRequest } from "@/lib/queryClient";
-import { fetchCEP } from "@/lib/cep-api";
+// CEP API removida
 import { generatePIXCode } from "@/lib/pix-api";
 
 const checkoutSchema = z.object({
@@ -37,7 +37,7 @@ export default function Checkout() {
   const [step, setStep] = useState(1);
   const [pixCode, setPixCode] = useState("");
   const [orderId, setOrderId] = useState<number | null>(null);
-  const [isLoadingCEP, setIsLoadingCEP] = useState(false);
+  // CEP loading removido
   const { toast } = useToast();
   const { sessionId } = useCart();
 
@@ -95,34 +95,7 @@ export default function Checkout() {
     },
   });
 
-  const handleCEPChange = async (cep: string) => {
-    const cleanCEP = cep.replace(/\D/g, "");
-    
-    if (cleanCEP.length === 8) {
-      setIsLoadingCEP(true);
-      try {
-        const cepData = await fetchCEP(cleanCEP);
-        
-        form.setValue("address", cepData.address);
-        form.setValue("neighborhood", cepData.neighborhood);
-        form.setValue("city", cepData.city);
-        form.setValue("state", cepData.state);
-        
-        toast({
-          title: "CEP encontrado!",
-          description: "Endereço preenchido automaticamente.",
-        });
-      } catch (error) {
-        toast({
-          title: "CEP não encontrado",
-          description: "Verifique o CEP digitado.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoadingCEP(false);
-      }
-    }
-  };
+  // CEP lookup removido a pedido do usuário
 
   const onSubmit = (data: CheckoutForm) => {
     createOrderMutation.mutate(data);
@@ -317,9 +290,7 @@ export default function Checkout() {
                                 placeholder="00000-000"
                                 onChange={(e) => {
                                   field.onChange(e);
-                                  handleCEPChange(e.target.value);
                                 }}
-                                disabled={isLoadingCEP}
                               />
                             </FormControl>
                             <FormMessage />

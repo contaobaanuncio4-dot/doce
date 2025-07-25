@@ -25,10 +25,7 @@
   to = "/.netlify/functions/orders"
   status = 200
 
-[[redirects]]
-  from = "/api/cep/*"
-  to = "/.netlify/functions/cep"
-  status = 200
+# CEP redirect removido a pedido do usuário
 
 [[redirects]]
   from = "/api/*"

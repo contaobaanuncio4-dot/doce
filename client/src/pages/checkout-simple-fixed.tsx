@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check, ShoppingBag, X, Plus } from "lucide-react";
-import { fetchCEP } from "@/lib/cep-api";
+// CEP API removida
 import QRCode from "qrcode";
 import Header from "@/components/header";
 
@@ -236,34 +236,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
     }
   };
 
-  // Função para buscar CEP automaticamente
-  const handleCepChange = async (cep: string) => {
-    // Remove caracteres não numéricos
-    const cleanCep = cep.replace(/\D/g, '');
-    
-    if (cleanCep.length === 8) {
-      try {
-        const cepData = await fetchCEP(cleanCep);
-        
-        // Preenche os campos automaticamente
-        form.setValue('address', cepData.address);
-        form.setValue('neighborhood', cepData.neighborhood);
-        form.setValue('city', cepData.city);
-        form.setValue('state', cepData.state);
-        
-        toast({
-          title: "CEP encontrado!",
-          description: "Endereço preenchido automaticamente.",
-        });
-      } catch (error) {
-        toast({
-          title: "CEP não encontrado",
-          description: "Verifique se o CEP está correto ou preencha manualmente.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
+  // CEP lookup removido a pedido do usuário
 
   // Função para formatar CPF
   const formatCPF = (cpf: string) => {
@@ -447,7 +420,6 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                                     onChange={(e) => {
                                       const formatted = formatCEP(e.target.value);
                                       field.onChange(formatted);
-                                      handleCepChange(e.target.value);
                                     }}
                                     maxLength={9}
                                   />
