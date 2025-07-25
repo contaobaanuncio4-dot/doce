@@ -1,0 +1,70 @@
+The Netlify deploy errored, with the following guidance provided:
+
+**Diagnosis:**
+The build is failing due to a module that could not be loaded during the build process. The error specifically points to a file `/client/src/lib/cep-api` that could not be loaded, which is imported by `/client/src/pages/checkout-simple-fi`.
+
+**Solution:**
+1. Verify that the file `/client/src/lib/cep-api` exists and is committed to the repository.
+2. Ensure that the file `/client/src/lib/cep-api` is correctly referenced in the `checkout-simple-fi` file.
+3. If the file is correctly committed and referenced, consider adding `cep-api` to the `external` configuration in the build tool if it's not a typical JavaScript module. Make sure the package or file is present in the `package.json` file.
+
+By following these steps, you should be able to resolve the issue with the module loading during the build process.
+
+The relevant error logs are:
+
+Line 60: [96m[1mbuild.command from netlify.toml                               [22m[39m
+Line 61: [96m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 62: ​
+Line 63: [36m$ rm -rf node_modules/.vite client/.vite dist && vite build && cp _redirects dist/public/_redirects[39m
+Line 64: [36mvite v5.4.19 [32mbuilding for production...[36m[39m
+Line 65: transforming...
+Line 66: Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+Line 67:   npx update-browserslist-db@latest
+Line 68:   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Line 69: [32m✓[39m 1642 modules transformed.
+Line 70: [31mx[39m Build failed in 1.93s
+Line 71: [31merror during build:
+Line 72: [31m[vite:load-fallback] Could not load /opt/build/repo/client/src/lib/cep-api (imported by client/src/pages/checkout-simple-fi
+Line 73:     at async open (node:internal/fs/promises:639:25)
+Line 74:     at async Object.readFile (node:internal/fs/promises:1246:14)
+Line 75:     at async Object.load (file:///opt/build/repo/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:65341:25)
+Line 76:     at async PluginDriver.hookFirstAndGetPlugin (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20689:2
+Line 77:     at async file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:19809:33
+Line 78:     at async Queue.work (file:///opt/build/repo/node_modules/rollup/dist/es/shared/node-entry.js:20899:32)[39m
+Line 79: [91m[1m​[22m[39m
+Line 80: [91m[1m"build.command" failed                                        [22m[39m
+Line 81: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 82: ​
+Line 83:   [31m[1mError message[22m[39m
+Line 84:   Command failed with exit code 1: rm -rf node_modules/.vite client/.vite dist && vite build && cp _redirects dist/public/_redir
+Line 85: ​
+Line 86:   [31m[1mError location[22m[39m
+Line 87:   In build.command from netlify.toml:
+Line 88:   rm -rf node_modules/.vite client/.vite dist && vite build && cp _redirects dist/public/_redirects
+Line 89: ​
+Line 90:   [31m[1mResolved config[22m[39m
+Line 91:   build:
+Line 92:     command: rm -rf node_modules/.vite client/.vite dist && vite build && cp
+Line 93:       _redirects dist/public/_redirects
+Line 94:     commandOrigin: config
+Line 95:     environment:
+Line 96:       - BLACKCAT_API_KEY
+Line 104:       node_bundler: esbuild
+Line 105:   functionsDirectory: /opt/build/repo/netlify/functions
+Line 106:   redirects:
+Line 107:     - from: /api/products
+Line 108:       status: 200
+Line 109:       to: /.netlify/functions/products
+Line 110:     - from: /api/cart
+Line 111:       status: 200
+Line 112:       to: /.netlify/functions/cart
+Line 113:     - from: /api/cart/*
+      status: 200
+      to: /.netlify/functions/cart
+    - from: /api/orders
+      status: 200
+      to:
+Line 114: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 115: Failing build: Failed to build site
+Line 116: Finished processing build request in 25.467s
+Line 117: Failed during stage 'building site': Build script returned non-zero exit code: 2

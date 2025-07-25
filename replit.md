@@ -47,7 +47,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **CEP API Debug Enhancement**: Enhanced Netlify CEP function with detailed logging, multiple extraction methods, improved error handling, and direct ViaCEP API testing to resolve "CEP não encontrado" errors on production deployment
 - **Build Fix for Netlify**: Removed ImageSkeleton and image preload components that were causing build failures on Netlify deployment - replaced with simple img tags with error handling to ensure reliable builds
 - **Cache Clearing Enhancement**: Added comprehensive cache clearing to Netlify build command and updated browserslist to resolve persistent build failures
-- **CEP API Complete Rewrite**: Completely rewrote Netlify CEP function with robust error handling, multiple extraction methods, timeout protection, and comprehensive logging to resolve all "CEP não encontrado" errors
+- **CEP API Complete Removal**: Completely removed all CEP functionality including cep-api.ts file, imports, and server routes to resolve Netlify build failures - users now fill address fields manually
 
 ## User Preferences
 
