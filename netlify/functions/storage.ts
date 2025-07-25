@@ -1,4 +1,36 @@
 // Simplified storage for Netlify
+
+// Função para criar pagamento PIX usando BlackCat
+async function createPixPayment(paymentData: {
+  valor: string;
+  identificador: string;
+  solicitacao_pagador: string;
+}) {
+  const apiKey = process.env.BLACKCAT_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('BLACKCAT_API_KEY não configurada');
+  }
+
+  const response = await fetch('https://api.blackcat.exchange/pix/qrcode', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify(paymentData)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('BlackCat API Error:', response.status, errorText);
+    throw new Error(`Erro na API BlackCat: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+// Simplified storage for Netlify
 interface Product {
   id: number;
   name: string;
@@ -702,12 +734,26 @@ export const storage = {
   },
 
   createOrder: async (orderData: any): Promise<any> => {
-    // Simplified order creation for demo
-    return {
-      id: Math.floor(Math.random() * 10000),
-      ...orderData,
-      createdAt: new Date(),
-      status: 'pending'
-    };
+    try {
+      // Gerar PIX usando BlackCat API
+      const pixPayment = await createPixPayment({
+        valor: orderData.total,
+        identificador: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
+        solicitacao_pagador: "Pagamento - Tábua de Minas"
+      });
+
+      return {
+        id: Math.floor(Math.random() * 10000),
+        ...orderData,
+        pixCode: pixPayment.pix.qrcode,
+        pixKey: pixPayment.pix.chave,
+        blackCatTransactionId: pixPayment.identificador,
+        createdAt: new Date(),
+        status: 'pending'
+      };
+    } catch (error) {
+      console.error('Erro ao criar PIX:', error);
+      throw new Error('Erro ao gerar código PIX');
+    }
   }
 };

@@ -192,7 +192,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
           <Button
             onClick={() => addToCartDirectMutation.mutate()}
             disabled={addToCartDirectMutation.isPending}
-            className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300 pl-[16px] pr-[16px] text-[12px]"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300 pl-[16px] pr-[16px] text-[12px]"
           >
             {addToCartDirectMutation.isPending ? "Adicionando..." : "Adicionar ao carrinho"}
           </Button>

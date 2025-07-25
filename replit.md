@@ -54,6 +54,9 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Badge Positioning Fix**: Resolved overlapping badges issue by repositioning discount and "Mais Vendido" labels vertically
 - **Navigation Menu Functionality**: Added working track-order and contact pages with complete functionality and proper routing
 - **TypeScript Error Fixes**: Resolved cart items type errors in header component for proper type safety
+- **Netlify PIX Integration Fix**: Added complete BlackCat PIX API integration to Netlify functions - PIX now generates correctly on deployed site when BLACKCAT_API_KEY environment variable is configured
+- **Button Styling Update**: Applied custom inline styles to product card "Adicionar ao carrinho" button with specific padding and text size
+- **Netlify Environment Setup Guide**: Created NETLIFY-ENV-SETUP.md with instructions for configuring BlackCat API key on Netlify deployment
 
 ## User Preferences
 
