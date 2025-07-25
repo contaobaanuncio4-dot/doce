@@ -17,7 +17,17 @@ export async function fetchCEP(cep: string): Promise<CEPData> {
     
     console.log(`Consultando CEP: ${cleanCep}`);
     
-    const response = await fetch(`/api/cep/${cleanCep}`, {
+    // Detectar se estamos no Netlify ou desenvolvimento local
+    const isNetlify = window.location.hostname.includes('netlify.app') || 
+                     window.location.hostname.includes('netlify.com');
+    
+    const apiUrl = isNetlify 
+      ? `/.netlify/functions/cep?cep=${cleanCep}`
+      : `/api/cep/${cleanCep}`;
+    
+    console.log(`Chamando API CEP: ${apiUrl}`);
+    
+    const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
