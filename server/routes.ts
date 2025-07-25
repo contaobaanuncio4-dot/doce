@@ -5,6 +5,7 @@ import { insertCartItemSchema, insertOrderSchema, insertOrderItemSchema } from "
 import { z } from "zod";
 import { BlackCatAPI } from "./blackcat-api";
 import { notifyUTMifyOrderCreated } from "./utmify-integration";
+import { handleBlackCatWebhook } from "./webhook-handler";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -286,6 +287,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to apply discount" });
     }
   });
+
+  // BlackCat Webhook endpoint
+  app.post("/api/webhooks/blackcat", handleBlackCatWebhook);
 
   const httpServer = createServer(app);
   return httpServer;
