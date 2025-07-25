@@ -54,94 +54,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/products/:id/reviews", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid product ID" });
-      }
-      const reviews = await storage.getReviewsByProduct(id);
-      res.json(reviews);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      res.status(500).json({ message: "Failed to fetch reviews" });
-    }
-  });
-
   // Cart routes
   app.get("/api/cart", async (req, res) => {
     try {
-      const sessionId = 'default-session';
+      const sessionId = req.query.sessionId as string;
       const cartItems = await storage.getCartItems(sessionId);
-      
-      // Get product details for each cart item
-      const cartWithProducts = await Promise.all(
-        cartItems.map(async (item) => {
-          const product = await storage.getProductById(item.productId);
-          return { ...item, product };
-        })
-      );
-      
-      res.json(cartWithProducts);
+      res.json(cartItems);
     } catch (error) {
-      console.error("Error fetching cart items:", error);
-      res.status(500).json({ message: "Failed to fetch cart items" });
-    }
-  });
-
-  app.get("/api/cart/:sessionId", async (req, res) => {
-    try {
-      const sessionId = req.params.sessionId;
-      const cartItems = await storage.getCartItems(sessionId);
-      
-      // Get product details for each cart item
-      const cartWithProducts = await Promise.all(
-        cartItems.map(async (item) => {
-          const product = await storage.getProductById(item.productId);
-          return { ...item, product };
-        })
-      );
-      
-      res.json(cartWithProducts);
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-      res.status(500).json({ message: "Failed to fetch cart items" });
+      console.error("Error fetching cart:", error);
+      res.status(500).json({ message: "Failed to fetch cart" });
     }
   });
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const { productId, quantity, weight, price, sessionId } = req.body;
-      const finalSessionId = sessionId || 'default-session';
-      
-      const product = await storage.getProductById(productId);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-
-      const finalPrice = price || (weight === "1kg" ? product.price1kg : product.price500g);
-      
-      const cartItem = await storage.addToCart({
-        sessionId: finalSessionId,
-        productId,
-        quantity,
-        size: weight,
-        price: finalPrice,
-      });
-      
+      const cartItemData = insertCartItemSchema.parse(req.body);
+      const cartItem = await storage.addToCart(cartItemData);
       res.json(cartItem);
     } catch (error) {
       console.error("Error adding to cart:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid cart item data", errors: error.errors });
+      }
       res.status(500).json({ message: "Failed to add to cart" });
     }
   });
 
-  app.put("/api/cart/:id", async (req, res) => {
+  app.patch("/api/cart/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { quantity } = req.body;
       
-      const updatedItem = await storage.updateCartItem(id, quantity);
+      if (typeof quantity !== 'number' || quantity < 1) {
+        return res.status(400).json({ message: "Quantity must be a positive number" });
+      }
+      
+      const updatedItem = await storage.updateCartItemQuantity(id, quantity);
+      
       if (!updatedItem) {
         return res.status(404).json({ message: "Cart item not found" });
       }
@@ -248,23 +197,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         blackCatTransactionId: pixTransaction.id.toString()
       });
       
-      // Criar itens do pedido
-      const orderItemsToAdd = [];
+      // Salvar itens do pedido
       for (const cartItem of cartItems) {
         const product = await storage.getProductById(cartItem.productId);
         if (product) {
-          orderItemsToAdd.push({
+          await storage.createOrderItem({
             orderId: order.id,
             productId: cartItem.productId,
             quantity: cartItem.quantity,
             price: cartItem.price,
-            size: cartItem.size || '500g'
+            size: cartItem.size
           });
         }
-      }
-      
-      if (orderItemsToAdd.length > 0) {
-        await storage.addOrderItems(orderItemsToAdd);
       }
       
       // Enviar para UTMify (PIX gerado - waiting_payment)
