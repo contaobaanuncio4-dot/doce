@@ -1,177 +1,133 @@
-import Header from "@/components/header";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowLeft, Package, Truck, CheckCircle, Search } from "lucide-react";
+import { useLocation } from "wouter";
+import Header from "@/components/header";
 
-interface TrackOrderProps {
-  onCartToggle?: () => void;
-}
+export default function TrackOrder() {
+  const [, setLocation] = useLocation();
+  const [orderNumber, setOrderNumber] = useState("");
+  const [tracking, setTracking] = useState<any>(null);
 
-export default function TrackOrder({ onCartToggle = () => {} }: TrackOrderProps) {
-  const [email, setEmail] = useState("");
-  const [showProgress, setShowProgress] = useState(false);
-  const [orderStatus, setOrderStatus] = useState<number>(0);
-  const { toast } = useToast();
-
-  // E-mails de clientes que fizeram pedidos (simulação de base de dados)
-  const validEmails = [
-    "cliente@email.com",
-    "joao@email.com", 
-    "maria@email.com",
-    "pedro@gmail.com",
-    "ana@hotmail.com"
-  ];
-
-  const handleCheckStatus = () => {
-    if (!email) {
-      toast({
-        title: "E-mail obrigatório",
-        description: "Por favor, digite seu e-mail para verificar o status do pedido.",
-        variant: "destructive",
+  const handleTrackOrder = () => {
+    // Simulação de dados de rastreamento
+    if (orderNumber.trim()) {
+      setTracking({
+        orderNumber: orderNumber,
+        status: "Em trânsito",
+        steps: [
+          { status: "Pedido confirmado", date: "25/01/2025 14:30", completed: true },
+          { status: "Preparando pedido", date: "25/01/2025 16:45", completed: true },
+          { status: "Saiu para entrega", date: "26/01/2025 08:20", completed: true },
+          { status: "Entregue", date: "Em breve", completed: false }
+        ],
+        estimatedDelivery: "26/01/2025"
       });
-      return;
-    }
-
-    if (validEmails.includes(email.toLowerCase())) {
-      // Simular diferentes status de entrega baseado no e-mail
-      const status = email.includes("cliente") ? 3 : 
-                   email.includes("joao") ? 2 : 
-                   email.includes("maria") ? 1 : 0;
-      
-      setOrderStatus(status);
-      setShowProgress(true);
-      
-      toast({
-        title: "Pedido encontrado!",
-        description: "Status do seu pedido atualizado.",
-        variant: "default",
-      });
-    } else {
-      toast({
-        title: "Pedido não encontrado",
-        description: "Não encontramos nenhum pedido com este e-mail. Verifique se o e-mail está correto.",
-        variant: "destructive",
-      });
-      setShowProgress(false);
-    }
-  };
-
-  const getProgressWidth = () => {
-    switch (orderStatus) {
-      case 0: return "8%";   // Postado
-      case 1: return "35%";  // Em Trânsito  
-      case 2: return "70%";  // Saiu para Entrega
-      case 3: return "100%"; // Entregue
-      default: return "8%";
-    }
-  };
-
-  const getStatusText = () => {
-    switch (orderStatus) {
-      case 0: return "Seu pedido foi postado e está a caminho!";
-      case 1: return "Seu pedido está em trânsito para o destino.";
-      case 2: return "Seu pedido saiu para entrega e chegará em breve!";
-      case 3: return "Seu pedido foi entregue com sucesso!";
-      default: return "Seu pedido foi postado e está a caminho!";
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header onCartToggle={onCartToggle} />
+    <div className="min-h-screen" style={{ backgroundColor: '#F7F3EF' }}>
+      <Header onCartToggle={() => {}} />
       
-      <div className="max-w-2xl mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="mb-6">
+          <button 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2 hover:opacity-80 transition-colors"
+            style={{ color: '#0F2E51' }}
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Voltar para a loja
+          </button>
+        </div>
+
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold mb-4" style={{ color: '#0F2E51' }}>
             Rastreie seu Pedido
           </h1>
-          <p className="text-lg text-gray-600">
-            Digite seu e-mail para verificar o status da entrega
+          <p className="text-gray-600">
+            Digite o número do seu pedido para acompanhar o status da entrega
           </p>
         </div>
 
-        <div className="status-container bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Status de Entrega
-          </h2>
-          
-          <div className="space-y-4 mb-6">
-            <Input
-              type="email"
-              placeholder="Digite seu e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full text-lg p-4"
-            />
-            
-            <Button
-              onClick={handleCheckStatus}
-              className="w-full text-white font-semibold py-4 text-lg"
-              style={{ backgroundColor: '#0F2E51' }}
-            >
-              Verificar Status
-            </Button>
-          </div>
-
-          {showProgress && (
-            <>
-              <p 
-                className="text-center text-gray-700 mb-6 font-medium"
-                style={{ display: 'block', marginTop: '10px' }}
+        <Card className="max-w-2xl mx-auto mb-8">
+          <CardContent className="p-6">
+            <div className="flex gap-4">
+              <Input
+                placeholder="Digite o número do pedido (ex: #1234)"
+                value={orderNumber}
+                onChange={(e) => setOrderNumber(e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                onClick={handleTrackOrder}
+                className="bg-[#0F2E51] hover:bg-[#0F2E51]/90 text-white"
               >
-                Postado de Natal, Rio Grande do Norte
-              </p>
-              
-              <div className="text-center text-sm text-gray-600 mb-4">
-                {getStatusText()}
-              </div>
-
-              <div 
-                className="progress-wrapper" 
-                style={{ display: 'block' }}
-              >
-                <div className="progress-line relative bg-gray-200 h-2 rounded-full mb-4">
-                  <div 
-                    className="absolute top-0 left-0 h-full bg-green-600 rounded-full transition-all duration-500 ease-in-out"
-                    style={{
-                      width: getProgressWidth()
-                    }}
-                  ></div>
-                </div>
-                
-                <div className="status-labels grid grid-cols-4 text-xs text-center text-gray-600">
-                  <div className={orderStatus >= 0 ? "text-green-600 font-semibold" : ""}>
-                    Postado
-                  </div>
-                  <div className={orderStatus >= 1 ? "text-green-600 font-semibold" : ""}>
-                    Em Trânsito
-                  </div>
-                  <div className={orderStatus >= 2 ? "text-green-600 font-semibold" : ""}>
-                    Saiu para Entrega
-                  </div>
-                  <div className={orderStatus >= 3 ? "text-green-600 font-semibold" : ""}>
-                    Entregue
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
-          {!showProgress && (
-            <div className="text-center text-gray-500 py-8">
-              Digite seu e-mail e clique em "Verificar Status" para acompanhar seu pedido
+                <Search className="w-4 h-4 mr-2" />
+                Rastrear
+              </Button>
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
 
-        <div className="mt-8 text-center text-sm text-gray-600">
-          <p>
-            Problemas para rastrear seu pedido? 
-            <a href="/contact" className="text-blue-600 hover:underline ml-1">
-              Entre em contato conosco
-            </a>
+        {tracking && (
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-6">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold mb-2" style={{ color: '#0F2E51' }}>
+                  Pedido #{tracking.orderNumber}
+                </h2>
+                <p className="text-gray-600">
+                  Status: <span className="font-medium">{tracking.status}</span>
+                </p>
+                <p className="text-sm text-gray-500">
+                  Previsão de entrega: {tracking.estimatedDelivery}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {tracking.steps.map((step: any, index: number) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step.completed ? 'bg-green-100' : 'bg-gray-100'
+                    }`}>
+                      {step.completed ? (
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                      ) : index === 2 ? (
+                        <Truck className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <Package className="w-5 h-5 text-gray-400" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`font-medium ${
+                        step.completed ? 'text-gray-900' : 'text-gray-500'
+                      }`}>
+                        {step.status}
+                      </h3>
+                      <p className="text-sm text-gray-500">{step.date}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <div className="text-center mt-8">
+          <p className="text-gray-600 mb-4">
+            Precisa de ajuda? Entre em contato conosco
           </p>
+          <Button 
+            onClick={() => setLocation("/contact")}
+            variant="outline"
+            className="border-[#0F2E51] text-[#0F2E51] hover:bg-[#0F2E51] hover:text-white"
+          >
+            Falar com Suporte
+          </Button>
         </div>
       </div>
     </div>

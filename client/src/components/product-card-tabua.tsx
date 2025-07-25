@@ -53,7 +53,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-      setShowCartSidebar(true);
+      // Não abrir mais o carrinho automaticamente
     },
   });
 
@@ -63,24 +63,24 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
     <div className="group">
       <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-0 bg-white rounded-3xl overflow-hidden">
         <div className="relative">
-          {/* Badge de desconto */}
+          {/* Badge de desconto - ajustado posicionamento */}
           {product.featured && (
-            <div className="absolute top-4 left-4 z-10">
+            <div className="absolute top-3 left-3 z-10">
               <Badge 
                 variant="destructive" 
-                className="bg-red-500 text-white px-3 py-1 text-sm font-bold rounded-full shadow-md"
+                className="bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-md"
               >
                 -{discountPercent}%
               </Badge>
             </div>
           )}
 
-          {/* Badge "Mais Vendido" */}
+          {/* Badge "Mais Vendido" - movido para baixo para não sobrepor */}
           {product.featured && (
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-12 left-3 z-10">
               <Badge 
                 variant="secondary" 
-                className="bg-[#DDAF36] text-[#0F2E51] px-3 py-1 text-xs font-bold rounded-full shadow-md"
+                className="bg-[#DDAF36] text-[#0F2E51] px-2 py-1 text-xs font-bold rounded-full shadow-md"
               >
                 MAIS VENDIDO
               </Badge>
@@ -130,73 +130,58 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             {product.name}
           </h3>
 
-          {/* Descrição */}
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {product.description}
-          </p>
+          {/* Preço principal baseado no tamanho selecionado */}
+          <div className="mb-3">
+            <div className="text-2xl font-bold text-[#0F2E51]">
+              R$ {selectedSize === "500g" ? (product.price500g || product.price) : (product.price1kg || product.price)}
+            </div>
+            {product.featured && (
+              <div className="text-sm text-gray-400 line-through">
+                R$ {selectedSize === "500g" ? product.originalPrice500g : product.originalPrice1kg}
+              </div>
+            )}
+          </div>
 
-          {/* Seleção de tamanho */}
-          <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Escolha o tamanho:</h4>
-            <div className="grid grid-cols-2 gap-2">
+          {/* Seleção de tamanho compacta */}
+          <div className="mb-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => setSelectedSize("500g")}
-                className={`p-3 rounded-xl border transition-all duration-200 ${
+                className={`flex-1 py-2 px-3 rounded-lg border text-center transition-all ${
                   selectedSize === "500g"
-                    ? "border-[#DDAF36] bg-[#DDAF36]/10 text-[#0F2E51]"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-[#DDAF36] bg-[#DDAF36] text-white"
+                    : "border-gray-200 hover:border-gray-300 text-gray-700"
                 }`}
               >
-                <div className="text-center">
-                  <div className="text-sm font-medium">500g</div>
-                  <div className="text-lg font-bold text-[#0F2E51]">
-                    R$ {product.price500g || product.price}
-                  </div>
-                  {product.featured && product.originalPrice500g && (
-                    <div className="text-xs text-gray-400 line-through">
-                      R$ {product.originalPrice500g}
-                    </div>
-                  )}
-                </div>
+                <div className="text-sm font-medium">500g</div>
               </button>
               
               <button
                 onClick={() => setSelectedSize("1kg")}
-                className={`p-3 rounded-xl border transition-all duration-200 ${
+                className={`flex-1 py-2 px-3 rounded-lg border text-center transition-all ${
                   selectedSize === "1kg"
-                    ? "border-[#DDAF36] bg-[#DDAF36]/10 text-[#0F2E51]"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-[#DDAF36] bg-[#DDAF36] text-white"
+                    : "border-gray-200 hover:border-gray-300 text-gray-700"
                 }`}
               >
-                <div className="text-center">
-                  <div className="text-sm font-medium">1kg</div>
-                  <div className="text-lg font-bold text-[#0F2E51]">
-                    R$ {product.price1kg || product.price}
-                  </div>
-                  {product.featured && product.originalPrice1kg && (
-                    <div className="text-xs text-gray-400 line-through">
-                      R$ {product.originalPrice1kg}
-                    </div>
-                  )}
-                </div>
+                <div className="text-sm font-medium">1kg</div>
               </button>
             </div>
           </div>
 
-          {/* Seleção de quantidade */}
-          <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Quantidade:</h4>
-            <div className="flex items-center justify-center border border-gray-200 rounded-xl w-24 mx-auto">
+          {/* Seleção de quantidade compacta */}
+          <div className="mb-3">
+            <div className="flex items-center justify-center border border-gray-200 rounded-lg w-24 mx-auto">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-3 py-2 text-gray-600 hover:text-[#0F2E51] transition-colors"
+                className="px-2 py-1 text-gray-600 hover:text-[#0F2E51] transition-colors"
               >
                 -
               </button>
-              <span className="px-4 py-2 font-medium text-[#0F2E51]">{quantity}</span>
+              <span className="px-3 py-1 font-medium text-[#0F2E51]">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="px-3 py-2 text-gray-600 hover:text-[#0F2E51] transition-colors"
+                className="px-2 py-1 text-gray-600 hover:text-[#0F2E51] transition-colors"
               >
                 +
               </button>

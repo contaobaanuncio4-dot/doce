@@ -50,6 +50,10 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **CEP API Complete Removal**: Completely removed all CEP functionality including cep-api.ts file, imports, and server routes to resolve Netlify build failures - users now fill address fields manually
 - **Image Skeleton Component Removal**: Removed all ImageSkeleton component references that were causing Netlify build failures - replaced with direct img tags with error handling for reliable builds
 - **CEP API Re-implementation**: Re-added automatic CEP lookup functionality using direct ViaCEP API integration within checkout component, with improved error handling and user experience
+- **Product Card UI Improvements**: Fixed variant selection with compact buttons, moved price above variants, and prevented automatic cart opening for better UX
+- **Badge Positioning Fix**: Resolved overlapping badges issue by repositioning discount and "Mais Vendido" labels vertically
+- **Navigation Menu Functionality**: Added working track-order and contact pages with complete functionality and proper routing
+- **TypeScript Error Fixes**: Resolved cart items type errors in header component for proper type safety
 
 ## User Preferences
 

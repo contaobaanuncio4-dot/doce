@@ -27,8 +27,8 @@ function Router() {
         <Route path="/" component={() => <HomeTabua onCartToggle={handleCartToggle} />} />
         <Route path="/produto/:id" component={ProductPage} />
         <Route path="/checkout" component={() => <CheckoutSimple onCartToggle={handleCartToggle} />} />
-        <Route path="/contact" component={() => <Contact onCartToggle={handleCartToggle} />} />
-        <Route path="/track-order" component={() => <TrackOrder onCartToggle={handleCartToggle} />} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/track-order" component={TrackOrder} />
         <Route component={NotFound} />
       </Switch>
       

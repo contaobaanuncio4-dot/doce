@@ -13,7 +13,7 @@ export default function Header({ onCartToggle }: HeaderProps) {
     queryKey: ['/api/cart']
   });
 
-  const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
+  const totalItems = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0) : 0;
 
   return (
     <>
