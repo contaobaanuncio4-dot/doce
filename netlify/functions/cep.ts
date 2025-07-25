@@ -23,31 +23,45 @@ export const handler: Handler = async (event, context) => {
   }
 
   try {
-    // Extract CEP from URL path
-    const pathParts = event.path.split('/').filter(part => part.length > 0);
-    let cep = pathParts[pathParts.length - 1] || '';
+    // Extract CEP from multiple possible sources
+    let cep = '';
+    
+    // Try getting from URL path segments
+    const pathSegments = event.path.split('/').filter(Boolean);
+    const cepIndex = pathSegments.findIndex(segment => segment === 'cep');
+    if (cepIndex !== -1 && cepIndex + 1 < pathSegments.length) {
+      cep = pathSegments[cepIndex + 1];
+    }
+    
+    // Fallback to last path segment if no explicit /cep/ found
+    if (!cep && pathSegments.length > 0) {
+      const lastSegment = pathSegments[pathSegments.length - 1];
+      if (lastSegment !== 'cep' && /^\d/.test(lastSegment)) {
+        cep = lastSegment;
+      }
+    }
     
     // Fallback to query parameter
     if (!cep && event.queryStringParameters?.cep) {
       cep = event.queryStringParameters.cep;
     }
     
-    console.log('CEP Debug Info:', JSON.stringify({
-      fullPath: event.path,
-      pathParts: pathParts,
+    console.log('CEP Extraction Debug:', {
+      originalPath: event.path,
+      pathSegments,
       extractedCep: cep,
       query: event.queryStringParameters
-    }));
+    });
     
-    if (!cep || cep === 'cep') {
+    if (!cep) {
       return {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
-          message: 'CEP é obrigatório',
-          debug: { 
+          error: 'CEP é obrigatório',
+          debug: {
             path: event.path,
-            pathParts: pathParts,
+            segments: pathSegments,
             query: event.queryStringParameters
           }
         }),
@@ -62,95 +76,92 @@ export const handler: Handler = async (event, context) => {
         statusCode: 400,
         headers,
         body: JSON.stringify({ 
-          message: 'Formato de CEP inválido - deve ter 8 dígitos',
+          error: 'CEP deve ter 8 dígitos',
           provided: cep,
-          cleaned: cleanCep,
-          length: cleanCep.length
+          cleaned: cleanCep
         }),
       };
     }
     
-    console.log(`Buscando CEP ${cleanCep} na API ViaCEP...`);
+    console.log(`Consultando CEP ${cleanCep} na ViaCEP...`);
     
-    // Fetch from ViaCEP with error handling
-    const viacepUrl = `https://viacep.com.br/ws/${cleanCep}/json/`;
-    const response = await fetch(viacepUrl, {
+    // Call ViaCEP API with timeout and retry logic
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Timeout na consulta do CEP')), 10000)
+    );
+    
+    const fetchPromise = fetch(`https://viacep.com.br/ws/${cleanCep}/json/`, {
       method: 'GET',
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Tabua-de-Minas/1.0)',
+        'User-Agent': 'TabuaDeMinas/1.0',
         'Accept': 'application/json'
       }
     });
     
+    const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
+    
     if (!response.ok) {
-      console.error(`ViaCEP API error: ${response.status} ${response.statusText}`);
-      return {
-        statusCode: 502,
-        headers,
-        body: JSON.stringify({ 
-          message: 'Erro ao consultar CEP no servidor externo',
-          statusCode: response.status
-        }),
-      };
+      throw new Error(`ViaCEP retornou status ${response.status}`);
     }
     
-    const data = await response.json();
-    console.log('ViaCEP Response:', JSON.stringify(data));
+    const viaCepData = await response.json();
+    
+    console.log('Resposta da ViaCEP:', viaCepData);
     
     // Check if CEP was found
-    if (data.erro === true || data.erro === 'true') {
+    if (viaCepData.erro === true || viaCepData.erro === 'true') {
       return {
         statusCode: 404,
         headers,
         body: JSON.stringify({ 
-          message: 'CEP não encontrado',
+          error: 'CEP não encontrado',
           cep: cleanCep
         }),
       };
     }
     
-    // Validate response data
-    if (!data.localidade || !data.uf) {
+    // Validate required fields
+    if (!viaCepData.logradouro && !viaCepData.localidade) {
       return {
-        statusCode: 502,
+        statusCode: 404,
         headers,
         body: JSON.stringify({ 
-          message: 'Resposta inválida da API de CEP',
-          data: data
+          error: 'CEP não possui informações completas',
+          cep: cleanCep,
+          data: viaCepData
         }),
       };
     }
     
-    // Return successful response
+    // Format response
+    const formattedResponse = {
+      address: viaCepData.logradouro || '',
+      neighborhood: viaCepData.bairro || '',
+      city: viaCepData.localidade || '',
+      state: viaCepData.uf || '',
+      zipCode: viaCepData.cep || cleanCep,
+      complement: viaCepData.complemento || '',
+      originalData: viaCepData // For debugging
+    };
+    
+    console.log('Resposta formatada:', formattedResponse);
+    
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({
-        address: data.logradouro || '',
-        neighborhood: data.bairro || '',
-        city: data.localidade,
-        state: data.uf,
-        zipCode: data.cep || cleanCep
-      }),
+      body: JSON.stringify(formattedResponse),
     };
-
-  } catch (error) {
-    console.error('CEP API error:', error);
     
-    let errorMessage = 'Failed to fetch CEP data';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+  } catch (error) {
+    console.error('Erro na consulta do CEP:', error);
     
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({ 
-        error: errorMessage,
-        debug: {
-          path: event.path,
-          method: event.httpMethod
-        }
+        error: 'Erro interno ao consultar CEP',
+        message: error instanceof Error ? error.message : 'Erro desconhecido',
+        timestamp: new Date().toISOString()
       }),
     };
   }
