@@ -194,7 +194,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             disabled={addToCartDirectMutation.isPending}
             className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300"
           >
-            {addToCartDirectMutation.isPending ? "Adicionando..." : `Adicionar ${quantity}x ao Carrinho`}
+            {addToCartDirectMutation.isPending ? "Adicionando..." : "Adicionar ao carrinho"}
           </Button>
         </CardContent>
       </Card>
