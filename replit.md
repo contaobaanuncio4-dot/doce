@@ -57,6 +57,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Netlify PIX Integration Fix**: Added complete BlackCat PIX API integration to Netlify functions - PIX now generates correctly on deployed site when BLACKCAT_API_KEY environment variable is configured
 - **Button Styling Update**: Applied custom inline styles to product card "Adicionar ao carrinho" button with specific padding and text size
 - **Netlify Environment Setup Guide**: Created NETLIFY-ENV-SETUP.md with instructions for configuring BlackCat API key on Netlify deployment
+- **BlackCat Webhook Integration**: Implemented complete webhook system for payment status updates - webhook handlers for both Replit (/api/webhooks/blackcat) and Netlify (/.netlify/functions/webhook-blackcat) with automatic order status updates when payments are confirmed or cancelled
+- **Webhook Documentation**: Created WEBHOOK-SETUP.md with complete instructions for configuring webhooks in BlackCat dashboard and testing payment notifications
 
 ## User Preferences
 

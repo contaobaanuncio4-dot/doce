@@ -837,6 +837,18 @@ class MemoryStorage implements IStorage {
     return this.orders.filter(order => order.customerEmail === email);
   }
 
+  async getOrdersByTransactionId(transactionId: string): Promise<Order[]> {
+    return this.orders.filter(order => order.blackCatTransactionId === transactionId);
+  }
+
+  async updateOrderStatus(orderId: number, status: string): Promise<Order | undefined> {
+    const order = this.orders.find(order => order.id === orderId);
+    if (order) {
+      order.status = status;
+    }
+    return order;
+  }
+
   async addOrderItems(orderItemsData: InsertOrderItem[]): Promise<OrderItem[]> {
     const orderItems = orderItemsData.map(itemData => ({
       id: this.nextOrderItemId++,
