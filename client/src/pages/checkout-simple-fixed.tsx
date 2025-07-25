@@ -11,7 +11,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check, ShoppingBag, X, Plus } from "lucide-react";
-import { fetchCEP } from "@/lib/cep-api";
 import QRCode from "qrcode";
 import Header from "@/components/header";
 
@@ -36,6 +35,35 @@ type CheckoutForm = z.infer<typeof checkoutSchema>;
 interface CheckoutSimpleProps {
   onCartToggle?: () => void;
 }
+
+// Função fetchCEP implementada diretamente no componente
+const fetchCEP = async (cep: string) => {
+  const cleanCep = cep.replace(/\D/g, '');
+  
+  try {
+    const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+    
+    if (!response.ok) {
+      throw new Error('CEP não encontrado');
+    }
+    
+    const data = await response.json();
+    
+    if (data.erro) {
+      throw new Error('CEP inválido');
+    }
+    
+    return {
+      address: data.logradouro || '',
+      neighborhood: data.bairro || '',
+      city: data.localidade || '',
+      state: data.uf || ''
+    };
+  } catch (error) {
+    console.error('Erro ao buscar CEP:', error);
+    throw error;
+  }
+};
 
 export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   const [, setLocation] = useLocation();
