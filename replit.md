@@ -48,6 +48,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Build Fix for Netlify**: Removed ImageSkeleton and image preload components that were causing build failures on Netlify deployment - replaced with simple img tags with error handling to ensure reliable builds
 - **Cache Clearing Enhancement**: Added comprehensive cache clearing to Netlify build command and updated browserslist to resolve persistent build failures
 - **CEP API Complete Removal**: Completely removed all CEP functionality including cep-api.ts file, imports, and server routes to resolve Netlify build failures - users now fill address fields manually
+- **Image Skeleton Component Removal**: Removed all ImageSkeleton component references that were causing Netlify build failures - replaced with direct img tags with error handling for reliable builds
 
 ## User Preferences
 

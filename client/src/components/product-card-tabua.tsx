@@ -217,7 +217,8 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
       {/* Cart Sidebar */}
       <CartSidebar 
         isOpen={showCartSidebar} 
-        onClose={() => setShowCartSidebar(false)} 
+        onClose={() => setShowCartSidebar(false)}
+        product={product}
       />
     </div>
   );

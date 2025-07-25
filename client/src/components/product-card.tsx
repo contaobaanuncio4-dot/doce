@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ShoppingCart, Plus, Minus } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
-// ImageSkeleton removido para resolver problema de build no Netlify
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
