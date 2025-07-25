@@ -695,6 +695,8 @@ const products: Product[] = [
 
 let cartItems: CartItem[] = [];
 let cartIdCounter = 1;
+let orders: any[] = [];
+let orderIdCounter = 1;
 
 export const storage = {
   getAllProducts: async (): Promise<Product[]> => {
@@ -742,8 +744,8 @@ export const storage = {
         solicitacao_pagador: "Pagamento - Tábua de Minas"
       });
 
-      return {
-        id: Math.floor(Math.random() * 10000),
+      const order = {
+        id: orderIdCounter++,
         ...orderData,
         pixCode: pixPayment.pix.qrcode,
         pixKey: pixPayment.pix.chave,
@@ -751,9 +753,24 @@ export const storage = {
         createdAt: new Date(),
         status: 'pending'
       };
+      
+      orders.push(order);
+      return order;
     } catch (error) {
       console.error('Erro ao criar PIX:', error);
       throw new Error('Erro ao gerar código PIX');
     }
+  },
+
+  getOrdersByTransactionId: async (transactionId: string): Promise<any[]> => {
+    return orders.filter(order => order.blackCatTransactionId === transactionId);
+  },
+
+  updateOrderStatus: async (orderId: number, status: string): Promise<any | undefined> => {
+    const order = orders.find(order => order.id === orderId);
+    if (order) {
+      order.status = status;
+    }
+    return order;
   }
 };
