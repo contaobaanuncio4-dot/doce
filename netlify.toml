@@ -26,9 +26,11 @@
   status = 200
 
 [[redirects]]
-  from = "/api/cep/*"
-  to = "/.netlify/functions/cep"
+  from = "/api/webhooks/blackcat"
+  to = "/.netlify/functions/webhook-blackcat"
   status = 200
+
+# CEP redirect removido a pedido do usuário
 
 [[redirects]]
   from = "/api/*"
