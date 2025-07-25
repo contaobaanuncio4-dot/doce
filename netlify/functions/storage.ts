@@ -1,36 +1,4 @@
 // Simplified storage for Netlify
-
-// Função para criar pagamento PIX usando BlackCat
-async function createPixPayment(paymentData: {
-  valor: string;
-  identificador: string;
-  solicitacao_pagador: string;
-}) {
-  const apiKey = process.env.BLACKCAT_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error('BLACKCAT_API_KEY não configurada');
-  }
-
-  const response = await fetch('https://api.blackcat.exchange/pix/qrcode', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify(paymentData)
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('BlackCat API Error:', response.status, errorText);
-    throw new Error(`Erro na API BlackCat: ${response.status}`);
-  }
-
-  return await response.json();
-}
-
-// Simplified storage for Netlify
 interface Product {
   id: number;
   name: string;
@@ -737,12 +705,41 @@ export const storage = {
 
   createOrder: async (orderData: any): Promise<any> => {
     try {
-      // Gerar PIX usando BlackCat API
-      const pixPayment = await createPixPayment({
-        valor: orderData.total,
-        identificador: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
-        solicitacao_pagador: "Pagamento - Tábua de Minas"
+      const blackCatApiKey = process.env.BLACKCAT_API_KEY;
+      
+      if (!blackCatApiKey) {
+        console.warn('BLACKCAT_API_KEY não configurada, criando pedido sem PIX');
+        const order = {
+          id: orderIdCounter++,
+          ...orderData,
+          pixCode: 'PIX_CODE_PLACEHOLDER',
+          blackCatTransactionId: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
+          createdAt: new Date(),
+          status: 'pending'
+        };
+        orders.push(order);
+        return order;
+      }
+
+      // Criar transação PIX usando BlackCat API
+      const pixResponse = await fetch('https://api.blackcat.bio/pix/solicitar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${blackCatApiKey}`
+        },
+        body: JSON.stringify({
+          valor: parseFloat(orderData.total),
+          identificador: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
+          solicitacao_pagador: "Pagamento - Tábua de Minas"
+        })
       });
+
+      if (!pixResponse.ok) {
+        throw new Error(`BlackCat API error: ${pixResponse.status}`);
+      }
+
+      const pixPayment = await pixResponse.json();
 
       const order = {
         id: orderIdCounter++,
@@ -758,7 +755,7 @@ export const storage = {
       return order;
     } catch (error) {
       console.error('Erro ao criar PIX:', error);
-      throw new Error('Erro ao gerar código PIX');
+      throw new Error(`Erro ao gerar código PIX: ${error.message}`);
     }
   },
 
