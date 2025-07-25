@@ -1,99 +1,229 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowLeft, Phone, Mail, MapPin, Clock, MessageSquare } from "lucide-react";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
-import { Phone, Mail, Clock } from "lucide-react";
 
-interface ContactProps {
-  onCartToggle?: () => void;
-}
+export default function Contact() {
+  const [, setLocation] = useLocation();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
+  const { toast } = useToast();
 
-export default function Contact({ onCartToggle = () => {} }: ContactProps) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simular envio do formulário
+    toast({
+      title: "Mensagem enviada!",
+      description: "Entraremos em contato em até 24 horas.",
+    });
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: ""
+    });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   return (
-    <div className="min-h-screen bg-white">
-      <Header onCartToggle={onCartToggle} />
+    <div className="min-h-screen" style={{ backgroundColor: '#F7F3EF' }}>
+      <Header onCartToggle={() => {}} />
       
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="mb-6">
+          <button 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2 hover:opacity-80 transition-colors"
+            style={{ color: '#0F2E51' }}
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Voltar para a loja
+          </button>
+        </div>
+
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-4" style={{ color: '#0F2E51' }}>
             Entre em Contato
           </h1>
-          <p className="text-lg text-gray-600">
-            Estamos aqui para ajudar você! Entre em contato conosco através dos canais abaixo.
+          <p className="text-gray-600">
+            Estamos aqui para ajudar! Entre em contato conosco
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Formulário de Contato */}
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-xl font-bold mb-6" style={{ color: '#0F2E51' }}>
+                Envie sua Mensagem
+              </h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nome Completo *
+                    </label>
+                    <Input
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="Seu nome completo"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Telefone
+                    </label>
+                    <Input
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="(31) 99999-9999"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    E-mail *
+                  </label>
+                  <Input
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="seu@email.com"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Assunto *
+                  </label>
+                  <Input
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    placeholder="Como podemos ajudar?"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Mensagem *
+                  </label>
+                  <Textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Descreva sua dúvida ou solicitação..."
+                    rows={6}
+                    required
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-[#0F2E51] hover:bg-[#0F2E51]/90 text-white"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Enviar Mensagem
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
           {/* Informações de Contato */}
-          <div className="bg-gray-50 rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Informações de Atendimento
-            </h2>
-            
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <Clock className="h-6 w-6 text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Horário de Atendimento</h3>
-                  <p className="text-gray-600">
-                    Segunda a Sábado: 8:30 às 18:30 horas
-                  </p>
+          <div className="space-y-6">
+            <Card>
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-6" style={{ color: '#0F2E51' }}>
+                  Informações de Contato
+                </h2>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#0F2E51' }}>
+                      <Phone className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Telefone</p>
+                      <p className="text-gray-600">(31) 99999-9999</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#0F2E51' }}>
+                      <Mail className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium">E-mail</p>
+                      <p className="text-gray-600">contato@tabuademinas.com.br</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#0F2E51' }}>
+                      <MapPin className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Endereço</p>
+                      <p className="text-gray-600">Belo Horizonte, Minas Gerais</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#0F2E51' }}>
+                      <Clock className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Horário de Atendimento</p>
+                      <p className="text-gray-600">Segunda a Sexta: 8h às 18h</p>
+                      <p className="text-gray-600">Sábado: 8h às 12h</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
 
-              <div className="flex items-start space-x-4">
-                <Phone className="h-6 w-6 text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Telefone</h3>
-                  <a 
-                    href="tel:+5511986451646" 
-                    className="text-blue-600 hover:underline text-lg"
-                  >
-                    (11) 98645-1646
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <Mail className="h-6 w-6 text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">E-mail</h3>
-                  <a 
-                    href="mailto:sac@tabuademinas.com" 
-                    className="text-blue-600 hover:underline text-lg"
-                  >
-                    sac@tabuademinas.com
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Widget do Instagram */}
-          <div className="bg-white border border-gray-200 rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Siga-nos no Instagram
-            </h2>
-            <div className="container">
-              <div className="html">
-                <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
-                <iframe 
-                  src="https://cdn.lightwidget.com/widgets/20b00a80a60b5d258c6da2e89f2aa859.html" 
-                  scrolling="no" 
-                  allowTransparency={true}
-                  className="lightwidget-widget" 
-                  style={{ width: '100%', border: '0px', overflow: 'hidden', height: '590px' }}
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Localização */}
-        <div className="mt-12 bg-white border border-gray-200 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Nossa Localização
-          </h2>
-          <div className="text-center text-gray-600">
-            <p className="text-lg mb-2">Tábua de Minas - Doces e Queijos</p>
-            <p>Direto das montanhas de Minas Gerais para sua mesa</p>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold mb-4" style={{ color: '#0F2E51' }}>
+                  WhatsApp
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Para atendimento mais rápido, entre em contato pelo WhatsApp
+                </p>
+                <Button
+                  onClick={() => window.open('https://wa.me/5531999999999', '_blank')}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Falar no WhatsApp
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
