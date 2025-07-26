@@ -2,6 +2,84 @@ import express from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import cors from 'cors';
 
+// UTMify Integration para Vercel
+interface UTMifyOrderData {
+  orderId: string;
+  platform: string;
+  paymentMethod: 'credit_card' | 'boleto' | 'pix' | 'paypal' | 'free_price';
+  status: 'waiting_payment' | 'paid' | 'refused' | 'refunded' | 'chargedback';
+  createdAt: string;
+  approvedDate: string;
+  refundedAt: string;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+    document: string;
+    country?: string;
+    ip?: string;
+  };
+  products: {
+    id: string;
+    name: string;
+    planId: string;
+    planName: string;
+    quantity: number;
+    priceInCents: number;
+  }[];
+  trackingParameters: {
+    src?: string | null;
+    sck?: string | null;
+    utm_source?: string | null;
+    utm_campaign?: string | null;
+    utm_medium?: string | null;
+    utm_content?: string | null;
+    utm_term?: string | null;
+  };
+  commission: {
+    totalPriceInCents: number;
+    gatewayFeeInCents: number;
+    userCommissionInCents: number;
+    currency: string;
+  };
+  isTest?: boolean;
+}
+
+async function notifyUTMify(orderData: UTMifyOrderData): Promise<void> {
+  const apiKey = process.env.UTMIFY_API_KEY;
+  
+  if (!apiKey) {
+    console.log('UTMify API key não configurado');
+    return;
+  }
+
+  try {
+    const response = await fetch('https://api.utmify.com.br/api-credentials/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-token': apiKey
+      },
+      body: JSON.stringify(orderData)
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('UTMify notificado com sucesso:', result);
+    } else {
+      const errorText = await response.text();
+      console.error('Erro ao notificar UTMify:', response.status, errorText);
+    }
+  } catch (error) {
+    console.error('Erro ao conectar com UTMify:', error);
+  }
+}
+
+function toUTCString(date: Date): string {
+  const utcDate = new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000));
+  return utcDate.toISOString().replace('T', ' ').substring(0, 19);
+}
+
 // Storage para Vercel (in-memory)
 interface Product {
   id: number;
@@ -366,6 +444,60 @@ const storage = {
       };
       
       orders.push(order);
+      
+      // Notificar UTMify sobre criação do pedido
+      try {
+        const cartItemsForOrder = await storage.getCartItems(orderData.sessionId);
+        const totalInCents = Math.round(parseFloat(orderData.total) * 100);
+        const gatewayFeeInCents = Math.round(totalInCents * 0.0399 + 40);
+        
+        const utmifyData: UTMifyOrderData = {
+          orderId: order.id.toString(),
+          platform: "TabuaDeMinas",
+          paymentMethod: "pix",
+          status: "waiting_payment",
+          createdAt: toUTCString(order.createdAt),
+          approvedDate: "",
+          refundedAt: "",
+          customer: {
+            name: orderData.customerName,
+            email: orderData.customerEmail,
+            phone: orderData.customerPhone,
+            document: orderData.customerCpf || "",
+            country: "BR"
+          },
+          products: cartItemsForOrder.map(item => ({
+            id: item.productId.toString(),
+            name: `${item.product?.name || 'Produto'} - ${item.size}`,
+            planId: "default",
+            planName: "Produto Avulso",
+            quantity: item.quantity,
+            priceInCents: Math.round(parseFloat(item.price.replace(',', '.')) * 100)
+          })),
+          trackingParameters: {
+            src: null,
+            sck: null,
+            utm_source: null,
+            utm_campaign: null,
+            utm_medium: null,
+            utm_content: null,
+            utm_term: null
+          },
+          commission: {
+            totalPriceInCents: totalInCents,
+            gatewayFeeInCents: gatewayFeeInCents,
+            userCommissionInCents: totalInCents - gatewayFeeInCents,
+            currency: "BRL"
+          },
+          isTest: false
+        };
+        
+        await notifyUTMify(utmifyData);
+        console.log(`UTMify notificado: Pedido ${order.id} criado`);
+      } catch (utmifyError) {
+        console.error('Erro ao notificar UTMify sobre criação do pedido:', utmifyError);
+      }
+      
       return order;
     } catch (error) {
       console.error('Erro ao criar PIX:', error);
@@ -511,6 +643,60 @@ app.post('/api/webhooks/blackcat', async (req, res) => {
     // Atualizar status dos pedidos encontrados
     for (const order of matchingOrders) {
       await storage.updateOrderStatus(order.id, status);
+      
+      // Notificar UTMify sobre mudança de status para 'paid'
+      if (status === 'paid') {
+        try {
+          const totalInCents = Math.round(parseFloat(order.total) * 100);
+          const gatewayFeeInCents = Math.round(totalInCents * 0.0399 + 40);
+          
+          const utmifyData: UTMifyOrderData = {
+            orderId: order.id.toString(),
+            platform: "TabuaDeMinas",
+            paymentMethod: "pix",
+            status: "paid",
+            createdAt: toUTCString(order.createdAt),
+            approvedDate: toUTCString(new Date()),
+            refundedAt: "",
+            customer: {
+              name: order.customerName,
+              email: order.customerEmail,
+              phone: order.customerPhone,
+              document: order.customerCpf || "",
+              country: "BR"
+            },
+            products: [{
+              id: "1",
+              name: "Produto do Pedido",
+              planId: "default",
+              planName: "Produto Avulso",
+              quantity: 1,
+              priceInCents: totalInCents
+            }],
+            trackingParameters: {
+              src: null,
+              sck: null,
+              utm_source: null,
+              utm_campaign: null,
+              utm_medium: null,
+              utm_content: null,
+              utm_term: null
+            },
+            commission: {
+              totalPriceInCents: totalInCents,
+              gatewayFeeInCents: gatewayFeeInCents,
+              userCommissionInCents: totalInCents - gatewayFeeInCents,
+              currency: "BRL"
+            },
+            isTest: false
+          };
+          
+          await notifyUTMify(utmifyData);
+          console.log(`UTMify notificado: Pedido ${order.id} PAGO`);
+        } catch (utmifyError) {
+          console.error('Erro ao notificar UTMify sobre pagamento:', utmifyError);
+        }
+      }
     }
     
     res.json({ 
