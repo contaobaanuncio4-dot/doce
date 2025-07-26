@@ -273,89 +273,122 @@ export const storage = {
   },
 
   createOrder: async (orderData: any): Promise<any> => {
+    console.log('=== INÍCIO CREATE ORDER ===');
+    console.log('Order data recebido:', JSON.stringify(orderData, null, 2));
+    
     try {
       const blackCatApiKey = process.env.BLACKCAT_API_KEY;
       
+      console.log('Verificando API Key...');
+      console.log('API Key presente:', !!blackCatApiKey);
+      console.log('Primeiros 10 caracteres da key:', blackCatApiKey ? blackCatApiKey.substring(0, 10) + '...' : 'undefined');
+      
       if (!blackCatApiKey) {
-        console.warn('BLACKCAT_API_KEY não configurada, criando pedido sem PIX');
-        const order = {
-          id: orderIdCounter++,
-          ...orderData,
-          pixCode: 'PIX_CODE_PLACEHOLDER',
-          blackCatTransactionId: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
-          createdAt: new Date(),
-          status: 'pending'
-        };
-        orders.push(order);
-        return order;
+        console.error('❌ BLACKCAT_API_KEY não configurada');
+        throw new Error('BLACKCAT_API_KEY não configurada no ambiente');
       }
 
-      // Preparar dados para BlackCat API
-      const pixRequest = {
-        amount: Math.round(parseFloat(orderData.total) * 100), // converter para centavos
-        currency: "BRL",
-        description: "Pagamento - Tábua de Minas",
-        items: [{
-          title: "Produtos Tábua de Minas",
-          unitPrice: Math.round(parseFloat(orderData.total) * 100),
-          quantity: 1,
-          tangible: true
-        }],
-        customer: {
-          name: orderData.customerName,
-          email: orderData.customerEmail,
-          phone: orderData.customerPhone?.replace(/\D/g, ''),
-          document: {
-            number: orderData.customerCpf?.replace(/\D/g, ''),
-            type: "cpf"
-          }
-        },
-        externalRef: `TABUA-${Date.now()}`
-      };
+      // Gerar identificador único mais robusto
+      const identificador = `PEDIDO-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+      console.log('📝 Identificador gerado:', identificador);
 
-      // Criar transação PIX usando BlackCat API
-      const pixResponse = await fetch('https://api.blackcat.bio/transactions', {
+      // Validar valor
+      const valorFloat = parseFloat(orderData.total);
+      if (isNaN(valorFloat) || valorFloat <= 0) {
+        throw new Error(`Valor inválido: ${orderData.total}`);
+      }
+      console.log('💰 Valor validado:', valorFloat);
+
+      // Preparar payload para BlackCat
+      const pixPayload = {
+        valor: valorFloat,
+        identificador: identificador,
+        solicitacao_pagador: "Pagamento - Tábua de Minas"
+      };
+      
+      console.log('📤 Payload para BlackCat:', JSON.stringify(pixPayload, null, 2));
+
+      console.log('🔄 Fazendo requisição para BlackCat API...');
+      
+      // Fazer requisição com timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
+
+      const pixResponse = await fetch('https://api.blackcat.bio/pix/solicitar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${blackCatApiKey}`
+          'Authorization': `Bearer ${blackCatApiKey}`,
+          'User-Agent': 'Tabua-de-Minas/1.0',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(pixRequest)
+        body: JSON.stringify(pixPayload),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
+
+      console.log('📥 Resposta da BlackCat:');
+      console.log('- Status:', pixResponse.status);
+      console.log('- Status Text:', pixResponse.statusText);
+      console.log('- Headers:', Object.fromEntries(pixResponse.headers));
 
       if (!pixResponse.ok) {
         const errorText = await pixResponse.text();
-        console.error('BlackCat API error:', pixResponse.status, errorText);
-        throw new Error(`BlackCat API error: ${pixResponse.status}`);
+        console.error('❌ Erro da BlackCat API:', errorText);
+        console.error('❌ Status completo:', {
+          status: pixResponse.status,
+          statusText: pixResponse.statusText,
+          body: errorText
+        });
+        
+        throw new Error(`BlackCat API Error ${pixResponse.status}: ${errorText}`);
       }
 
       const pixPayment = await pixResponse.json();
+      console.log('✅ PIX Payment recebido:', JSON.stringify(pixPayment, null, 2));
+
+      // Validar resposta da BlackCat
+      if (!pixPayment.pix || !pixPayment.pix.qrcode) {
+        console.error('❌ Resposta inválida da BlackCat:', pixPayment);
+        throw new Error('Resposta inválida da BlackCat API - QR Code não encontrado');
+      }
 
       const order = {
         id: orderIdCounter++,
         ...orderData,
-        pixCode: pixPayment.pix?.qrcode || 'PIX_ERROR',
-        blackCatTransactionId: pixPayment.id?.toString() || `PEDIDO-${Math.floor(Math.random() * 10000)}`,
+        pixCode: pixPayment.pix.qrcode,
+        pixKey: pixPayment.pix.chave || 'N/A',
+        blackCatTransactionId: pixPayment.identificador,
+        blackCatResponse: pixPayment, // Para debug
         createdAt: new Date(),
         status: 'pending'
       };
       
       orders.push(order);
+      
+      console.log('✅ Pedido criado com sucesso:', {
+        orderId: order.id,
+        transactionId: order.blackCatTransactionId,
+        pixCodeLength: order.pixCode.length
+      });
+      console.log('=== FIM CREATE ORDER ===');
+      
       return order;
+      
     } catch (error) {
-      console.error('Erro ao criar PIX:', error);
+      console.error('❌ ERRO GERAL em createOrder:');
+      console.error('- Message:', error.message);
+      console.error('- Stack:', error.stack);
+      console.error('- Name:', error.name);
       
-      // Fallback: criar pedido sem PIX em caso de erro
-      const order = {
-        id: orderIdCounter++,
-        ...orderData,
-        pixCode: 'PIX_ERROR_FALLBACK',
-        blackCatTransactionId: `PEDIDO-ERROR-${Math.floor(Math.random() * 10000)}`,
-        createdAt: new Date(),
-        status: 'pending'
-      };
-      orders.push(order);
-      return order;
+      if (error.name === 'AbortError') {
+        console.error('❌ Timeout na requisição para BlackCat');
+        throw new Error('Timeout ao conectar com a API de pagamento');
+      }
+      
+      console.log('=== FIM CREATE ORDER (ERRO) ===');
+      throw new Error(`Erro ao gerar código PIX: ${error.message}`);
     }
   },
 

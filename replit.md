@@ -67,6 +67,9 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Vercel API Architecture**: Implemented serverless Express app with all routes (/products, /cart, /orders, /webhooks/blackcat) using in-memory storage and proper error handling
 - **Complete Product Catalog**: Added 11 products (6 queijos + 5 doces) with authentic pricing, descriptions, and Imgur images for full e-commerce functionality
 - **Vercel Deploy Documentation**: Created VERCEL-DEPLOY.md with complete deployment instructions, environment setup, and feature comparison with Netlify
+- **Netlify PIX Integration Fixed**: Updated storage.ts and orders.ts with complete BlackCat API integration using correct endpoint (pix/solicitar) and proper payload format - PIX generation now working correctly
+- **Enhanced Error Handling**: Added comprehensive logging, timeout handling (30s), and specific error codes for different failure scenarios in Netlify functions  
+- **Production-Ready BlackCat Integration**: Implemented robust PIX payment system with detailed debugging, proper authentication headers, and fallback error handling for reliable deployment
 
 ## User Preferences
 
