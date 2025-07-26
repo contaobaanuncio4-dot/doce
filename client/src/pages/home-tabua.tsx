@@ -43,8 +43,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     return () => document.removeEventListener('mouseleave', handleMouseLeave);
   }, []);
 
-  // Debug: log para verificar o que está acontecendo
-  console.log("HomeTabua - isLoading:", isLoading, "products:", products?.length, "error:", error);
+
 
   // AGORA SIM PODE TER RETURNS CONDICIONAIS
   if (isLoading && !products?.length) {
@@ -74,6 +73,8 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   const queijos = products.filter((product: Product) => 
     product.category === 'queijos' || product.name.toLowerCase().includes('queijo')
   );
+  
+
 
   return (
     <div className="min-h-screen bg-white">

@@ -59,6 +59,20 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
 
   const discountPercent = product.discount || 20;
 
+
+
+  if (!product) {
+    return (
+      <div className="group">
+        <Card className="h-full border border-red-200 rounded-3xl overflow-hidden bg-red-50">
+          <CardContent className="p-4 text-center">
+            <p className="text-red-500">Produto não encontrado</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="group">
       <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-0 bg-white rounded-3xl overflow-hidden">

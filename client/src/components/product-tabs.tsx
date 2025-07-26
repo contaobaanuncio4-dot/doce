@@ -105,6 +105,11 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
               {doces.slice(0, 10).map((product: any) => (
                 <ProductCardTabua key={product.id} product={product} />
               ))}
+              {doces.length === 0 && (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-500">Nenhum doce encontrado.</p>
+                </div>
+              )}
             </div>
           )}
           
@@ -113,6 +118,11 @@ export default function ProductTabs({ doces, queijos }: ProductTabsProps) {
               {queijos.slice(0, 8).map((product: any) => (
                 <ProductCardTabua key={product.id} product={product} />
               ))}
+              {queijos.length === 0 && (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-500">Nenhum queijo encontrado.</p>
+                </div>
+              )}
             </div>
           )}
           
