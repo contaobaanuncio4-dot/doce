@@ -63,6 +63,10 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Webhook Deployment Guide**: Created DEPLOY-WEBHOOK.md with troubleshooting steps for Netlify webhook deployment - function needs to be redeployed to work properly
 - **Orders API 500 Error Fix**: Identified and fixed error 500 in Netlify orders function - updated createOrder function with proper BlackCat API integration and fallback handling when API key is not configured
 - **Netlify Debug Documentation**: Created NETLIFY-DEBUG.md with troubleshooting steps for orders API errors and testing procedures
+- **Vercel Migration Complete**: Created complete Vercel deployment structure with vercel.json, api/index.ts containing full Express API with BlackCat PIX integration, CORS setup, and comprehensive product catalog
+- **Vercel API Architecture**: Implemented serverless Express app with all routes (/products, /cart, /orders, /webhooks/blackcat) using in-memory storage and proper error handling
+- **Complete Product Catalog**: Added 11 products (6 queijos + 5 doces) with authentic pricing, descriptions, and Imgur images for full e-commerce functionality
+- **Vercel Deploy Documentation**: Created VERCEL-DEPLOY.md with complete deployment instructions, environment setup, and feature comparison with Netlify
 
 ## User Preferences
 
