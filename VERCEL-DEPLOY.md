@@ -43,6 +43,7 @@ O Vercel detecta automaticamente:
 No painel do Vercel, adicionar:
 ```
 BLACKCAT_API_KEY=sua_chave_aqui
+UTMIFY_API_KEY=sua_chave_utmify_aqui
 ```
 
 ## 📋 Estrutura da API Vercel
@@ -61,6 +62,7 @@ BLACKCAT_API_KEY=sua_chave_aqui
 ### Características da API
 - **Storage**: In-memory (reseta a cada deploy)
 - **PIX**: BlackCat API integrada com fallback
+- **UTMify**: Tracking completo de conversões e pagamentos
 - **CORS**: Habilitado para todas as origens
 - **Error Handling**: Tratamento robusto de erros
 
@@ -139,8 +141,9 @@ Após o deploy no Vercel:
 
 ✅ Estrutura completa criada
 ✅ API PIX funcionando
+✅ UTMify integrado para tracking
 ✅ Catálogo completo
 ✅ Configuração Vercel
 ✅ Documentação completa
 
-**🚀 Seu e-commerce está 100% pronto para produção no Vercel!**
+**🚀 Seu e-commerce está 100% pronto para produção no Vercel com tracking UTMify!**
