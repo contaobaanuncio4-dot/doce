@@ -5,11 +5,15 @@
       "destination": "/api/index"
     },
     {
+      "source": "/test-api",
+      "destination": "/test-api.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "vite build",
+  "buildCommand": "vite build && cp test-api.html dist/public/",
   "outputDirectory": "dist/public",
   "installCommand": "npm install"
 }

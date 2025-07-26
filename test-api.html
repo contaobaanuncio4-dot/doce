@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Vercel API</title>
+</head>
+<body>
+    <h1>Teste API Vercel</h1>
+    <button onclick="testAPI()">Testar /api/products</button>
+    <button onclick="testHealth()">Testar /api (health)</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Carregando...';
+            
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                result.innerHTML = `
+                    <h3>Status: ${response.status}</h3>
+                    <h3>Produtos encontrados: ${data.length}</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                result.innerHTML = `<h3>ERRO: ${error.message}</h3>`;
+            }
+        }
+
+        async function testHealth() {
+            const result = document.getElementById('result');
+            result.innerHTML = 'Carregando...';
+            
+            try {
+                const response = await fetch('/api');
+                const data = await response.json();
+                result.innerHTML = `
+                    <h3>Status: ${response.status}</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                result.innerHTML = `<h3>ERRO: ${error.message}</h3>`;
+            }
+        }
+    </script>
+</body>
+</html>

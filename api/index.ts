@@ -534,6 +534,17 @@ app.get('/api', (req, res) => {
 });
 
 // Handler principal para Vercel
-export default (req: VercelRequest, res: VercelResponse) => {
-  return app(req, res);
-};
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Debug log
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  
+  try {
+    await app(req, res);
+  } catch (error) {
+    console.error('API Error:', error);
+    res.status(500).json({ 
+      error: 'Internal Server Error',
+      message: error.message 
+    });
+  }
+}
