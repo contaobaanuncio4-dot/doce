@@ -72,6 +72,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Production-Ready BlackCat Integration**: Implemented robust PIX payment system with detailed debugging, proper authentication headers, and fallback error handling for reliable deployment
 - **Netlify Build Error Fixed**: Corrected syntax error in storage.ts that was causing "Expected ';' but found 'Date'" build failure - file completely recreated with clean code structure
 - **Complete Storage.ts Rebuild**: Recreated netlify/functions/storage.ts with proper syntax, 11 products catalog, and full BlackCat PIX integration ready for deployment
+- **UTMify Integration Complete**: Integrated UTMify API for comprehensive tracking of marketing campaigns and conversions - automatically tracks order creation (PIX generated) and order payments with full UTM parameter capture, customer data, and commission tracking
 
 ## User Preferences
 

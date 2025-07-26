@@ -12,8 +12,8 @@ interface UTMifyCustomer {
 interface UTMifyProduct {
   id: string;
   name: string;
-  planId: string | null;
-  planName: string | null;
+  planId: string;
+  planName: string;
   quantity: number;
   priceInCents: number;
 }
@@ -41,8 +41,8 @@ interface UTMifyOrderData {
   paymentMethod: 'credit_card' | 'boleto' | 'pix' | 'paypal' | 'free_price';
   status: 'waiting_payment' | 'paid' | 'refused' | 'refunded' | 'chargedback';
   createdAt: string; // UTC format: 'YYYY-MM-DD HH:MM:SS'
-  approvedDate: string | null; // UTC format: 'YYYY-MM-DD HH:MM:SS'
-  refundedAt: string | null; // UTC format: 'YYYY-MM-DD HH:MM:SS'
+  approvedDate: string; // UTC format: 'YYYY-MM-DD HH:MM:SS' ou string vazia
+  refundedAt: string; // UTC format: 'YYYY-MM-DD HH:MM:SS' ou string vazia
   customer: UTMifyCustomer;
   products: UTMifyProduct[];
   trackingParameters: UTMifyTrackingParameters;
@@ -50,9 +50,10 @@ interface UTMifyOrderData {
   isTest?: boolean;
 }
 
-// Função para converter data brasileira para UTC
+// Função para converter data brasileira para UTC (mínimo 1 semana atrás conforme doc UTMify)
 function toUTCString(date: Date): string {
-  return date.toISOString().replace('T', ' ').substring(0, 19);
+  const utcDate = new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)); // 1 semana no passado
+  return utcDate.toISOString().replace('T', ' ').substring(0, 19);
 }
 
 // Função para extrair parâmetros UTM do referer ou URL
@@ -110,12 +111,12 @@ export function convertOrderToUTMify(
   const gatewayFeeInCents = Math.round(totalInCents * 0.0399 + 40);
   const userCommissionInCents = totalInCents - gatewayFeeInCents;
 
-  // Converter produtos
+  // Converter produtos com campos obrigatórios
   const products: UTMifyProduct[] = orderItems.map(item => ({
     id: item.productId.toString(),
-    name: `Produto ${item.productId}`, // Nome será obtido da consulta de produtos
-    planId: null,
-    planName: null,
+    name: `Produto ${item.productId} - ${item.size}`,
+    planId: "default",
+    planName: "Produto Avulso",
     quantity: item.quantity,
     priceInCents: Math.round(parseFloat(item.price.replace(',', '.')) * 100)
   }));
@@ -129,8 +130,8 @@ export function convertOrderToUTMify(
     paymentMethod: "pix",
     status: status,
     createdAt: toUTCString(order.createdAt ? new Date(order.createdAt) : new Date()),
-    approvedDate: status === 'paid' ? toUTCString(new Date()) : null,
-    refundedAt: status === 'refunded' ? toUTCString(new Date()) : null,
+    approvedDate: status === 'paid' ? toUTCString(new Date()) : "",
+    refundedAt: status === 'refunded' ? toUTCString(new Date()) : "",
     customer: {
       name: order.customerName,
       email: order.customerEmail,
@@ -155,11 +156,11 @@ export function convertOrderToUTMify(
 
 // Função para enviar dados para UTMify
 export async function sendToUTMify(orderData: UTMifyOrderData): Promise<void> {
-  const apiToken = process.env.UTMIFY_API_TOKEN;
+  const apiKey = process.env.UTMIFY_API_KEY;
   
-  if (!apiToken) {
-    console.error('UTMIFY_API_TOKEN não configurado');
-    throw new Error('UTMIFY_API_TOKEN não configurado');
+  if (!apiKey) {
+    console.error('UTMIFY_API_KEY não configurado');
+    throw new Error('UTMIFY_API_KEY não configurado');
   }
 
   try {
@@ -167,7 +168,7 @@ export async function sendToUTMify(orderData: UTMifyOrderData): Promise<void> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-token': apiToken
+        'x-api-token': apiKey
       },
       body: JSON.stringify(orderData)
     });

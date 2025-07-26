@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { storage } from "./storage";
+import { notifyUTMifyOrderPaid } from "./utmify-integration";
 
 interface BlackCatWebhookPayload {
   identificador: string;
@@ -43,6 +44,18 @@ export async function handleBlackCatWebhook(req: Request, res: Response) {
     await storage.updateOrderStatus(order.id, newStatus);
     
     console.log(`Pedido ${order.id} atualizado para status: ${newStatus}`);
+    
+    // Notificar UTMify sobre mudança de status
+    if (newStatus === 'paid') {
+      try {
+        const orderItems = await storage.getOrderItems(order.id);
+        await notifyUTMifyOrderPaid(order, orderItems);
+        console.log(`UTMify notificado: Pedido ${order.id} PAGO`);
+      } catch (utmifyError) {
+        console.error('Erro ao notificar UTMify sobre pagamento:', utmifyError);
+        // Não falhar o webhook por erro do UTMify
+      }
+    }
     
     // Aqui você pode adicionar lógica adicional como:
     // - Enviar email de confirmação
