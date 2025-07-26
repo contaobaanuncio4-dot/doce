@@ -90,7 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Quantity must be a positive number" });
       }
       
-      const updatedItem = await storage.updateCartItemQuantity(id, quantity);
+      const updatedItem = await storage.updateCartItem(id, quantity);
       
       if (!updatedItem) {
         return res.status(404).json({ message: "Cart item not found" });
@@ -199,10 +199,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Salvar itens do pedido
+      const orderItemsData = [];
       for (const cartItem of cartItems) {
         const product = await storage.getProductById(cartItem.productId);
         if (product) {
-          await storage.createOrderItem({
+          orderItemsData.push({
             orderId: order.id,
             productId: cartItem.productId,
             quantity: cartItem.quantity,
@@ -211,6 +212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
       }
+      await storage.addOrderItems(orderItemsData);
       
       // Enviar para UTMify (PIX gerado - waiting_payment)
       try {

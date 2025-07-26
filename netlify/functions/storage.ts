@@ -290,21 +290,42 @@ export const storage = {
         return order;
       }
 
+      // Preparar dados para BlackCat API
+      const pixRequest = {
+        amount: Math.round(parseFloat(orderData.total) * 100), // converter para centavos
+        currency: "BRL",
+        description: "Pagamento - Tábua de Minas",
+        items: [{
+          title: "Produtos Tábua de Minas",
+          unitPrice: Math.round(parseFloat(orderData.total) * 100),
+          quantity: 1,
+          tangible: true
+        }],
+        customer: {
+          name: orderData.customerName,
+          email: orderData.customerEmail,
+          phone: orderData.customerPhone?.replace(/\D/g, ''),
+          document: {
+            number: orderData.customerCpf?.replace(/\D/g, ''),
+            type: "cpf"
+          }
+        },
+        externalRef: `TABUA-${Date.now()}`
+      };
+
       // Criar transação PIX usando BlackCat API
-      const pixResponse = await fetch('https://api.blackcat.bio/pix/solicitar', {
+      const pixResponse = await fetch('https://api.blackcat.bio/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${blackCatApiKey}`
         },
-        body: JSON.stringify({
-          valor: parseFloat(orderData.total),
-          identificador: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
-          solicitacao_pagador: "Pagamento - Tábua de Minas"
-        })
+        body: JSON.stringify(pixRequest)
       });
 
       if (!pixResponse.ok) {
+        const errorText = await pixResponse.text();
+        console.error('BlackCat API error:', pixResponse.status, errorText);
         throw new Error(`BlackCat API error: ${pixResponse.status}`);
       }
 
@@ -313,9 +334,8 @@ export const storage = {
       const order = {
         id: orderIdCounter++,
         ...orderData,
-        pixCode: pixPayment.pix.qrcode,
-        pixKey: pixPayment.pix.chave,
-        blackCatTransactionId: pixPayment.identificador,
+        pixCode: pixPayment.pix?.qrcode || 'PIX_ERROR',
+        blackCatTransactionId: pixPayment.id?.toString() || `PEDIDO-${Math.floor(Math.random() * 10000)}`,
         createdAt: new Date(),
         status: 'pending'
       };
@@ -324,7 +344,18 @@ export const storage = {
       return order;
     } catch (error) {
       console.error('Erro ao criar PIX:', error);
-      throw new Error(`Erro ao gerar código PIX: ${error.message}`);
+      
+      // Fallback: criar pedido sem PIX em caso de erro
+      const order = {
+        id: orderIdCounter++,
+        ...orderData,
+        pixCode: 'PIX_ERROR_FALLBACK',
+        blackCatTransactionId: `PEDIDO-ERROR-${Math.floor(Math.random() * 10000)}`,
+        createdAt: new Date(),
+        status: 'pending'
+      };
+      orders.push(order);
+      return order;
     }
   },
 
