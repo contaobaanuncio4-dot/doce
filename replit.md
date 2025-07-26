@@ -78,6 +78,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 
 Preferred communication style: Simple, everyday language.
 
+**Change Tracking Requirement**: Always list modified files at the end of each response when making changes to the codebase.
+
 ## System Architecture
 
 ### Frontend Architecture
