@@ -17,11 +17,12 @@ interface HomeTabuaProps {
 }
 
 export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
-  const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products"]
+  // TODOS OS HOOKS DEVEM VIR PRIMEIRO - ANTES DE QUALQUER RETURN CONDICIONAL
+  const { data: products = [], isLoading, error } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
+    retry: 3,
+    retryDelay: 1000
   });
-
-  // Preload de imagens removido para resolver problemas de build
 
   const { data: cartItems = [] } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"]
@@ -42,21 +43,29 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
     return () => document.removeEventListener('mouseleave', handleMouseLeave);
   }, []);
 
-  if (isLoading) {
+  // Debug: log para verificar o que está acontecendo
+  console.log("HomeTabua - isLoading:", isLoading, "products:", products?.length, "error:", error);
+
+  // AGORA SIM PODE TER RETURNS CONDICIONAIS
+  if (isLoading && !products?.length) {
     return (
       <div className="min-h-screen bg-white">
         <Header onCartToggle={onCartToggle} />
         <PromoBanner />
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <ProductSkeleton key={i} />
-            ))}
-          </div>
+        <div className="container mx-auto px-4 py-8 text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-lg">Carregando produtos...</p>
+          {error && (
+            <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+              Erro ao carregar produtos: {String(error)}
+            </div>
+          )}
         </div>
       </div>
     );
   }
+
+
 
   // Separar produtos por categoria baseado no site original
   const doces = products.filter((product: Product) => 
