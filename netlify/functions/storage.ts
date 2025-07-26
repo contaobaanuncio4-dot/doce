@@ -1,30 +1,30 @@
-// In-memory storage for Netlify Functions
+// Produtos e dados para Netlify Functions
 let products: any[] = [];
 let cartItems: any[] = [];
 let orders: any[] = [];
 
 let productIdCounter = 1;
-let cartIdCounter = 1;
+let cartIdCounter = 1;  
 let orderIdCounter = 1;
 
-// Initialize products data
+// Inicializar produtos
 const initializeProducts = () => {
   products = [
     {
       id: 1,
       name: "Queijo MinasBri",
-      description: "Queijo minas frescal artesanal, cremoso e suave. Produzido com leite fresco da região de Minas Gerais. Tradição e qualidade em cada fatia.",
+      description: "Queijo tipo Brie artesanal, cremoso e de sabor suave. Produzido com leite fresco das montanhas de Minas Gerais seguindo técnicas tradicionais francesas.",
       price500g: "33.90",
-      price1kg: "67.80",
-      originalPrice500g: "45.90",
-      originalPrice1kg: "91.80",
+      price1kg: "64.90",
+      originalPrice500g: "64.90",
+      originalPrice1kg: "129.80",
       category: "queijos",
-      imageUrl: "https://i.imgur.com/hfC8Y7vm.jpg",
-      imageUrls: ["https://i.imgur.com/hfC8Y7vm.jpg"],
+      imageUrl: "https://i.imgur.com/90GxB2fm.jpg",
+      imageUrls: ["https://i.imgur.com/90GxB2fm.jpg"],
       weight: "500g",
-      stock: 25,
+      stock: 15,
       featured: true,
-      discount: 26,
+      discount: 47,
       rating: "4.8",
       reviews: 142,
       createdAt: new Date(),
@@ -32,18 +32,18 @@ const initializeProducts = () => {
     {
       id: 2,
       name: "Queijo Mussarela Artesanal",
-      description: "Mussarela artesanal de primeira qualidade. Textura macia e sabor marcante. Perfeita para pizzas, sanduíches ou para consumo direto.",
+      description: "Mussarela artesanal de textura macia e sabor marcante. Perfeita para pizzas, sanduíches ou consumo direto.",
       price500g: "28.90",
-      price1kg: "57.80",
-      originalPrice500g: "38.90",
-      originalPrice1kg: "77.80",
+      price1kg: "55.90",
+      originalPrice500g: "55.90",
+      originalPrice1kg: "111.80",
       category: "queijos",
-      imageUrl: "https://i.imgur.com/ZQN5R8vm.jpg",
-      imageUrls: ["https://i.imgur.com/ZQN5R8vm.jpg"],
+      imageUrl: "https://i.imgur.com/wMqvF3tm.jpg",
+      imageUrls: ["https://i.imgur.com/wMqvF3tm.jpg"],
       weight: "500g",
-      stock: 30,
+      stock: 20,
       featured: false,
-      discount: 25,
+      discount: 48,
       rating: "4.7",
       reviews: 98,
       createdAt: new Date(),
@@ -51,18 +51,18 @@ const initializeProducts = () => {
     {
       id: 3,
       name: "Queijo Prato Curado",
-      description: "Queijo prato curado por tempo ideal para desenvolver sabor único. Consistência firme e sabor acentuado que marca presença em qualquer refeição.",
+      description: "Queijo prato curado especial, com consistência firme e sabor acentuado que marca presença em qualquer refeição.",
       price500g: "31.90",
-      price1kg: "63.80",
-      originalPrice500g: "42.90",
-      originalPrice1kg: "85.80",
+      price1kg: "61.90",
+      originalPrice500g: "61.90",
+      originalPrice1kg: "123.80",
       category: "queijos",
-      imageUrl: "https://i.imgur.com/8K2pN1vm.jpg",
-      imageUrls: ["https://i.imgur.com/8K2pN1vm.jpg"],
+      imageUrl: "https://i.imgur.com/Y7mKpXym.jpg",
+      imageUrls: ["https://i.imgur.com/Y7mKpXym.jpg"],
       weight: "500g",
-      stock: 20,
+      stock: 18,
       featured: true,
-      discount: 25,
+      discount: 48,
       rating: "4.9",
       reviews: 156,
       createdAt: new Date(),
@@ -70,18 +70,18 @@ const initializeProducts = () => {
     {
       id: 4,
       name: "Queijo Coalho Premium",
-      description: "Queijo coalho premium direto do nordeste brasileiro. Sabor marcante e textura perfeita para grelhar. Experiência gastronômica única.",
+      description: "Queijo coalho premium direto do nordeste brasileiro. Ideal para grelhar ou consumir puro.",
       price500g: "35.90",
-      price1kg: "71.80",
-      originalPrice500g: "47.90",
-      originalPrice1kg: "95.80",
+      price1kg: "69.90",
+      originalPrice500g: "69.90",
+      originalPrice1kg: "139.80",
       category: "queijos",
-      imageUrl: "https://i.imgur.com/M9L3X6vm.jpg",
-      imageUrls: ["https://i.imgur.com/M9L3X6vm.jpg"],
+      imageUrl: "https://i.imgur.com/3nWvL2Km.jpg",
+      imageUrls: ["https://i.imgur.com/3nWvL2Km.jpg"],
       weight: "500g",
-      stock: 15,
+      stock: 12,
       featured: false,
-      discount: 25,
+      discount: 48,
       rating: "4.8",
       reviews: 89,
       createdAt: new Date(),
@@ -89,18 +89,18 @@ const initializeProducts = () => {
     {
       id: 5,
       name: "Queijo Canastra Artesanal",
-      description: "Legítimo queijo Canastra, patrimônio cultural de Minas Gerais. Sabor inconfundível que representa a tradição queijeira mineira há gerações.",
+      description: "Autêntico queijo Canastra, patrimônio de Minas Gerais. Sabor único que representa a tradição queijeira mineira.",
       price500g: "45.90",
-      price1kg: "91.80",
-      originalPrice500g: "61.90",
-      originalPrice1kg: "123.80",
+      price1kg: "89.90",
+      originalPrice500g: "89.90",
+      originalPrice1kg: "179.80",
       category: "queijos",
-      imageUrl: "https://i.imgur.com/F7H9B2vm.jpg",
-      imageUrls: ["https://i.imgur.com/F7H9B2vm.jpg"],
+      imageUrl: "https://i.imgur.com/hfC8Y7vm.jpg",
+      imageUrls: ["https://i.imgur.com/hfC8Y7vm.jpg"],
       weight: "500g",
-      stock: 12,
+      stock: 10,
       featured: true,
-      discount: 25,
+      discount: 48,
       rating: "4.9",
       reviews: 203,
       createdAt: new Date(),
@@ -108,18 +108,18 @@ const initializeProducts = () => {
     {
       id: 6,
       name: "Queijo Requeijão Cremoso",
-      description: "Requeijão cremoso artesanal feito com ingredientes selecionados. Textura aveludada e sabor suave que derrete na boca. Tradição familiar.",
+      description: "Requeijão cremoso artesanal, textura aveludada e sabor suave. Feito com ingredientes selecionados.",
       price500g: "24.90",
-      price1kg: "49.80",
-      originalPrice500g: "33.90",
-      originalPrice1kg: "67.80",
+      price1kg: "47.90",
+      originalPrice500g: "47.90",
+      originalPrice1kg: "95.80",
       category: "queijos",
-      imageUrl: "https://i.imgur.com/P4K8N7vm.jpg",
-      imageUrls: ["https://i.imgur.com/P4K8N7vm.jpg"],
+      imageUrl: "https://i.imgur.com/ZQN5R8vm.jpg",
+      imageUrls: ["https://i.imgur.com/ZQN5R8vm.jpg"],
       weight: "500g",
-      stock: 40,
+      stock: 25,
       featured: false,
-      discount: 26,
+      discount: 48,
       rating: "4.6",
       reviews: 76,
       createdAt: new Date(),
@@ -127,18 +127,18 @@ const initializeProducts = () => {
     {
       id: 7,
       name: "Doce de Pingo de Leite com Castanha",
-      description: "Tradicional doce mineiro de pingo de leite enriquecido com castanhas selecionadas. Sabor caseiro que remete à infância na fazenda.",
+      description: "Tradicional doce mineiro de pingo de leite com castanhas selecionadas. Sabor caseiro da fazenda.",
       price500g: "29.90",
-      price1kg: "59.80",
-      originalPrice500g: "39.90",
-      originalPrice1kg: "79.80",
+      price1kg: "57.90",
+      originalPrice500g: "57.90",
+      originalPrice1kg: "115.80",
       category: "doces",
       imageUrl: "https://i.imgur.com/A3B9K5vm.jpg",
       imageUrls: ["https://i.imgur.com/A3B9K5vm.jpg"],
       weight: "400g",
       stock: 22,
       featured: true,
-      discount: 25,
+      discount: 48,
       rating: "4.8",
       reviews: 134,
       createdAt: new Date(),
@@ -146,18 +146,18 @@ const initializeProducts = () => {
     {
       id: 8,
       name: "Doce de Cocada Tradicional",
-      description: "Cocada tradicional feita com coco fresco e açúcar cristal. Textura crocante por fora e macia por dentro. Receita da vovó preservada.",
+      description: "Cocada tradicional com coco fresco e açúcar cristal. Crocante por fora, macia por dentro.",
       price500g: "26.90",
-      price1kg: "53.80",
-      originalPrice500g: "35.90",
-      originalPrice1kg: "71.80",
+      price1kg: "51.90",
+      originalPrice500g: "51.90",
+      originalPrice1kg: "103.80",
       category: "doces",
       imageUrl: "https://i.imgur.com/L8N2M4vm.jpg",
       imageUrls: ["https://i.imgur.com/L8N2M4vm.jpg"],
       weight: "350g",
       stock: 28,
       featured: false,
-      discount: 25,
+      discount: 48,
       rating: "4.7",
       reviews: 87,
       createdAt: new Date(),
@@ -165,18 +165,18 @@ const initializeProducts = () => {
     {
       id: 9,
       name: "Doce de Leite Cremoso Premium",
-      description: "Doce de leite cremoso premium feito no tacho de cobre. Consistência perfeita e sabor intenso que derrete na boca. Pura tradição mineira.",
+      description: "Doce de leite cremoso feito no tacho de cobre. Consistência perfeita e sabor intenso.",
       price500g: "31.90",
-      price1kg: "63.80",
-      originalPrice500g: "42.90",
-      originalPrice1kg: "85.80",
+      price1kg: "61.90",
+      originalPrice500g: "61.90",
+      originalPrice1kg: "123.80",
       category: "doces",
       imageUrl: "https://i.imgur.com/R6T8W1vm.jpg",
       imageUrls: ["https://i.imgur.com/R6T8W1vm.jpg"],
       weight: "450g",
       stock: 35,
       featured: true,
-      discount: 25,
+      discount: 48,
       rating: "4.9",
       reviews: 198,
       createdAt: new Date(),
@@ -184,18 +184,18 @@ const initializeProducts = () => {
     {
       id: 10,
       name: "Doce de Mamão com Coco",
-      description: "Combinação perfeita entre mamão verde e coco ralado fresco. Doce cristalizado no ponto exato. Sabor tropical que conquista paladares.",
+      description: "Perfeita combinação de mamão verde com coco ralado fresco. Doce cristalizado no ponto.",
       price500g: "28.90",
-      price1kg: "57.80",
-      originalPrice500g: "38.90",
-      originalPrice1kg: "77.80",
+      price1kg: "55.90",
+      originalPrice500g: "55.90",
+      originalPrice1kg: "111.80",
       category: "doces",
       imageUrl: "https://i.imgur.com/V9X3C2vm.jpg",
       imageUrls: ["https://i.imgur.com/V9X3C2vm.jpg"],
       weight: "380g",
       stock: 18,
       featured: false,
-      discount: 25,
+      discount: 48,
       rating: "4.6",
       reviews: 92,
       createdAt: new Date(),
@@ -203,30 +203,125 @@ const initializeProducts = () => {
     {
       id: 11,
       name: "Doce de Abóbora com Canela",
-      description: "Doce de abóbora temperado com canela em pau. Receita colonial que atravessa gerações. Sabor marcante e aroma irresistível.",
+      description: "Doce de abóbora temperado com canela em pau. Receita colonial que atravessa gerações.",
       price500g: "25.90",
-      price1kg: "51.80",
-      originalPrice500g: "34.90",
-      originalPrice1kg: "69.80",
+      price1kg: "49.90",
+      originalPrice500g: "49.90",
+      originalPrice1kg: "99.80",
       category: "doces",
       imageUrl: "https://i.imgur.com/S5Y7J9vm.jpg",
       imageUrls: ["https://i.imgur.com/S5Y7J9vm.jpg"],
       weight: "420g",
       stock: 25,
       featured: false,
-      discount: 25,
+      discount: 48,
       rating: "4.5",
       reviews: 67,
       createdAt: new Date(),
+    },
+    {
+      id: 12,
+      name: "Doce Prestígio Mineiro",
+      description: "Versão mineira do clássico prestígio. Doce de leite com coco ralado e cobertura de chocolate.",
+      price500g: "24.90",
+      price1kg: "47.90",
+      originalPrice500g: "47.90",
+      originalPrice1kg: "95.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/IdAa9ngm.jpg",
+      imageUrls: ["https://i.imgur.com/IdAa9ngm.jpg"],
+      weight: "300g",
+      stock: 30,
+      featured: true,
+      discount: 48,
+      rating: "4.9",
+      reviews: 167,
+      createdAt: new Date(),
+    },
+    {
+      id: 13,
+      name: "Doce Quebra-Queixo",
+      description: "Tradicional doce mineiro crocante feito com amendoim torrado e rapadura. Resistir é impossível.",
+      price500g: "22.90",
+      price1kg: "43.90",
+      originalPrice500g: "43.90",
+      originalPrice1kg: "87.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/p6wwtEtm.jpg",
+      imageUrls: ["https://i.imgur.com/p6wwtEtm.jpg"],
+      weight: "250g",
+      stock: 40,
+      featured: false,
+      discount: 48,
+      rating: "4.7",
+      reviews: 95,
+      createdAt: new Date(),
+    },
+    {
+      id: 14,
+      name: "Banana Zero Açúcar",
+      description: "Doce de banana sem adição de açúcar, adoçado naturalmente. Ideal para diabéticos e vida saudável.",
+      price500g: "27.90",
+      price1kg: "53.90",
+      originalPrice500g: "53.90",
+      originalPrice1kg: "107.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/WoKuC7Tm.jpg",
+      imageUrls: ["https://i.imgur.com/WoKuC7Tm.jpg"],
+      weight: "400g",
+      stock: 20,
+      featured: false,
+      discount: 48,
+      rating: "4.4",
+      reviews: 63,
+      createdAt: new Date(),
+    },
+    {
+      id: 15,
+      name: "Doce de Leite Dom",
+      description: "Doce de leite especial da casa, cremosidade única e sabor marcante. Receita exclusiva da família.",
+      price500g: "29.90",
+      price1kg: "57.90",
+      originalPrice500g: "57.90",
+      originalPrice1kg: "115.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/7l56V5mm.jpg",
+      imageUrls: ["https://i.imgur.com/7l56V5mm.jpg"],
+      weight: "500g",
+      stock: 25,
+      featured: true,
+      discount: 48,
+      rating: "4.8",
+      reviews: 134,
+      createdAt: new Date(),
+    },
+    {
+      id: 16,
+      name: "Goiabada Tia Carla",
+      description: "Goiabada artesanal da Tia Carla, feita com goiabas selecionadas. Textura perfeita e sabor inesquecível.",
+      price500g: "26.90",
+      price1kg: "51.90",
+      originalPrice500g: "51.90",
+      originalPrice1kg: "103.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/Y7mKpXym.jpg",
+      imageUrls: ["https://i.imgur.com/Y7mKpXym.jpg"],
+      weight: "450g",
+      stock: 30,
+      featured: false,
+      discount: 48,
+      rating: "4.6",
+      reviews: 89,
+      createdAt: new Date(),
     }
   ];
+  
   productIdCounter = products.length + 1;
 };
 
 initializeProducts();
 
 export const storage = {
-  // Product operations
   getProducts: async (): Promise<any[]> => {
     return products;
   },
@@ -243,7 +338,6 @@ export const storage = {
     return products.filter(p => p.featured);
   },
 
-  // Cart operations
   getCartItems: async (sessionId: string): Promise<any[]> => {
     return cartItems.filter(item => item.sessionId === sessionId);
   },
@@ -278,121 +372,57 @@ export const storage = {
   },
 
   createOrder: async (orderData: any): Promise<any> => {
-    console.log('=== INÍCIO CREATE ORDER ===');
-    console.log('Order data recebido:', JSON.stringify(orderData, null, 2));
-    
     try {
       const blackCatApiKey = process.env.BLACKCAT_API_KEY;
       
-      console.log('Verificando API Key...');
-      console.log('API Key presente:', !!blackCatApiKey);
-      console.log('Primeiros 10 caracteres da key:', blackCatApiKey ? blackCatApiKey.substring(0, 10) + '...' : 'undefined');
-      
       if (!blackCatApiKey) {
-        console.error('❌ BLACKCAT_API_KEY não configurada');
-        throw new Error('BLACKCAT_API_KEY não configurada no ambiente');
+        console.warn('BLACKCAT_API_KEY não configurada, criando pedido sem PIX');
+        const order = {
+          id: orderIdCounter++,
+          ...orderData,
+          pixCode: 'PIX_CODE_PLACEHOLDER',
+          blackCatTransactionId: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
+          createdAt: new Date(),
+          status: 'pending'
+        };
+        orders.push(order);
+        return order;
       }
 
-      // Gerar identificador único mais robusto
-      const identificador = `PEDIDO-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-      console.log('📝 Identificador gerado:', identificador);
-
-      // Validar valor
-      const valorFloat = parseFloat(orderData.total);
-      if (isNaN(valorFloat) || valorFloat <= 0) {
-        throw new Error(`Valor inválido: ${orderData.total}`);
-      }
-      console.log('💰 Valor validado:', valorFloat);
-
-      // Preparar payload para BlackCat
-      const pixPayload = {
-        valor: valorFloat,
-        identificador: identificador,
-        solicitacao_pagador: "Pagamento - Tábua de Minas"
-      };
-      
-      console.log('📤 Payload para BlackCat:', JSON.stringify(pixPayload, null, 2));
-
-      console.log('🔄 Fazendo requisição para BlackCat API...');
-      
-      // Fazer requisição com timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
-
+      // Criar transação PIX usando BlackCat API
       const pixResponse = await fetch('https://api.blackcat.bio/pix/solicitar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${blackCatApiKey}`,
-          'User-Agent': 'Tabua-de-Minas/1.0',
-          'Accept': 'application/json'
+          'Authorization': `Bearer ${blackCatApiKey}`
         },
-        body: JSON.stringify(pixPayload),
-        signal: controller.signal
+        body: JSON.stringify({
+          valor: parseFloat(orderData.total),
+          identificador: `PEDIDO-${Math.floor(Math.random() * 10000)}`,
+          solicitacao_pagador: "Pagamento - Tábua de Minas"
+        })
       });
 
-      clearTimeout(timeoutId);
-
-      console.log('📥 Resposta da BlackCat:');
-      console.log('- Status:', pixResponse.status);
-      console.log('- Status Text:', pixResponse.statusText);
-      console.log('- Headers:', Object.fromEntries(pixResponse.headers));
-
       if (!pixResponse.ok) {
-        const errorText = await pixResponse.text();
-        console.error('❌ Erro da BlackCat API:', errorText);
-        console.error('❌ Status completo:', {
-          status: pixResponse.status,
-          statusText: pixResponse.statusText,
-          body: errorText
-        });
-        
-        throw new Error(`BlackCat API Error ${pixResponse.status}: ${errorText}`);
+        throw new Error(`BlackCat API error: ${pixResponse.status}`);
       }
 
       const pixPayment = await pixResponse.json();
-      console.log('✅ PIX Payment recebido:', JSON.stringify(pixPayment, null, 2));
-
-      // Validar resposta da BlackCat
-      if (!pixPayment.pix || !pixPayment.pix.qrcode) {
-        console.error('❌ Resposta inválida da BlackCat:', pixPayment);
-        throw new Error('Resposta inválida da BlackCat API - QR Code não encontrado');
-      }
 
       const order = {
         id: orderIdCounter++,
         ...orderData,
         pixCode: pixPayment.pix.qrcode,
-        pixKey: pixPayment.pix.chave || 'N/A',
+        pixKey: pixPayment.pix.chave,
         blackCatTransactionId: pixPayment.identificador,
-        blackCatResponse: pixPayment, // Para debug
         createdAt: new Date(),
         status: 'pending'
       };
       
       orders.push(order);
-      
-      console.log('✅ Pedido criado com sucesso:', {
-        orderId: order.id,
-        transactionId: order.blackCatTransactionId,
-        pixCodeLength: order.pixCode.length
-      });
-      console.log('=== FIM CREATE ORDER ===');
-      
       return order;
-      
     } catch (error) {
-      console.error('❌ ERRO GERAL em createOrder:');
-      console.error('- Message:', error.message);
-      console.error('- Stack:', error.stack);
-      console.error('- Name:', error.name);
-      
-      if (error.name === 'AbortError') {
-        console.error('❌ Timeout na requisição para BlackCat');
-        throw new Error('Timeout ao conectar com a API de pagamento');
-      }
-      
-      console.log('=== FIM CREATE ORDER (ERRO) ===');
+      console.error('Erro ao criar PIX:', error);
       throw new Error(`Erro ao gerar código PIX: ${error.message}`);
     }
   },
