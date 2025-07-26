@@ -1,271 +1,276 @@
-w Date(),
-  },
-  {
-    id: 22,
-    name: "Doce Prestígio mineiro",
-    description: "Versão mineira do clássico prestígio. Doce de leite com coco ralado e cobertura de chocolate. Simplesmente irresistível.",
-    price500g: "24.90",
-    price1kg: "49.80",
-    originalPrice500g: "41.90",
-    originalPrice1kg: "83.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/IdAa9ngm.jpg",
-    imageUrls: ["https://i.imgur.com/IdAa9ngm.jpg"],
-    weight: "300g",
-    stock: 30,
-    featured: true,
-    discount: 40,
-    rating: "4.9",
-    reviews: 167,
-    createdAt: new Date(),
-  },
-  {
-    id: 23,
-    name: "Doce de Cocada com Maracujá",
-    description: "Cocada cremosa com polpa de maracujá natural. Combinação perfeita entre o doce do coco e o azedinho do maracujá.",
-    price500g: "32.90",
-    price1kg: "65.80",
-    originalPrice500g: "43.90",
-    originalPrice1kg: "87.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/p6wwtEtm.jpg",
-    imageUrls: ["https://i.imgur.com/p6wwtEtm.jpg"],
-    weight: "350g",
-    stock: 20,
-    featured: false,
-    discount: 25,
-    rating: "4.7",
-    reviews: 112,
-    createdAt: new Date(),
-  },
-  {
-    id: 24,
-    name: "Doce casadinho",
-    description: "Tradicional doce de festa junina. Duas metades de biscoito recheadas com doce de leite cremoso. Nostalgia em cada mordida.",
-    price500g: "27.90",
-    price1kg: "55.80",
-    originalPrice500g: "45.00",
-    originalPrice1kg: "90.00",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/WoKuC7Tm.jpg",
-    imageUrls: ["https://i.imgur.com/WoKuC7Tm.jpg"],
-    weight: "250g",
-    stock: 35,
-    featured: false,
-    discount: 38,
-    rating: "4.5",
-    reviews: 89,
-    createdAt: new Date(),
-  },
-  {
-    id: 25,
-    name: "Doce de leite",
-    description: "Doce de leite puro artesanal, cremoso e no ponto certo. Feito com leite fresco e muito carinho. Tradição mineira.",
-    price500g: "22.90",
-    price1kg: "45.80",
-    originalPrice500g: "40.00",
-    originalPrice1kg: "80.00",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/7l56V5mm.jpg",
-    imageUrls: ["https://i.imgur.com/7l56V5mm.jpg"],
-    weight: "400g",
-    stock: 40,
-    featured: true,
-    discount: 42,
-    rating: "4.9",
-    reviews: 234,
-    createdAt: new Date(),
-  },
-  {
-    id: 26,
-    name: "Doce de leite com café",
-    description: "Doce de leite enriquecido com café especial mineiro. Sabor único para os amantes de café. Cremoso e aromático.",
-    price500g: "26.90",
-    price1kg: "53.80",
-    originalPrice500g: "45.00",
-    originalPrice1kg: "90.00",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/dEVNMOdm.jpg",
-    imageUrls: ["https://i.imgur.com/dEVNMOdm.jpg"],
-    weight: "400g",
-    stock: 28,
-    featured: true,
-    discount: 40,
-    rating: "4.8",
-    reviews: 145,
-    createdAt: new Date(),
-  },
-  {
-    id: 27,
-    name: "Doce de Pingo de Leite com Amendoim",
-    description: "Doce de leite especial com amendoim torrado e crocante. Textura cremosa com pedaços generosos de amendoim.",
-    price500g: "58.90",
-    price1kg: "117.80",
-    originalPrice500g: "80.90",
-    originalPrice1kg: "161.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/o74KsOom.jpg",
-    imageUrls: ["https://i.imgur.com/o74KsOom.jpg"],
-    weight: "500g",
-    stock: 15,
-    featured: false,
-    discount: 27,
-    rating: "4.7",
-    reviews: 93,
-    createdAt: new Date(),
-  },
-  {
-    id: 28,
-    name: "Doce de Cocada com Ameixa",
-    description: "Cocada diferenciada com pedaços de ameixa seca. Combinação sofisticada de sabores, textura macia e equilibrada.",
-    price500g: "32.90",
-    price1kg: "65.80",
-    originalPrice500g: "43.90",
-    originalPrice1kg: "87.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/Rt7nWy8m.jpg",
-    imageUrls: ["https://i.imgur.com/Rt7nWy8m.jpg"],
-    weight: "350g",
-    stock: 12,
-    featured: false,
-    discount: 25,
-    rating: "4.6",
-    reviews: 67,
-    createdAt: new Date(),
-  },
-  {
-    id: 29,
-    name: "Doce de Abóbora com Coco",
-    description: "Doce caseiro de abóbora com coco ralado fresco. Receita tradicional da vovó, com sabor que remete à infância.",
-    price500g: "27.90",
-    price1kg: "55.80",
-    originalPrice500g: "44.00",
-    originalPrice1kg: "88.00",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/glyYwmbm.jpg",
-    imageUrls: ["https://i.imgur.com/glyYwmbm.jpg"],
-    weight: "450g",
-    stock: 25,
-    featured: false,
-    discount: 36,
-    rating: "4.5",
-    reviews: 78,
-    createdAt: new Date(),
-  },
-  {
-    id: 30,
-    name: "Doce Quebra-Queixo",
-    description: "Tradicional doce mineiro feito com rapadura e amendoim. Crocante e saboroso, derrete na boca. Energia pura!",
-    price500g: "36.90",
-    price1kg: "73.80",
-    originalPrice500g: "60.90",
-    originalPrice1kg: "121.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/ded8MyOm.jpg",
-    imageUrls: ["https://i.imgur.com/ded8MyOm.jpg"],
-    weight: "300g",
-    stock: 20,
-    featured: false,
-    discount: 39,
-    rating: "4.7",
-    reviews: 102,
-    createdAt: new Date(),
-  },
-  {
-    id: 31,
-    name: "Doce de leite Dom",
-    description: "Doce de leite premium da marca Dom. Textura aveludada e sabor incomparável. Produzido com leite selecionado.",
-    price500g: "44.90",
-    price1kg: "89.80",
-    originalPrice500g: "80.90",
-    originalPrice1kg: "161.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/lHpdysAm.jpg",
-    imageUrls: ["https://i.imgur.com/lHpdysAm.jpg"],
-    weight: "450g",
-    stock: 10,
-    featured: true,
-    discount: 44,
-    rating: "4.9",
-    reviews: 189,
-    createdAt: new Date(),
-  },
-  {
-    id: 32,
-    name: "Goiabada cremosa Tia Carla",
-    description: "Goiabada cremosa artesanal da Tia Carla. Feita com goiabas maduras selecionadas, textura perfeita para acompanhar queijos.",
-    price500g: "32.90",
-    price1kg: "65.80",
-    originalPrice500g: "60.90",
-    originalPrice1kg: "121.80",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/uJPxQ3Fm.jpg",
-    imageUrls: ["https://i.imgur.com/uJPxQ3Fm.jpg"],
-    weight: "400g",
-    stock: 26,
-    featured: true,
-    discount: 46,
-    rating: "4.8",
-    reviews: 156,
-    createdAt: new Date(),
-  },
-  {
-    id: 33,
-    name: "Doce de banana zero açúcar",
-    description: "Doce de banana sem adição de açúcar, adoçado naturalmente. Ideal para dietas restritivas. Sabor autêntico da fruta.",
-    price500g: "24.90",
-    price1kg: "49.80",
-    originalPrice500g: "40.00",
-    originalPrice1kg: "80.00",
-    category: "doces",
-    imageUrl: "https://i.imgur.com/dOM2hiam.jpg",
-    imageUrls: ["https://i.imgur.com/dOM2hiam.jpg"],
-    weight: "350g",
-    stock: 32,
-    featured: false,
-    discount: 37,
-    rating: "4.6",
-    reviews: 124,
-    createdAt: new Date(),
-  }
-];
-
-let cartItems: CartItem[] = [];
-let cartIdCounter = 1;
+// In-memory storage for Netlify Functions
+let products: any[] = [];
+let cartItems: any[] = [];
 let orders: any[] = [];
+
+let productIdCounter = 1;
+let cartIdCounter = 1;
 let orderIdCounter = 1;
 
+// Initialize products data
+const initializeProducts = () => {
+  products = [
+    {
+      id: 1,
+      name: "Queijo MinasBri",
+      description: "Queijo minas frescal artesanal, cremoso e suave. Produzido com leite fresco da região de Minas Gerais. Tradição e qualidade em cada fatia.",
+      price500g: "33.90",
+      price1kg: "67.80",
+      originalPrice500g: "45.90",
+      originalPrice1kg: "91.80",
+      category: "queijos",
+      imageUrl: "https://i.imgur.com/hfC8Y7vm.jpg",
+      imageUrls: ["https://i.imgur.com/hfC8Y7vm.jpg"],
+      weight: "500g",
+      stock: 25,
+      featured: true,
+      discount: 26,
+      rating: "4.8",
+      reviews: 142,
+      createdAt: new Date(),
+    },
+    {
+      id: 2,
+      name: "Queijo Mussarela Artesanal",
+      description: "Mussarela artesanal de primeira qualidade. Textura macia e sabor marcante. Perfeita para pizzas, sanduíches ou para consumo direto.",
+      price500g: "28.90",
+      price1kg: "57.80",
+      originalPrice500g: "38.90",
+      originalPrice1kg: "77.80",
+      category: "queijos",
+      imageUrl: "https://i.imgur.com/ZQN5R8vm.jpg",
+      imageUrls: ["https://i.imgur.com/ZQN5R8vm.jpg"],
+      weight: "500g",
+      stock: 30,
+      featured: false,
+      discount: 25,
+      rating: "4.7",
+      reviews: 98,
+      createdAt: new Date(),
+    },
+    {
+      id: 3,
+      name: "Queijo Prato Curado",
+      description: "Queijo prato curado por tempo ideal para desenvolver sabor único. Consistência firme e sabor acentuado que marca presença em qualquer refeição.",
+      price500g: "31.90",
+      price1kg: "63.80",
+      originalPrice500g: "42.90",
+      originalPrice1kg: "85.80",
+      category: "queijos",
+      imageUrl: "https://i.imgur.com/8K2pN1vm.jpg",
+      imageUrls: ["https://i.imgur.com/8K2pN1vm.jpg"],
+      weight: "500g",
+      stock: 20,
+      featured: true,
+      discount: 25,
+      rating: "4.9",
+      reviews: 156,
+      createdAt: new Date(),
+    },
+    {
+      id: 4,
+      name: "Queijo Coalho Premium",
+      description: "Queijo coalho premium direto do nordeste brasileiro. Sabor marcante e textura perfeita para grelhar. Experiência gastronômica única.",
+      price500g: "35.90",
+      price1kg: "71.80",
+      originalPrice500g: "47.90",
+      originalPrice1kg: "95.80",
+      category: "queijos",
+      imageUrl: "https://i.imgur.com/M9L3X6vm.jpg",
+      imageUrls: ["https://i.imgur.com/M9L3X6vm.jpg"],
+      weight: "500g",
+      stock: 15,
+      featured: false,
+      discount: 25,
+      rating: "4.8",
+      reviews: 89,
+      createdAt: new Date(),
+    },
+    {
+      id: 5,
+      name: "Queijo Canastra Artesanal",
+      description: "Legítimo queijo Canastra, patrimônio cultural de Minas Gerais. Sabor inconfundível que representa a tradição queijeira mineira há gerações.",
+      price500g: "45.90",
+      price1kg: "91.80",
+      originalPrice500g: "61.90",
+      originalPrice1kg: "123.80",
+      category: "queijos",
+      imageUrl: "https://i.imgur.com/F7H9B2vm.jpg",
+      imageUrls: ["https://i.imgur.com/F7H9B2vm.jpg"],
+      weight: "500g",
+      stock: 12,
+      featured: true,
+      discount: 25,
+      rating: "4.9",
+      reviews: 203,
+      createdAt: new Date(),
+    },
+    {
+      id: 6,
+      name: "Queijo Requeijão Cremoso",
+      description: "Requeijão cremoso artesanal feito com ingredientes selecionados. Textura aveludada e sabor suave que derrete na boca. Tradição familiar.",
+      price500g: "24.90",
+      price1kg: "49.80",
+      originalPrice500g: "33.90",
+      originalPrice1kg: "67.80",
+      category: "queijos",
+      imageUrl: "https://i.imgur.com/P4K8N7vm.jpg",
+      imageUrls: ["https://i.imgur.com/P4K8N7vm.jpg"],
+      weight: "500g",
+      stock: 40,
+      featured: false,
+      discount: 26,
+      rating: "4.6",
+      reviews: 76,
+      createdAt: new Date(),
+    },
+    {
+      id: 7,
+      name: "Doce de Pingo de Leite com Castanha",
+      description: "Tradicional doce mineiro de pingo de leite enriquecido com castanhas selecionadas. Sabor caseiro que remete à infância na fazenda.",
+      price500g: "29.90",
+      price1kg: "59.80",
+      originalPrice500g: "39.90",
+      originalPrice1kg: "79.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/A3B9K5vm.jpg",
+      imageUrls: ["https://i.imgur.com/A3B9K5vm.jpg"],
+      weight: "400g",
+      stock: 22,
+      featured: true,
+      discount: 25,
+      rating: "4.8",
+      reviews: 134,
+      createdAt: new Date(),
+    },
+    {
+      id: 8,
+      name: "Doce de Cocada Tradicional",
+      description: "Cocada tradicional feita com coco fresco e açúcar cristal. Textura crocante por fora e macia por dentro. Receita da vovó preservada.",
+      price500g: "26.90",
+      price1kg: "53.80",
+      originalPrice500g: "35.90",
+      originalPrice1kg: "71.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/L8N2M4vm.jpg",
+      imageUrls: ["https://i.imgur.com/L8N2M4vm.jpg"],
+      weight: "350g",
+      stock: 28,
+      featured: false,
+      discount: 25,
+      rating: "4.7",
+      reviews: 87,
+      createdAt: new Date(),
+    },
+    {
+      id: 9,
+      name: "Doce de Leite Cremoso Premium",
+      description: "Doce de leite cremoso premium feito no tacho de cobre. Consistência perfeita e sabor intenso que derrete na boca. Pura tradição mineira.",
+      price500g: "31.90",
+      price1kg: "63.80",
+      originalPrice500g: "42.90",
+      originalPrice1kg: "85.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/R6T8W1vm.jpg",
+      imageUrls: ["https://i.imgur.com/R6T8W1vm.jpg"],
+      weight: "450g",
+      stock: 35,
+      featured: true,
+      discount: 25,
+      rating: "4.9",
+      reviews: 198,
+      createdAt: new Date(),
+    },
+    {
+      id: 10,
+      name: "Doce de Mamão com Coco",
+      description: "Combinação perfeita entre mamão verde e coco ralado fresco. Doce cristalizado no ponto exato. Sabor tropical que conquista paladares.",
+      price500g: "28.90",
+      price1kg: "57.80",
+      originalPrice500g: "38.90",
+      originalPrice1kg: "77.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/V9X3C2vm.jpg",
+      imageUrls: ["https://i.imgur.com/V9X3C2vm.jpg"],
+      weight: "380g",
+      stock: 18,
+      featured: false,
+      discount: 25,
+      rating: "4.6",
+      reviews: 92,
+      createdAt: new Date(),
+    },
+    {
+      id: 11,
+      name: "Doce de Abóbora com Canela",
+      description: "Doce de abóbora temperado com canela em pau. Receita colonial que atravessa gerações. Sabor marcante e aroma irresistível.",
+      price500g: "25.90",
+      price1kg: "51.80",
+      originalPrice500g: "34.90",
+      originalPrice1kg: "69.80",
+      category: "doces",
+      imageUrl: "https://i.imgur.com/S5Y7J9vm.jpg",
+      imageUrls: ["https://i.imgur.com/S5Y7J9vm.jpg"],
+      weight: "420g",
+      stock: 25,
+      featured: false,
+      discount: 25,
+      rating: "4.5",
+      reviews: 67,
+      createdAt: new Date(),
+    }
+  ];
+  productIdCounter = products.length + 1;
+};
+
+initializeProducts();
+
 export const storage = {
-  getAllProducts: async (): Promise<Product[]> => {
+  // Product operations
+  getProducts: async (): Promise<any[]> => {
     return products;
   },
 
-  getCartItems: async (sessionId: string): Promise<CartItem[]> => {
-    const items = cartItems.filter(item => item.sessionId === sessionId);
-    // Add product details
-    return items.map(item => ({
-      ...item,
-      product: products.find(p => p.id === item.productId)
-    }));
+  getProductById: async (id: number): Promise<any | undefined> => {
+    return products.find(p => p.id === id);
   },
 
-  addToCart: async (cartData: {
-    sessionId: string;
-    productId: number;
-    quantity: number;
-    size: string;
-    price: string;
-  }): Promise<CartItem> => {
-    const newItem: CartItem = {
+  getProductsByCategory: async (category: string): Promise<any[]> => {
+    return products.filter(p => p.category === category);
+  },
+
+  getFeaturedProducts: async (): Promise<any[]> => {
+    return products.filter(p => p.featured);
+  },
+
+  // Cart operations
+  getCartItems: async (sessionId: string): Promise<any[]> => {
+    return cartItems.filter(item => item.sessionId === sessionId);
+  },
+
+  addToCart: async (itemData: any): Promise<any> => {
+    const newItem = {
       id: cartIdCounter++,
-      ...cartData
+      ...itemData,
+      createdAt: new Date()
     };
     cartItems.push(newItem);
     return newItem;
   },
 
-  removeFromCart: async (itemId: number): Promise<void> => {
-    cartItems = cartItems.filter(item => item.id !== itemId);
+  updateCartItem: async (id: number, quantity: number): Promise<any | undefined> => {
+    const itemIndex = cartItems.findIndex(item => item.id === id);
+    if (itemIndex !== -1) {
+      cartItems[itemIndex].quantity = quantity;
+      return cartItems[itemIndex];
+    }
+    return undefined;
+  },
+
+  removeFromCart: async (id: number): Promise<boolean> => {
+    const initialLength = cartItems.length;
+    cartItems = cartItems.filter(item => item.id !== id);
+    return cartItems.length < initialLength;
   },
 
   clearCart: async (sessionId: string): Promise<void> => {
@@ -392,15 +397,11 @@ export const storage = {
     }
   },
 
-  getOrdersByTransactionId: async (transactionId: string): Promise<any[]> => {
-    return orders.filter(order => order.blackCatTransactionId === transactionId);
+  getOrder: async (id: number): Promise<any | undefined> => {
+    return orders.find(o => o.id === id);
   },
 
-  updateOrderStatus: async (orderId: number, status: string): Promise<any | undefined> => {
-    const order = orders.find(order => order.id === orderId);
-    if (order) {
-      order.status = status;
-    }
-    return order;
+  getOrdersByCustomer: async (email: string): Promise<any[]> => {
+    return orders.filter(o => o.customerEmail === email);
   }
 };

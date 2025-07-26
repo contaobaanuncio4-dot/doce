@@ -1,0 +1,55 @@
+Bundling of function "storage" failed                         
+1:21:38 AM: ────────────────────────────────────────────────────────────────
+1:21:38 AM: ​
+1:21:38 AM:   Error message
+1:21:38 AM:   Build failed with 1 error:
+1:21:38 AM:   netlify/functions/storage.ts:1:2: ERROR: Expected ";" but found "Date"
+1:21:38 AM: ​
+1:21:38 AM:   Error location
+1:21:38 AM:   While bundling function "storage"
+1:21:38 AM: ​
+1:21:38 AM:   Resolved config
+1:21:38 AM:   build:
+1:21:38 AM:     command: rm -rf node_modules/.vite client/.vite dist && vite build && cp
+1:21:38 AM:       _redirects dist/public/_redirects
+1:21:38 AM:     commandOrigin: config
+1:21:38 AM:     environment:
+1:21:38 AM:       - BLACKCAT_API_KEY
+1:21:38 AM:       - UTMIFY_API_KEY
+1:21:38 AM:       - NODE_VERSION
+1:21:38 AM:     publish: /opt/build/repo/dist/public
+1:21:38 AM:     publishOrigin: config
+1:21:38 AM:   functions:
+1:21:38 AM:     "*":
+1:21:38 AM:       node_bundler: esbuild
+1:21:38 AM:   functionsDirectory: /opt/build/repo/netlify/functions
+1:21:38 AM:   redirects:
+1:21:39 AM:     - from: /api/orders/*
+      status: 200
+      to: /.netlify/functions/orders
+    - from: /api/products
+      status: 200
+      to: /.netlify/functions/products
+    - from: /api/cart
+      status: 200
+      to: /.netlify/functions/cart
+    - from: /api/cart/*
+      status: 200
+      to: /.netlify/functions/cart
+    - from: /api/orders
+      status: 200
+      to: /.netlify/functions/orders
+    - from: /api/webhooks/blackcat
+      status: 200
+      to: /.netlify/functions/webhook-blackcat
+    - from: /api/*
+      status: 200
+      to: /.netlify/functions/api
+    - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+1:21:39 AM: Build failed due to a user error: Build script returned non-zero exit code: 2
+1:21:39 AM: Failing build: Failed to build site
+1:21:40 AM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+1:21:40 AM: Finished processing build request in 15.81s
