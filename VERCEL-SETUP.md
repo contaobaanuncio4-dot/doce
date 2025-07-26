@@ -4,10 +4,12 @@
 
 Você já tem tudo pronto para deploy no Vercel:
 
-- ✅ `vercel.json` - Configuração do deployment
+- ✅ `vercel.json` - Configuração do deployment (corrigido)
 - ✅ `api/index.ts` - API serverless com Express
 - ✅ Build command correto: `vite build`
 - ✅ Output directory: `dist`
+
+**CORREÇÃO**: Removido conflito entre `builds` e `functions` properties no vercel.json
 
 ## 📋 Configurações no Painel Vercel
 
