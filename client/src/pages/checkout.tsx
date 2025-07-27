@@ -59,12 +59,13 @@ export default function Checkout() {
   });
 
   const { data: cartItems = [], isLoading: isLoadingCart } = useQuery({
-    queryKey: ["/api/cart", sessionId],
-    enabled: !!sessionId,
+    queryKey: ["/api/cart", "default-session"],
+    enabled: true,
   });
 
   const total = cartItems.reduce((sum: number, item: any) => {
-    return sum + (parseFloat(item.product?.price || "0") * item.quantity);
+    const price = parseFloat(item.price?.replace(",", ".") || "0");
+    return sum + (price * item.quantity);
   }, 0);
 
   const createOrderMutation = useMutation({

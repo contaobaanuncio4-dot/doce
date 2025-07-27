@@ -60,7 +60,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const sessionId = req.query.sessionId as string;
       const cartItems = await storage.getCartItems(sessionId);
-      res.json(cartItems);
+      
+      // Incluir dados do produto para cada item do carrinho
+      const cartItemsWithProducts = await Promise.all(
+        cartItems.map(async (item) => {
+          const product = await storage.getProductById(item.productId);
+          return {
+            ...item,
+            product
+          };
+        })
+      );
+      
+      res.json(cartItemsWithProducts);
     } catch (error) {
       console.error("Error fetching cart:", error);
       res.status(500).json({ message: "Failed to fetch cart" });
