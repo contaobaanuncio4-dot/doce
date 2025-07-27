@@ -63,6 +63,11 @@ export default function Checkout() {
     enabled: true,
   });
 
+  // Debug do carrinho
+  console.log("Cart Items no Checkout:", cartItems);
+  console.log("Cart Items Length:", cartItems.length);
+  console.log("Is Loading Cart:", isLoadingCart);
+
   const total = cartItems.reduce((sum: number, item: any) => {
     const price = parseFloat(item.price?.replace(",", ".") || "0");
     return sum + (price * item.quantity);
