@@ -49,7 +49,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
       // Não abrir mais o carrinho automaticamente
     },
   });

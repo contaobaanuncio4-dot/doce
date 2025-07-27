@@ -25,7 +25,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   });
 
   const { data: cartItems = [] } = useQuery<CartItem[]>({
-    queryKey: ["/api/cart"]
+    queryKey: ["/api/cart", "default-session"]
   });
 
   const [showExitIntent, setShowExitIntent] = useState(false);

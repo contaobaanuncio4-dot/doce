@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export default function Header({ onCartToggle }: HeaderProps) {
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['/api/cart']
+    queryKey: ['/api/cart', 'default-session']
   });
 
   const totalItems = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0) : 0;

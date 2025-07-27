@@ -36,7 +36,7 @@ export function useCart() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
     },
     onError: (error) => {
       toast({
@@ -52,7 +52,7 @@ export function useCart() {
       return await apiRequest("PUT", `/api/cart/${cartItemId}`, { quantity });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
     },
     onError: (error) => {
       toast({
@@ -68,7 +68,7 @@ export function useCart() {
       return await apiRequest("DELETE", `/api/cart/${cartItemId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
       toast({
         title: "Produto removido",
         description: "O produto foi removido do carrinho.",
