@@ -12,7 +12,7 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
   const [, setLocation] = useLocation();
   
   const { data: cartItems = [] } = useQuery({
-    queryKey: ["/api/cart"],
+    queryKey: ["/api/cart", "default-session"],
   });
 
   const cartArray = Array.isArray(cartItems) ? cartItems : [];

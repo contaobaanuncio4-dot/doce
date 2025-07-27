@@ -43,48 +43,40 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
   const [, setLocation] = useLocation();
 
   const { data: cartItems = [] } = useQuery<CartItem[]>({
-    queryKey: ["/api/cart"],
+    queryKey: ["/api/cart", "default-session"],
   });
 
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ itemId, newQuantity }: { itemId: number; newQuantity: number }) => {
-      return await apiRequest(`/api/cart/${itemId}`, {
-        method: "PUT",
-        body: { quantity: newQuantity },
-      });
+      return await apiRequest("PUT", `/api/cart/${itemId}`, { quantity: newQuantity });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
     },
   });
 
   const removeItemMutation = useMutation({
     mutationFn: async (itemId: number) => {
-      return await apiRequest(`/api/cart/${itemId}`, {
-        method: "DELETE",
-      });
+      return await apiRequest("DELETE", `/api/cart/${itemId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
     },
   });
 
   const addToCartMutation = useMutation({
     mutationFn: async () => {
       const price = selectedSize === "500g" ? product?.price500g : product?.price1kg;
-      return await apiRequest("/api/cart", {
-        method: "POST",
-        body: {
-          productId: product?.id,
-          quantity,
-          weight: selectedSize,
-          price: price,
-          sessionId: 'default-session'
-        },
+      return await apiRequest("POST", "/api/cart", {
+        productId: product?.id,
+        quantity,
+        weight: selectedSize,
+        price: price,
+        sessionId: 'default-session'
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
     },
   });
 
