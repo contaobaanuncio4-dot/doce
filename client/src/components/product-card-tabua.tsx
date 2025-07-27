@@ -40,15 +40,12 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
         ? (product.price500g || product.price)
         : (product.price1kg || product.price);
         
-      return await apiRequest("/api/cart", {
-        method: "POST",
-        body: {
-          productId: product.id,
-          quantity: quantity,
-          size: selectedSize,
-          price: price,
-          sessionId: 'default-session'
-        },
+      return await apiRequest("POST", "/api/cart", {
+        productId: product.id,
+        quantity: quantity,
+        size: selectedSize,
+        price: price,
+        sessionId: 'default-session'
       });
     },
     onSuccess: () => {

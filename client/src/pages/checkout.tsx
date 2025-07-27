@@ -69,13 +69,12 @@ export default function Checkout() {
 
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: CheckoutForm) => {
-      const response = await apiRequest("POST", "/api/orders", {
+      return await apiRequest("POST", "/api/orders", {
         ...orderData,
         sessionId,
         total: (total + 9.90).toFixed(2),
         paymentMethod: "pix",
       });
-      return response.json();
     },
     onSuccess: (data) => {
       setOrderId(data.order.id);
@@ -112,7 +111,7 @@ export default function Checkout() {
   if (isLoadingCart) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <Header onCartToggle={() => {}} />
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto">
             <div className="animate-pulse">
@@ -131,7 +130,7 @@ export default function Checkout() {
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <Header onCartToggle={() => {}} />
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto text-center">
             <Card>
@@ -159,7 +158,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onCartToggle={() => {}} />
       
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
