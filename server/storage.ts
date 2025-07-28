@@ -119,8 +119,6 @@ class MemoryStorage implements IStorage {
         reviews: 143,
         checkout500g: "https://pay.tabuademinas.fun/6886d638cbb7096b507489af",
         checkout1kg: "https://pay.tabuademinas.fun/6886d64acbb7096b507489dc",
-        checkout500g: "https://pay.tabuademinas.fun/6886d638cbb7096b507489af",
-        checkout1kg: "https://pay.tabuademinas.fun/6886d64acbb7096b507489dc",
         createdAt: new Date(),
       },
       {

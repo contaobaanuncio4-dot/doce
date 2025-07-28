@@ -35,8 +35,21 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
       ? product.checkout500g 
       : product.checkout1kg;
     
+    console.log('Dados do produto:', product);
+    console.log('Tamanho selecionado:', selectedSize);
+    console.log('URL de checkout:', checkoutUrl);
+    
     if (checkoutUrl) {
-      window.open(checkoutUrl, '_blank');
+      console.log('Abrindo URL:', checkoutUrl);
+      // Tenta abrir em nova aba
+      const opened = window.open(checkoutUrl, '_blank');
+      if (!opened) {
+        // Se bloqueado pelo popup blocker, tenta redirecionar na mesma janela
+        window.location.href = checkoutUrl;
+      }
+    } else {
+      console.error('URL de checkout não encontrada:', { product, selectedSize });
+      alert(`Link de checkout não configurado para ${product.name} - ${selectedSize}`);
     }
   };
 
