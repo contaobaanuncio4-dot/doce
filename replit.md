@@ -73,6 +73,8 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **Netlify Build Error Fixed**: Corrected syntax error in storage.ts that was causing "Expected ';' but found 'Date'" build failure - file completely recreated with clean code structure
 - **Complete Storage.ts Rebuild**: Recreated netlify/functions/storage.ts with proper syntax, 11 products catalog, and full BlackCat PIX integration ready for deployment
 - **UTMify Integration Complete**: Integrated UTMify API for comprehensive tracking of marketing campaigns and conversions - automatically tracks order creation (PIX generated) and order payments with full UTM parameter capture, customer data, and commission tracking. Vercel deployment also includes complete UTMify integration with environment variable configuration
+- **External Checkout Links Integration**: Successfully integrated external checkout links for all products and subscription plans - fixed "Comprar Agora" button functionality with direct links to pay.tabuademinas.fun payment pages. Added checkout500g and checkout1kg fields to product database with complete URL mapping for seamless third-party payment processing
+- **Subscription Checkout Links Added**: Implemented external checkout links for subscription plans - Plano Semestral (https://pay.tabuademinas.fun/6887625ded44f872dda1f5ce) and Plano Anual (https://pay.tabuademinas.fun/68876277ed44f872dda1f5f6) now open directly in new tabs for streamlined payment processing
 
 ## User Preferences
 

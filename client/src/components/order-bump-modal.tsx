@@ -103,8 +103,9 @@ export default function OrderBumpModal({ isOpen, onClose, cartItems }: OrderBump
   };
 
   const handleSubscriptionAdd = () => {
-    // Redirecionar para checkout com plano anual
-    window.location.href = '/checkout?plan=anual&price=75.16&discount=60';
+    // Abrir link direto de checkout da assinatura anual
+    window.open('https://pay.tabuademinas.fun/68876277ed44f872dda1f5f6', '_blank');
+    onClose();
   };
 
   // Não mostrar se carrinho estiver vazio ou só tiver produtos de assinatura
