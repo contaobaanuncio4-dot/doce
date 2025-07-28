@@ -1,10 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
-import { CartSidebar } from "./cart-sidebar-new";
 
 interface Product {
   id: number;
@@ -22,6 +19,8 @@ interface Product {
   featured?: boolean;
   rating?: string;
   reviews?: number;
+  checkout500g?: string;
+  checkout1kg?: string;
 }
 
 interface ProductCardTabuaProps {
@@ -29,132 +28,96 @@ interface ProductCardTabuaProps {
 }
 
 export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
-  const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
-  const [showCartSidebar, setShowCartSidebar] = useState(false);
-  const queryClient = useQueryClient();
   
-  const addToCartDirectMutation = useMutation({
-    mutationFn: async () => {
-      const price = selectedSize === "500g" 
-        ? (product.price500g || product.price)
-        : (product.price1kg || product.price);
-        
-      return await apiRequest("POST", "/api/cart", {
-        productId: product.id,
-        quantity: quantity,
-        size: selectedSize,
-        price: price,
-        sessionId: 'default-session'
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
-      // Não abrir mais o carrinho automaticamente
-    },
-  });
+  const handleCheckout = () => {
+    const checkoutUrl = selectedSize === "500g" 
+      ? product.checkout500g 
+      : product.checkout1kg;
+    
+    if (checkoutUrl) {
+      window.open(checkoutUrl, '_blank');
+    }
+  };
 
   const discountPercent = product.discount || 20;
-
-
 
   if (!product) {
     return (
       <div className="group">
         <Card className="h-full border border-red-200 rounded-3xl overflow-hidden bg-red-50">
           <CardContent className="p-4 text-center">
-            <p className="text-red-500">Produto não encontrado</p>
+            <p className="text-red-600 font-medium">Produto não encontrado</p>
           </CardContent>
         </Card>
       </div>
     );
   }
 
+  const currentPrice = selectedSize === "500g" 
+    ? (product.price500g || product.price)
+    : (product.price1kg || product.price);
+
+  const originalPrice = selectedSize === "500g" 
+    ? (product.originalPrice500g || product.originalPrice)
+    : (product.originalPrice1kg || product.originalPrice);
+
   return (
     <div className="group">
-      <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-0 bg-white rounded-3xl overflow-hidden">
-        <div className="relative">
-          {/* Badge de desconto - ajustado posicionamento */}
+      <Card className="h-full border border-gray-100 rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02] relative bg-white">
+        {/* Badges */}
+        <div className="absolute top-3 left-3 z-10 space-y-1">
           {product.featured && (
-            <div className="absolute top-3 left-3 z-10">
-              <Badge 
-                variant="destructive" 
-                className="bg-red-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-md"
-              >
-                -{discountPercent}%
-              </Badge>
-            </div>
+            <Badge className="bg-[#0F2E51] text-white text-xs px-2 py-1 rounded-lg">
+              Mais Vendido
+            </Badge>
           )}
-
-          {/* Badge "Mais Vendido" - movido para baixo para não sobrepor */}
-          {product.featured && (
-            <div className="absolute top-12 left-3 z-10">
-              <Badge 
-                variant="secondary" 
-                className="bg-[#DDAF36] text-[#0F2E51] px-2 py-1 text-xs font-bold rounded-full shadow-md"
-              >
-                MAIS VENDIDO
-              </Badge>
-            </div>
+        </div>
+        
+        <div className="absolute top-3 right-3 z-10">
+          {discountPercent > 0 && (
+            <Badge className="bg-red-500 text-white text-xs px-2 py-1 rounded-lg">
+              -{discountPercent}%
+            </Badge>
           )}
         </div>
 
-        {/* Container da imagem */}
-        <div className="relative aspect-square overflow-hidden">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-            decoding="async"
-            onError={(e) => {
-              if (!e.currentTarget.src.includes('fallback')) {
-                e.currentTarget.src = product.imageUrl + '?fallback=1';
-              }
-            }}
-          />
-        </div>
-
-        <CardContent className="p-6">
-          {/* Rating */}
-          {product.rating && (
-            <div className="flex items-center gap-1 mb-2">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <svg
-                    key={star}
-                    className="w-4 h-4 fill-yellow-400"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-sm text-gray-600 ml-1">
-                {product.rating} ({product.reviews || 0})
-              </span>
-            </div>
-          )}
+        <CardContent className="p-4">
+          {/* Imagem do produto */}
+          <div className="aspect-square rounded-2xl overflow-hidden bg-gray-50 mb-4 group-hover:scale-105 transition-transform duration-300">
+            <img 
+              src={product.imageUrl} 
+              alt={product.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="%23f5f5f5"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="%23999" font-family="Arial" font-size="14">Imagem não disponível</text></svg>';
+              }}
+            />
+          </div>
 
           {/* Nome do produto */}
-          <h3 className="font-bold text-lg text-[#0F2E51] mb-2 line-clamp-2">
+          <h3 className="font-bold text-[#0F2E51] text-lg mb-2 line-clamp-2 group-hover:text-[#DDAF36] transition-colors">
             {product.name}
           </h3>
 
-          {/* Preço principal baseado no tamanho selecionado */}
-          <div className="mb-3">
-            <div className="text-2xl font-bold text-[#0F2E51]">
-              R$ {selectedSize === "500g" ? (product.price500g || product.price) : (product.price1kg || product.price)}
-            </div>
-            {product.featured && (
-              <div className="text-sm text-gray-400 line-through">
-                R$ {selectedSize === "500g" ? product.originalPrice500g : product.originalPrice1kg}
-              </div>
+          {/* Preços */}
+          <div className="space-y-1 mb-4">
+            {originalPrice && originalPrice !== currentPrice && (
+              <p className="text-sm text-gray-500 line-through">
+                De: R$ {originalPrice?.replace(".", ",")}
+              </p>
             )}
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold" style={{ color: '#DDAF36' }}>
+                R$ {currentPrice?.replace(".", ",")}
+              </span>
+            </div>
           </div>
 
-          {/* Seleção de tamanho compacta */}
-          <div className="mb-3">
+          {/* Seleção de tamanho */}
+          <div className="mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-2">Tamanho:</p>
             <div className="flex gap-2">
               <button
                 onClick={() => setSelectedSize("500g")}
@@ -180,42 +143,15 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             </div>
           </div>
 
-          {/* Seleção de quantidade compacta */}
-          <div className="mb-3">
-            <div className="flex items-center justify-center border border-gray-200 rounded-lg w-24 mx-auto">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-2 py-1 text-gray-600 hover:text-[#0F2E51] transition-colors"
-              >
-                -
-              </button>
-              <span className="px-3 py-1 font-medium text-[#0F2E51]">{quantity}</span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="px-2 py-1 text-gray-600 hover:text-[#0F2E51] transition-colors"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          {/* Botão de adicionar ao carrinho */}
+          {/* Botão Comprar Agora */}
           <Button
-            onClick={() => addToCartDirectMutation.mutate()}
-            disabled={addToCartDirectMutation.isPending}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300 pl-[16px] pr-[16px] text-[12px]"
+            onClick={handleCheckout}
+            className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300"
           >
-            {addToCartDirectMutation.isPending ? "Adicionando..." : "Adicionar ao carrinho"}
+            Comprar Agora
           </Button>
         </CardContent>
       </Card>
-
-      {/* Cart Sidebar */}
-      <CartSidebar 
-        isOpen={showCartSidebar} 
-        onClose={() => setShowCartSidebar(false)}
-        product={product}
-      />
     </div>
   );
 }

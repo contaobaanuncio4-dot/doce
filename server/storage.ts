@@ -75,6 +75,8 @@ class MemoryStorage implements IStorage {
         discount: 47,
         rating: "4.8",
         reviews: 92,
+        checkout500g: "https://pay.tabuademinas.fun/6886ed52ed44f872dda1bc08",
+        checkout1kg: "https://pay.tabuademinas.fun/6886ed70cbb7096b50749f31",
         createdAt: new Date(),
       },
       {
@@ -94,6 +96,8 @@ class MemoryStorage implements IStorage {
         discount: 46,
         rating: "4.9",
         reviews: 65,
+        checkout500g: "https://pay.tabuademinas.fun/6886ed97cbb7096b50749f69",
+        checkout1kg: "https://pay.tabuademinas.fun/6886edc8ed44f872dda1bc50",
         createdAt: new Date(),
       },
       {
@@ -113,6 +117,10 @@ class MemoryStorage implements IStorage {
         discount: 27,
         rating: "4.9",
         reviews: 143,
+        checkout500g: "https://pay.tabuademinas.fun/6886d638cbb7096b507489af",
+        checkout1kg: "https://pay.tabuademinas.fun/6886d64acbb7096b507489dc",
+        checkout500g: "https://pay.tabuademinas.fun/6886d638cbb7096b507489af",
+        checkout1kg: "https://pay.tabuademinas.fun/6886d64acbb7096b507489dc",
         createdAt: new Date(),
       },
       {
@@ -132,6 +140,8 @@ class MemoryStorage implements IStorage {
         discount: 44,
         rating: "4.7",
         reviews: 87,
+        checkout500g: "https://pay.tabuademinas.fun/6886d60eed44f872dda1a937",
+        checkout1kg: "https://pay.tabuademinas.fun/6886d625ed44f872dda1a95d",
         createdAt: new Date(),
       },
       {
@@ -151,6 +161,8 @@ class MemoryStorage implements IStorage {
         discount: 43,
         rating: "4.6",
         reviews: 76,
+        checkout500g: "https://pay.tabuademinas.fun/6886d5e3cbb7096b5074896a",
+        checkout1kg: "https://pay.tabuademinas.fun/6886d5cbcbb7096b50748931",
         createdAt: new Date(),
       },
       {
@@ -754,6 +766,8 @@ class MemoryStorage implements IStorage {
       featured: productData.featured ?? null,
       discount: productData.discount ?? null,
       rating: productData.rating ?? null,
+      checkout500g: productData.checkout500g ?? null,
+      checkout1kg: productData.checkout1kg ?? null,
       createdAt: new Date(),
     };
     this.products.push(product);

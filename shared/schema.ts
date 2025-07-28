@@ -19,6 +19,8 @@ export const products = pgTable("products", {
   discount: integer("discount").default(0), // percentage
   rating: decimal("rating", { precision: 2, scale: 1 }).default("5.0"),
   reviews: integer("reviews").default(0),
+  checkout500g: text("checkout_500g"),
+  checkout1kg: text("checkout_1kg"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
