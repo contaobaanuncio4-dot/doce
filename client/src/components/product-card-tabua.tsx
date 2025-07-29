@@ -36,8 +36,8 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   
   const addToCart = async () => {
     try {
-      const sessionId = sessionStorage.getItem('sessionId') || 
-        Math.random().toString(36).substring(2, 15);
+      // Usar o sessionId padrão consistente com use-cart.ts
+      const sessionId = "wil3rxwaf0q";
       sessionStorage.setItem('sessionId', sessionId);
 
       const currentPrice = selectedSize === "500g" 
@@ -59,13 +59,10 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
       });
 
       if (response.ok) {
-        // Invalidar query do carrinho para forçar atualização
-        queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
+        // Invalidar query do carrinho para forçar atualização com sessionId correto
+        queryClient.invalidateQueries({ queryKey: ['/api/cart', sessionId] });
         
-        toast({
-          title: "Produto adicionado!",
-          description: `${product.name} foi adicionado ao carrinho.`,
-        });
+        // Notificação removida conforme solicitado
       }
     } catch (error) {
       console.error('Erro ao adicionar ao carrinho:', error);

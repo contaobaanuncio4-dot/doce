@@ -31,11 +31,7 @@ export default function ProductPage() {
       weight: selectedWeight,
     }),
     onSuccess: () => {
-      toast({
-        title: "Produto adicionado!",
-        description: `${product?.name} (${selectedWeight}) foi adicionado ao carrinho.`,
-        variant: "default",
-      });
+      // Notificação removida conforme solicitado
       queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
     },
     onError: () => {

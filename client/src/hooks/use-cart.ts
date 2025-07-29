@@ -34,6 +34,7 @@ export function useCart() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
+      // Notificação removida conforme solicitado
     },
     onError: (error) => {
       toast({

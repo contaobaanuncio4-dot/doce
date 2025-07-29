@@ -167,10 +167,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-      toast({
-        title: "Produto adicionado!",
-        description: "Item com desconto especial adicionado ao pedido.",
-      });
+      // Notificação removida conforme solicitado
     },
     onError: () => {
       toast({

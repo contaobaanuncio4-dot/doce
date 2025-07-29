@@ -25,12 +25,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     const size = product.category === "doces" ? selectedSize : "500g";
     
     addToCart(product, quantity, size, price);
-    toast({
-      title: "Produto adicionado!",
-      description: product.category === "doces" 
-        ? `${product.name} (${selectedSize}) foi adicionado ao carrinho.`
-        : `${product.name} foi adicionado ao carrinho.`,
-    });
+    // Notificação removida conforme solicitado
     onAddToCart?.();
   };
 
