@@ -31,9 +31,6 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
     const quantity = item.quantity || 0;
     return total + (price * quantity);
   }, 0);
-  
-  const shippingCost = 9.90;
-  const finalTotal = totalValue + shippingCost;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 shadow-lg" style={{ borderColor: '#DDAF36' }}>
@@ -53,9 +50,11 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
             
             <div className="text-xs sm:text-sm min-w-0">
               <div className="font-bold truncate" style={{ color: '#0F2E51' }}>
-                R$ {finalTotal.toFixed(2).replace(".", ",")}
+                R$ {totalValue.toFixed(2).replace(".", ",")}
               </div>
-
+              <div className="text-xs text-gray-500">
+                + frete no checkout
+              </div>
             </div>
           </div>
 
@@ -65,8 +64,8 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
             className="text-white font-bold rounded-full hover:opacity-90 transition-opacity flex-shrink-0 text-xs sm:text-sm px-4 py-2 sm:px-6"
             style={{ backgroundColor: '#DDAF36' }}
           >
-            <span className="hidden sm:inline">FINALIZAR COMPRA</span>
-            <span className="sm:hidden">COMPRAR</span>
+            <span className="hidden sm:inline">IR PARA CHECKOUT</span>
+            <span className="sm:hidden">CHECKOUT</span>
           </Button>
         </div>
       </div>
