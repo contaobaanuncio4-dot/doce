@@ -16,12 +16,9 @@ export default function TrackOrder() {
     if (orderNumber.trim()) {
       setTracking({
         orderNumber: orderNumber,
-        status: "Em trânsito",
+        status: "Pedido confirmado",
         steps: [
-          { status: "Pedido confirmado", date: "25/01/2025 14:30", completed: true },
-          { status: "Preparando pedido", date: "25/01/2025 16:45", completed: true },
-          { status: "Saiu para entrega", date: "26/01/2025 08:20", completed: true },
-          { status: "Entregue", date: "Em breve", completed: false }
+          { status: "Pedido confirmado", date: "25/01/2025 14:30", completed: true }
         ],
         estimatedDelivery: "26/01/2025"
       });
