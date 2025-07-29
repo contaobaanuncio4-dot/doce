@@ -8,7 +8,7 @@ A integração UTMify está **totalmente operacional** e configurada corretament
 
 ### Variáveis de Ambiente Configuradas
 - ✅ `UTMIFY_API_KEY`: Configurada no Replit Secrets
-- ✅ Valor: `Jm3LHEttnTo0PbVDJ19auY6VdsGMvfjiLNcy`
+- ✅ Valor: `EYf0pNagmHEyqtYwkMVsbw5KaySM5Y5Ftfga` (Nova chave - Janeiro 2025)
 - ✅ Persiste após redeploys automaticamente
 
 ## Como Funciona
@@ -67,14 +67,15 @@ await notifyUTMifyOrderPaid(order, orderItems, referer, userIP);
 
 ### Teste Manual Realizado
 ```bash
-# Teste direto da API UTMify
+# Teste direto da API UTMify (Nova chave - Janeiro 2025)
 curl -X POST https://api.utmify.com.br/api-credentials/orders \
   -H "Content-Type: application/json" \
-  -H "x-api-token: Jm3LHEttnTo0PbVDJ19auY6VdsGMvfjiLNcy" \
-  -d '{"orderId":"TEST-1753765711914",...}'
+  -H "x-api-token: EYf0pNagmHEyqtYwkMVsbw5KaySM5Y5Ftfga" \
+  -d '{"orderId":"TEST-NOVA-API-1753788993",...}'
 
 # Resultado: ✅ 200 OK
 # Resposta: {"OK":true,"data":{},"result":"SUCCESS"}
+# Data do teste: 29/01/2025 11:36 AM
 ```
 
 ## Logs de Debug
