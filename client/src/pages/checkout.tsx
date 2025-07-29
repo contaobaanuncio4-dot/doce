@@ -218,7 +218,7 @@ export default function Checkout() {
                           <h4 className="font-semibold text-traditional-blue">{item.product?.name}</h4>
                           <p className="text-sm text-gray-600">Quantidade: {item.quantity}</p>
                           <p className="font-semibold" style={{ color: '#DDAF36' }}>
-                            R$ {(parseFloat(item.product?.price || "0") * item.quantity).toFixed(2).replace(".", ",")}
+                            R$ {(parseFloat(item.price || "0") * item.quantity).toFixed(2).replace(".", ",")}
                           </p>
                         </div>
                       </div>
@@ -275,14 +275,14 @@ export default function Checkout() {
                     </div>
                     
                     <div className="flex justify-between items-center mb-2">
-                      <span>Frete:</span>
-                      <span style={{ color: '#0F2E51' }}>
+                      <span>Frete ({shippingOption === "express" ? "Express" : "Grátis"}):</span>
+                      <span style={{ color: shippingOption === "express" ? '#DDAF36' : '#22c55e' }}>
                         {shippingOption === "express" ? "R$ 9,90" : "Grátis"}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xl font-bold" style={{ color: '#0F2E51' }}>
                       <span>Total:</span>
-                      <span>R$ {total.toFixed(2).replace(".", ",")}</span>
+                      <span style={{ color: '#DDAF36' }}>R$ {total.toFixed(2).replace(".", ",")}</span>
                     </div>
                   </div>
                 </CardContent>
