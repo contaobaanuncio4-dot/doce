@@ -124,9 +124,20 @@ export function CartSidebar({ isOpen, onClose, product }: CartSidebarProps) {
           {/* Cart Items */}
           <div className="space-y-4 mb-6">
             {cartItems.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <ShoppingCart className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Seu carrinho está vazio</p>
+              <div className="text-center py-8">
+                <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Carrinho vazio</h3>
+                <p className="text-gray-500 mb-6">Adicione produtos para começar suas compras</p>
+                <Button 
+                  onClick={() => {
+                    onClose();
+                    setLocation("/");
+                  }}
+                  className="w-full text-white font-semibold py-2 px-4 rounded-lg hover:opacity-90"
+                  style={{ backgroundColor: '#0F2E51' }}
+                >
+                  Ver Produtos
+                </Button>
               </div>
             ) : (
               cartItems.map((item) => (
