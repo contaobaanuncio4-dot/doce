@@ -350,7 +350,6 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F7F3EF' }}>
       <Header onCartToggle={onCartToggle || (() => {})} />
-      
       <div className="container mx-auto px-4 max-w-4xl py-8">
         <div className="mb-6">
           <button 
@@ -582,7 +581,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                               <div className="flex justify-between items-center">
                                 <div>
                                   <span className="font-semibold text-gray-900">Frete Express</span>
-                                  <p className="text-sm text-gray-600 mt-1">Entrega em 5 a 7 dias úteis</p>
+                                  <p className="text-sm text-gray-600 mt-1">Entrega em 2 a 3 dias úteis</p>
                                 </div>
                                 <span className="font-bold text-lg" style={{ color: '#DDAF36' }}>R$ 9,90</span>
                               </div>
@@ -872,7 +871,6 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
           </div>
         )}
       </div>
-
       {/* Modal de Instruções PIX */}
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
         <DialogContent className="max-w-md mx-auto">
