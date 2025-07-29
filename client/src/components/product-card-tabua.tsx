@@ -2,6 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Product {
   id: number;
@@ -29,6 +31,8 @@ interface ProductCardTabuaProps {
 
 export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const addToCart = async () => {
     try {
@@ -55,8 +59,13 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
       });
 
       if (response.ok) {
-        // Disparar evento personalizado para atualizar o carrinho
-        window.dispatchEvent(new CustomEvent('cartUpdated'));
+        // Invalidar query do carrinho para forçar atualização
+        queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
+        
+        toast({
+          title: "Produto adicionado!",
+          description: `${product.name} foi adicionado ao carrinho.`,
+        });
       }
     } catch (error) {
       console.error('Erro ao adicionar ao carrinho:', error);

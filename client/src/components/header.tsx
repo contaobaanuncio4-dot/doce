@@ -14,7 +14,9 @@ export default function Header({ onCartToggle }: HeaderProps) {
   const { data: cartItems = [] } = useQuery({
     queryKey: ['/api/cart'],
     queryFn: () => fetch(`/api/cart?sessionId=${sessionId}`).then(res => res.json()),
-    enabled: !!sessionId
+    enabled: !!sessionId,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 // Atualizar a cada 1 segundo
   });
 
   const totalItems = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0) : 0;

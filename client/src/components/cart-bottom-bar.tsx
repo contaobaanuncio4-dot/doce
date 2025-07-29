@@ -16,7 +16,9 @@ export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
   const { data: cartItems = [] } = useQuery({
     queryKey: ["/api/cart"],
     queryFn: () => fetch(`/api/cart?sessionId=${sessionId}`).then(res => res.json()),
-    enabled: !!sessionId
+    enabled: !!sessionId,
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 // Atualizar a cada 1 segundo
   });
 
   const cartArray = Array.isArray(cartItems) ? cartItems : [];
