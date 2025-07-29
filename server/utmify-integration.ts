@@ -158,12 +158,16 @@ export function convertOrderToUTMify(
 export async function sendToUTMify(orderData: UTMifyOrderData): Promise<void> {
   const apiKey = process.env.UTMIFY_API_KEY;
   
+  console.log(`[UTMify API] Verificando API Key: ${apiKey ? 'Configurado' : 'NÃO CONFIGURADO'}`);
+  
   if (!apiKey) {
-    console.error('UTMIFY_API_KEY não configurado');
+    console.error('[UTMify API] UTMIFY_API_KEY não configurado');
     throw new Error('UTMIFY_API_KEY não configurado');
   }
 
   try {
+    console.log('[UTMify API] Preparando payload:', JSON.stringify(orderData, null, 2));
+    
     const response = await fetch('https://api.utmify.com.br/api-credentials/orders', {
       method: 'POST',
       headers: {
@@ -173,16 +177,18 @@ export async function sendToUTMify(orderData: UTMifyOrderData): Promise<void> {
       body: JSON.stringify(orderData)
     });
 
+    console.log(`[UTMify API] Status da resposta: ${response.status}`);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Erro UTMify:', response.status, errorText);
+      console.error('[UTMify API] Erro na resposta:', response.status, errorText);
       throw new Error(`UTMify API error: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
-    console.log('Sucesso UTMify:', result);
+    console.log('[UTMify API] ✓ Sucesso:', result);
   } catch (error) {
-    console.error('Erro ao enviar para UTMify:', error);
+    console.error('[UTMify API] ✗ Erro ao enviar:', error);
     throw error;
   }
 }

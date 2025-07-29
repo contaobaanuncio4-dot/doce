@@ -231,14 +231,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Enviar para UTMify (PIX gerado - waiting_payment)
       try {
+        console.log(`[UTMify] Iniciando notificação para pedido ${order.id}`);
         const orderItems = await storage.getOrderItems(order.id);
         const referer = req.get('referer');
         const userIP = req.ip || req.connection.remoteAddress;
         
+        console.log(`[UTMify] Dados coletados - Referer: ${referer}, IP: ${userIP}, Items: ${orderItems.length}`);
+        
         await notifyUTMifyOrderCreated(order, orderItems, referer, userIP);
-        console.log(`UTMify notificado: Pedido ${order.id} criado`);
+        console.log(`[UTMify] ✓ Sucesso: Pedido ${order.id} notificado`);
       } catch (utmifyError) {
-        console.error('Erro ao notificar UTMify:', utmifyError);
+        console.error('[UTMify] ✗ Erro ao notificar:', utmifyError);
         // Não falhar o pedido por erro do UTMify
       }
       
