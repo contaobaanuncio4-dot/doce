@@ -4,7 +4,7 @@
 
 This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a Brazilian artisanal cheese and sweets brand. The application is designed with a focus on accessibility for older users while maintaining modern aesthetics inspired by the interior of Minas Gerais.
 
-## Recent Changes (Updated: January 24, 2025)
+## Recent Changes (Updated: January 29, 2025)
 
 - **Expanded Product Catalog**: Implemented complete catalog with 34 authentic products (17 queijos + 17 doces) using real data from tabuademinas.com and Imgur albums
 - **Fixed API Integration**: Resolved TypeScript errors and API endpoints - products now load correctly
@@ -77,6 +77,7 @@ This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a 
 - **UTMify Integration Complete**: Integrated UTMify API for comprehensive tracking of marketing campaigns and conversions - automatically tracks order creation (PIX generated) and order payments with full UTM parameter capture, customer data, and commission tracking. Vercel deployment also includes complete UTMify integration with environment variable configuration
 - **External Checkout Links Integration**: Successfully integrated external checkout links for all products and subscription plans - fixed "Comprar Agora" button functionality with direct links to pay.tabuademinas.fun payment pages. Added checkout500g and checkout1kg fields to product database with complete URL mapping for seamless third-party payment processing
 - **Subscription Checkout Links Added**: Implemented external checkout links for subscription plans - Plano Semestral (https://pay.tabuademinas.fun/6887625ded44f872dda1f5ce) and Plano Anual (https://pay.tabuademinas.fun/68876277ed44f872dda1f5f6) now open directly in new tabs for streamlined payment processing
+- **UTMify Integration Fully Operational**: Fixed critical issue where UTMify notifications weren't working after Replit redeploys - corrected API payload format from UTC string to ISO 8601 format, added comprehensive logging and error handling, validated with successful API tests returning 200 status and "SUCCESS" responses. UTMify now properly tracks all PIX order creation events with authentic customer data, UTM parameters, and commission calculations.
 
 ## User Preferences
 

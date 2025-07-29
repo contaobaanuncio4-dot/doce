@@ -40,20 +40,20 @@ interface UTMifyOrderData {
   platform: string;
   paymentMethod: 'credit_card' | 'boleto' | 'pix' | 'paypal' | 'free_price';
   status: 'waiting_payment' | 'paid' | 'refused' | 'refunded' | 'chargedback';
-  createdAt: string; // UTC format: 'YYYY-MM-DD HH:MM:SS'
-  approvedDate: string; // UTC format: 'YYYY-MM-DD HH:MM:SS' ou string vazia
-  refundedAt: string; // UTC format: 'YYYY-MM-DD HH:MM:SS' ou string vazia
+  createdAt: string; // ISO 8601 format
+  approvedDate: string; // ISO 8601 format ou string vazia
+  refundedAt: string; // ISO 8601 format ou string vazia
   customer: UTMifyCustomer;
   products: UTMifyProduct[];
   trackingParameters: UTMifyTrackingParameters;
   commission: UTMifyCommission;
-  isTest?: boolean;
+  isTest: boolean;
 }
 
 // Função para converter data para formato UTC aceito pela UTMify
 function toUTCString(date: Date): string {
-  // UTMify aceita data atual, sem necessidade de subtrair tempo
-  return date.toISOString().replace('T', ' ').substring(0, 19);
+  // UTMify aceita formato ISO 8601
+  return date.toISOString();
 }
 
 // Função para extrair parâmetros UTM do referer ou URL
@@ -138,7 +138,7 @@ export function convertOrderToUTMify(
       phone: order.customerPhone?.replace(/\D/g, '') || null,
       document: order.customerCpf?.replace(/\D/g, '') || null,
       country: "BR",
-      ip: userIP
+      ip: userIP || "127.0.0.1"
     },
     products: products,
     trackingParameters: trackingParameters,
@@ -148,7 +148,7 @@ export function convertOrderToUTMify(
       userCommissionInCents: userCommissionInCents,
       currency: "BRL"
     },
-    isTest: true // Modo teste durante desenvolvimento
+    isTest: true // Modo teste para depuração
   };
 
   return orderData;
