@@ -2,11 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Truck } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { useCart } from "@/hooks/use-cart";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function ShoppingCartGuide() {
-  const [location] = useLocation();
-  const { data: cartItems = [] } = useQuery({
-    queryKey: ['/api/cart']
+  const [location, setLocation] = useLocation();
+  const { sessionId } = useCart();
+  const { data: cartItems = [] } = useQuery<any[]>({
+    queryKey: ["/api/cart", sessionId],
+    queryFn: () => apiRequest("GET", `/api/cart?sessionId=${sessionId}`),
+    enabled: !!sessionId,
   });
 
   // Não mostrar na página de checkout
@@ -36,17 +41,16 @@ export default function ShoppingCartGuide() {
             <p className="text-2xl font-bold" style={{ color: '#DDAF36' }}>
               Subtotal: R$ {finalTotal.toFixed(2).replace('.', ',')}
             </p>
-            <p className="text-xs text-gray-500">+ frete no checkout</p>
+
           </div>
         </div>
-        <Link href="/checkout">
-          <button 
-            className="hover:opacity-90 text-white font-bold py-3 px-6 rounded-full transition-colors"
-            style={{ backgroundColor: '#0F2E51' }}
-          >
-            COMPRAR AGORA
-          </button>
-        </Link>
+        <button 
+          onClick={() => setLocation('/checkout')}
+          className="hover:opacity-90 text-white font-bold py-3 px-6 rounded-full transition-colors"
+          style={{ backgroundColor: '#0F2E51' }}
+        >
+          COMPRAR AGORA
+        </button>
       </div>
     </div>
   );
