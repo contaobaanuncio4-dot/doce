@@ -307,7 +307,7 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
       />
 
       {/* Barra de Carrinho Fixa */}
-      <CartBottomBar isVisible={cartItems.length > 0} />
+      <CartBottomBar isVisible={true} />
     </div>
   );
 }

@@ -11,8 +11,12 @@ interface CartBottomBarProps {
 export default function CartBottomBar({ isVisible }: CartBottomBarProps) {
   const [, setLocation] = useLocation();
   
+  const sessionId = sessionStorage.getItem('sessionId') || 'default-session';
+  
   const { data: cartItems = [] } = useQuery({
-    queryKey: ["/api/cart", "default-session"],
+    queryKey: ["/api/cart"],
+    queryFn: () => fetch(`/api/cart?sessionId=${sessionId}`).then(res => res.json()),
+    enabled: !!sessionId
   });
 
   const cartArray = Array.isArray(cartItems) ? cartItems : [];

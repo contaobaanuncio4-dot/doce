@@ -50,7 +50,7 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
           productId: product.id,
           quantity: 1,
           size: selectedSize,
-          price: parseFloat(currentPrice || '0')
+          price: currentPrice || '0'
         }),
       });
 

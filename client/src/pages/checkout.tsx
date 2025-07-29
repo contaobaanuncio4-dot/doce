@@ -37,6 +37,7 @@ export default function Checkout() {
   const [step, setStep] = useState(1);
   const [pixCode, setPixCode] = useState("");
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [shippingOption, setShippingOption] = useState<"express" | "free">("express");
   // CEP loading removido
   const { toast } = useToast();
   const { sessionId } = useCart();
@@ -58,9 +59,12 @@ export default function Checkout() {
     },
   });
 
+  const sessionId = sessionStorage.getItem('sessionId') || 'default-session';
+  
   const { data: cartItems = [], isLoading: isLoadingCart } = useQuery({
-    queryKey: ["/api/cart", "default-session"],
-    enabled: true,
+    queryKey: ["/api/cart"],
+    queryFn: () => fetch(`/api/cart?sessionId=${sessionId}`).then(res => res.json()),
+    enabled: !!sessionId,
   });
 
   // Debug do carrinho
@@ -68,17 +72,22 @@ export default function Checkout() {
   console.log("Cart Items Length:", cartItems.length);
   console.log("Is Loading Cart:", isLoadingCart);
 
-  const total = cartItems.reduce((sum: number, item: any) => {
+  const subtotal = cartItems.reduce((sum: number, item: any) => {
     const price = parseFloat(item.price?.replace(",", ".") || "0");
     return sum + (price * item.quantity);
   }, 0);
+
+  const shippingCost = shippingOption === "express" ? 9.90 : 0;
+  const total = subtotal + shippingCost;
 
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: CheckoutForm) => {
       return await apiRequest("POST", "/api/orders", {
         ...orderData,
         sessionId,
-        total: (total + 9.90).toFixed(2),
+        total: total.toFixed(2),
+        shippingOption,
+        shippingCost: shippingCost.toFixed(2),
         paymentMethod: "pix",
       });
     },
@@ -219,15 +228,61 @@ export default function Checkout() {
                   <div className="border-t pt-4 mt-4">
                     <div className="flex justify-between items-center mb-2">
                       <span>Subtotal:</span>
-                      <span>R$ {total.toFixed(2).replace(".", ",")}</span>
+                      <span>R$ {subtotal.toFixed(2).replace(".", ",")}</span>
                     </div>
+                    
+                    {/* Opções de Frete */}
+                    <div className="my-4">
+                      <h4 className="font-semibold mb-3" style={{ color: '#0F2E51' }}>Opções de Entrega:</h4>
+                      
+                      <div className="space-y-2">
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="shipping"
+                            value="express"
+                            checked={shippingOption === "express"}
+                            onChange={() => setShippingOption("express")}
+                            className="text-yellow-600"
+                          />
+                          <div className="flex-1">
+                            <div className="flex justify-between">
+                              <span className="font-medium">Frete Express</span>
+                              <span className="font-bold" style={{ color: '#DDAF36' }}>R$ 9,90</span>
+                            </div>
+                            <p className="text-sm text-gray-600">Entrega em 2 a 3 dias úteis</p>
+                          </div>
+                        </label>
+                        
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="shipping"
+                            value="free"
+                            checked={shippingOption === "free"}
+                            onChange={() => setShippingOption("free")}
+                            className="text-yellow-600"
+                          />
+                          <div className="flex-1">
+                            <div className="flex justify-between">
+                              <span className="font-medium">Frete Grátis</span>
+                              <span className="font-bold text-green-600">Grátis</span>
+                            </div>
+                            <p className="text-sm text-gray-600">Entrega em 5 a 7 dias úteis</p>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    
                     <div className="flex justify-between items-center mb-2">
                       <span>Frete:</span>
-                      <span style={{ color: '#0F2E51' }}>R$ 9,90</span>
+                      <span style={{ color: '#0F2E51' }}>
+                        {shippingOption === "express" ? "R$ 9,90" : "Grátis"}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-xl font-bold" style={{ color: '#0F2E51' }}>
                       <span>Total:</span>
-                      <span>R$ {(total + 9.90).toFixed(2).replace(".", ",")}</span>
+                      <span>R$ {total.toFixed(2).replace(".", ",")}</span>
                     </div>
                   </div>
                 </CardContent>
