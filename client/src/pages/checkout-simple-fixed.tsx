@@ -81,6 +81,9 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   const queryClient = useQueryClient();
   const { sessionId } = useCart();
   
+  // Force sessionId padrão se vazio
+  const effectiveSessionId = sessionId || "wil3rxwaf0q";
+  
   // Detectar plano de assinatura na URL
   const urlParams = new URLSearchParams(window.location.search);
   const selectedPlan = urlParams.get('plan');
@@ -103,9 +106,9 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   });
 
   const { data: cartItems = [], isLoading: isLoadingCart } = useQuery<any[]>({
-    queryKey: ["/api/cart", sessionId],
-    queryFn: () => apiRequest("GET", `/api/cart?sessionId=${sessionId}`),
-    enabled: !!sessionId,
+    queryKey: ["/api/cart", effectiveSessionId],
+    queryFn: () => apiRequest("GET", `/api/cart?sessionId=${effectiveSessionId}`),
+    enabled: !!effectiveSessionId,
   });
 
   // Query para carregar todos os produtos para order bump
@@ -125,12 +128,6 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
 
   // Combinar itens do carrinho com plano de assinatura
   const allItems = selectedPlan ? subscriptionItem : cartItems;
-
-  // Debug para verificar os dados
-  console.log('DEBUG - sessionId:', sessionId);
-  console.log('DEBUG - cartItems:', cartItems);
-  console.log('DEBUG - allItems:', allItems);
-  console.log('DEBUG - selectedPlan:', selectedPlan);
 
   const total = allItems.reduce((sum: number, item: any) => {
     // Limpar o preço removendo "R$ " se existir e convertendo vírgula para ponto

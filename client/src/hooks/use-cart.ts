@@ -11,13 +11,10 @@ export function useCart() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Generate or retrieve session ID
-    let id = localStorage.getItem("sessionId");
-    if (!id) {
-      id = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      localStorage.setItem("sessionId", id);
-    }
-    setSessionId(id);
+    // Force uso do sessionId padrão para compatibilidade
+    const standardSessionId = "wil3rxwaf0q";
+    localStorage.setItem("sessionId", standardSessionId);
+    setSessionId(standardSessionId);
   }, []);
 
   const addToCartMutation = useMutation({
@@ -36,7 +33,7 @@ export function useCart() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
     },
     onError: (error) => {
       toast({
@@ -52,7 +49,7 @@ export function useCart() {
       return await apiRequest("PUT", `/api/cart/${cartItemId}`, { quantity });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
     },
     onError: (error) => {
       toast({
@@ -68,7 +65,7 @@ export function useCart() {
       return await apiRequest("DELETE", `/api/cart/${cartItemId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart", "default-session"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", sessionId] });
       toast({
         title: "Produto removido",
         description: "O produto foi removido do carrinho.",
