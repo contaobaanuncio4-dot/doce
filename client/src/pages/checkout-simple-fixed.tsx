@@ -126,6 +126,12 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   // Combinar itens do carrinho com plano de assinatura
   const allItems = selectedPlan ? subscriptionItem : cartItems;
 
+  // Debug para verificar os dados
+  console.log('DEBUG - sessionId:', sessionId);
+  console.log('DEBUG - cartItems:', cartItems);
+  console.log('DEBUG - allItems:', allItems);
+  console.log('DEBUG - selectedPlan:', selectedPlan);
+
   const total = allItems.reduce((sum: number, item: any) => {
     // Limpar o preço removendo "R$ " se existir e convertendo vírgula para ponto
     const cleanPrice = item.price?.toString().replace("R$ ", "").replace(",", ".") || "0";
