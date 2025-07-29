@@ -166,7 +166,9 @@ export async function sendToUTMify(orderData: UTMifyOrderData): Promise<void> {
   }
 
   try {
-    console.log('[UTMify API] Preparando payload:', JSON.stringify(orderData, null, 2));
+    console.log('[UTMify API] Preparando payload para envio...');
+    console.log('[UTMify API] URL:', 'https://api.utmify.com.br/api-credentials/orders');
+    console.log('[UTMify API] Payload:', JSON.stringify(orderData, null, 2));
     
     const response = await fetch('https://api.utmify.com.br/api-credentials/orders', {
       method: 'POST',
@@ -177,18 +179,24 @@ export async function sendToUTMify(orderData: UTMifyOrderData): Promise<void> {
       body: JSON.stringify(orderData)
     });
 
-    console.log(`[UTMify API] Status da resposta: ${response.status}`);
+    console.log(`[UTMify API] Status HTTP: ${response.status}`);
+    console.log(`[UTMify API] Headers de resposta:`, response.headers);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[UTMify API] Erro na resposta:', response.status, errorText);
+      console.error('[UTMify API] ✗ Erro HTTP:', response.status, response.statusText);
+      console.error('[UTMify API] ✗ Corpo da resposta:', errorText);
       throw new Error(`UTMify API error: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
-    console.log('[UTMify API] ✓ Sucesso:', result);
+    console.log('[UTMify API] ✓ Resposta de sucesso:', result);
+    console.log('[UTMify API] ✓ Notificação UTMify enviada com sucesso!');
   } catch (error) {
-    console.error('[UTMify API] ✗ Erro ao enviar:', error);
+    console.error('[UTMify API] ✗ Erro na requisição:', error);
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      console.error('[UTMify API] ✗ Erro de conectividade - verifique a conexão com a internet');
+    }
     throw error;
   }
 }
@@ -200,8 +208,15 @@ export async function notifyUTMifyOrderCreated(
   referer?: string,
   userIP?: string
 ): Promise<void> {
+  console.log('[UTMify] Iniciando notifyUTMifyOrderCreated');
+  console.log('[UTMify] Order ID:', order.id);
+  console.log('[UTMify] Order Items count:', orderItems.length);
+  
   const orderData = convertOrderToUTMify(order, orderItems, 'waiting_payment', referer, userIP);
+  console.log('[UTMify] Dados convertidos, enviando para API...');
+  
   await sendToUTMify(orderData);
+  console.log('[UTMify] Notificação enviada com sucesso');
 }
 
 // Função para notificar venda paga
