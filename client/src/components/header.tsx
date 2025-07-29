@@ -1,14 +1,16 @@
-import { ShoppingCart, Menu, Search, User } from "lucide-react";
+import { ShoppingCart, Menu, Search, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { useState } from "react";
 
 interface HeaderProps {
   onCartToggle: () => void;
 }
 
 export default function Header({ onCartToggle }: HeaderProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sessionId = sessionStorage.getItem('sessionId') || 'default-session';
   
   const { data: cartItems = [] } = useQuery({
@@ -34,7 +36,12 @@ export default function Header({ onCartToggle }: HeaderProps) {
           <div className="flex items-center justify-between h-16">
             {/* Menu mobile e navegação esquerda */}
             <div className="flex items-center space-x-8">
-              <Button variant="ghost" size="sm" className="md:hidden">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="md:hidden"
+                onClick={() => setIsMobileMenuOpen(true)}
+              >
                 <Menu className="h-6 w-6" />
               </Button>
               
@@ -114,6 +121,87 @@ export default function Header({ onCartToggle }: HeaderProps) {
           </div>
         </div>
       </header>
+
+      {/* Menu Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+          
+          <div className="absolute left-0 top-0 h-full w-80 bg-white overflow-y-auto">
+            {/* Header do Menu */}
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold" style={{ color: '#0F2E51' }}>
+                  Menu
+                </h2>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Navegação Mobile */}
+            <div className="p-4">
+              <nav className="space-y-4">
+                <Link 
+                  href="/" 
+                  className="block py-3 px-4 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+                  style={{ color: '#0F2E51' }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Início
+                </Link>
+                
+                <div className="border-t pt-4">
+                  <h3 className="text-sm font-semibold text-gray-500 mb-3">PRODUTOS</h3>
+                  <Link 
+                    href="/"
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Doces - Tábua de Minas
+                  </Link>
+                  <Link 
+                    href="/"
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Queijos - Tábua de Minas
+                  </Link>
+                  <Link 
+                    href="/"
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Clube Tábua - Assinatura
+                  </Link>
+                </div>
+
+                <div className="border-t pt-4">
+                  <h3 className="text-sm font-semibold text-gray-500 mb-3">ATENDIMENTO</h3>
+                  <Link 
+                    href="/track-order" 
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Rastreie seu pedido
+                  </Link>
+                  <Link 
+                    href="/contact" 
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Contato
+                  </Link>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
