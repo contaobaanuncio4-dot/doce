@@ -685,6 +685,8 @@ class MemoryStorage implements IStorage {
         discount: 39,
         rating: "4.7",
         reviews: 102,
+        checkout500g: null,
+        checkout1kg: null,
         createdAt: new Date(),
       },
       {
@@ -704,6 +706,8 @@ class MemoryStorage implements IStorage {
         discount: 44,
         rating: "4.9",
         reviews: 189,
+        checkout500g: null,
+        checkout1kg: null,
         createdAt: new Date(),
       },
       {
@@ -723,6 +727,8 @@ class MemoryStorage implements IStorage {
         discount: 46,
         rating: "4.8",
         reviews: 156,
+        checkout500g: null,
+        checkout1kg: null,
         createdAt: new Date(),
       },
       {
@@ -742,6 +748,8 @@ class MemoryStorage implements IStorage {
         discount: 37,
         rating: "4.6",
         reviews: 124,
+        checkout500g: null,
+        checkout1kg: null,
         createdAt: new Date(),
       }
     ];
