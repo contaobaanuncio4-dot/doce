@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { trackAddToCart, trackViewContent } from "@/lib/tiktok-tracking";
 
 interface Product {
   id: number;
@@ -34,6 +35,21 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Rastrear visualização do produto no TikTok
+  const handleViewContent = () => {
+    const currentPrice = selectedSize === "500g" 
+      ? (product.price500g || product.price)
+      : (product.price1kg || product.price);
+      
+    trackViewContent({
+      content_id: product.id.toString(),
+      content_name: product.name,
+      content_category: product.category,
+      value: parseFloat((currentPrice || '0').replace(',', '.')),
+      currency: 'BRL',
+    });
+  };
+  
   const addToCart = async () => {
     try {
       // Usar o sessionId padrão consistente com use-cart.ts
@@ -61,6 +77,16 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
       if (response.ok) {
         // Invalidar query do carrinho para forçar atualização com sessionId correto
         queryClient.invalidateQueries({ queryKey: ['/api/cart', sessionId] });
+        
+        // Rastrear evento AddToCart no TikTok
+        trackAddToCart({
+          content_id: product.id.toString(),
+          content_name: product.name,
+          content_category: product.category,
+          value: parseFloat((currentPrice || '0').replace(',', '.')),
+          currency: 'BRL',
+          quantity: 1,
+        });
         
         // Notificação removida conforme solicitado
       }
@@ -92,8 +118,8 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
     : (product.originalPrice1kg || product.originalPrice);
 
   return (
-    <div className="group">
-      <Card className="h-full border border-gray-100 rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02] relative bg-white">
+    <div className="group" onClick={handleViewContent}>
+      <Card className="h-full border border-gray-100 rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02] relative bg-white cursor-pointer">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 space-y-1">
           {product.featured && (

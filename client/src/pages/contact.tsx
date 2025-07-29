@@ -7,6 +7,7 @@ import { ArrowLeft, Phone, Mail, MapPin, Clock, MessageSquare } from "lucide-rea
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/header";
+import { trackContact } from "@/lib/tiktok-tracking";
 
 export default function Contact() {
   const [, setLocation] = useLocation();
@@ -21,6 +22,10 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Rastrear evento de contato no TikTok
+    trackContact();
+    
     // Simular envio do formulário
     toast({
       title: "Mensagem enviada!",

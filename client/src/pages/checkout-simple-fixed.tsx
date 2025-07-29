@@ -14,6 +14,7 @@ import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check, ShoppingBag,
 import QRCode from "qrcode";
 import Header from "@/components/header";
 import { useCart } from "@/hooks/use-cart";
+import { trackInitiateCheckout, trackCompletePayment } from "@/lib/tiktok-tracking";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -224,6 +225,17 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
       }
       
       setStep(2);
+      
+      // Rastrear conclusão de pagamento no TikTok (PIX gerado)
+      const contentIds = cartItems.map(item => item.productId.toString());
+      trackCompletePayment({
+        content_ids: contentIds,
+        value: finalTotal,
+        currency: 'BRL',
+        num_items: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+        order_id: data.order.id.toString(),
+      });
+      
       toast({
         title: "Pedido criado com sucesso!",
         description: `Pedido #${data.order.id} criado. PIX disponível para pagamento.`,
@@ -239,6 +251,15 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   });
 
   const onSubmit = (data: CheckoutForm) => {
+    // Rastrear início do checkout no TikTok
+    const contentIds = cartItems.map(item => item.productId.toString());
+    trackInitiateCheckout({
+      content_ids: contentIds,
+      value: finalTotal,
+      currency: 'BRL',
+      num_items: cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    });
+    
     createOrderMutation.mutate(data);
   };
 
