@@ -601,7 +601,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                               <div className="flex justify-between items-center">
                                 <div>
                                   <span className="font-semibold text-gray-900">Frete Grátis</span>
-                                  <p className="text-sm text-gray-600 mt-1">Entrega em 10 a 14 dias úteis</p>
+                                  <p className="text-sm text-gray-600 mt-1">Entrega em 5 a 8 dias úteis</p>
                                 </div>
                                 <span className="font-bold text-lg text-green-600">Grátis</span>
                               </div>
