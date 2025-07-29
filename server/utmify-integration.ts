@@ -50,10 +50,10 @@ interface UTMifyOrderData {
   isTest?: boolean;
 }
 
-// Função para converter data brasileira para UTC (mínimo 1 semana atrás conforme doc UTMify)
+// Função para converter data para formato UTC aceito pela UTMify
 function toUTCString(date: Date): string {
-  const utcDate = new Date(date.getTime() - (7 * 24 * 60 * 60 * 1000)); // 1 semana no passado
-  return utcDate.toISOString().replace('T', ' ').substring(0, 19);
+  // UTMify aceita data atual, sem necessidade de subtrair tempo
+  return date.toISOString().replace('T', ' ').substring(0, 19);
 }
 
 // Função para extrair parâmetros UTM do referer ou URL
@@ -148,7 +148,7 @@ export function convertOrderToUTMify(
       userCommissionInCents: userCommissionInCents,
       currency: "BRL"
     },
-    isTest: false
+    isTest: true // Modo teste durante desenvolvimento
   };
 
   return orderData;
