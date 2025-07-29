@@ -58,8 +58,6 @@ export default function Checkout() {
       state: "",
     },
   });
-
-  const sessionId = sessionStorage.getItem('sessionId') || 'default-session';
   
   const { data: cartItems = [], isLoading: isLoadingCart } = useQuery({
     queryKey: ["/api/cart"],

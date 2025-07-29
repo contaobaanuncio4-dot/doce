@@ -19,9 +19,9 @@ export default function ShoppingCartGuide() {
   const totalItems = cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0);
   const shippingCost = 9.90;
   
-  // Simular desconto: subtotal mostra valor original (20% maior) e total mostra valor com desconto
+  // Mostrar apenas o subtotal dos produtos (sem frete)
   const originalSubtotal = subtotal * 1.2; // 20% a mais para mostrar como "valor original"
-  const finalTotal = subtotal + shippingCost; // Valor real já com desconto aplicado
+  const finalTotal = subtotal; // Apenas o valor dos produtos, frete será escolhido no checkout
 
   if (totalItems === 0) return null;
 
@@ -34,8 +34,9 @@ export default function ShoppingCartGuide() {
               Subtotal: R$ {originalSubtotal.toFixed(2).replace('.', ',')}
             </p>
             <p className="text-2xl font-bold" style={{ color: '#DDAF36' }}>
-              Total: R$ {finalTotal.toFixed(2).replace('.', ',')}
+              Subtotal: R$ {finalTotal.toFixed(2).replace('.', ',')}
             </p>
+            <p className="text-xs text-gray-500">+ frete no checkout</p>
           </div>
         </div>
         <Link href="/checkout">
