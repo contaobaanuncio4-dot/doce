@@ -231,49 +231,6 @@ export default function Checkout() {
                       <span>R$ {subtotal.toFixed(2).replace(".", ",")}</span>
                     </div>
                     
-                    {/* Opções de Frete */}
-                    <div className="my-4">
-                      <h4 className="font-semibold mb-3" style={{ color: '#0F2E51' }}>Opções de Entrega:</h4>
-                      
-                      <div className="space-y-2">
-                        <label className="flex items-center space-x-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="shipping"
-                            value="express"
-                            checked={shippingOption === "express"}
-                            onChange={() => setShippingOption("express")}
-                            className="text-yellow-600"
-                          />
-                          <div className="flex-1">
-                            <div className="flex justify-between">
-                              <span className="font-medium">Frete Express</span>
-                              <span className="font-bold" style={{ color: '#DDAF36' }}>R$ 9,90</span>
-                            </div>
-                            <p className="text-sm text-gray-600">Entrega em 2 a 3 dias úteis</p>
-                          </div>
-                        </label>
-                        
-                        <label className="flex items-center space-x-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="shipping"
-                            value="free"
-                            checked={shippingOption === "free"}
-                            onChange={() => setShippingOption("free")}
-                            className="text-yellow-600"
-                          />
-                          <div className="flex-1">
-                            <div className="flex justify-between">
-                              <span className="font-medium">Frete Grátis</span>
-                              <span className="font-bold text-green-600">Grátis</span>
-                            </div>
-                            <p className="text-sm text-gray-600">Entrega em 5 a 7 dias úteis</p>
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-                    
                     <div className="flex justify-between items-center mb-2">
                       <span>Frete ({shippingOption === "express" ? "Express" : "Grátis"}):</span>
                       <span style={{ color: shippingOption === "express" ? '#DDAF36' : '#22c55e' }}>
@@ -446,9 +403,52 @@ export default function Checkout() {
                         )}
                       />
 
+                      {/* Opções de Frete - Movido para depois do endereço */}
+                      <div className="col-span-2 mt-6">
+                        <h4 className="font-semibold mb-3" style={{ color: '#0F2E51' }}>Opções de Entrega:</h4>
+                        
+                        <div className="space-y-3">
+                          <label className="flex items-center space-x-3 cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
+                            <input
+                              type="radio"
+                              name="shipping"
+                              value="express"
+                              checked={shippingOption === "express"}
+                              onChange={() => setShippingOption("express")}
+                              className="text-yellow-600"
+                            />
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center">
+                                <span className="font-medium">Frete Express</span>
+                                <span className="font-bold" style={{ color: '#DDAF36' }}>R$ 9,90</span>
+                              </div>
+                              <p className="text-sm text-gray-600">Entrega em 2 a 3 dias úteis</p>
+                            </div>
+                          </label>
+                          
+                          <label className="flex items-center space-x-3 cursor-pointer p-3 border rounded-lg hover:bg-gray-50">
+                            <input
+                              type="radio"
+                              name="shipping"
+                              value="free"
+                              checked={shippingOption === "free"}
+                              onChange={() => setShippingOption("free")}
+                              className="text-yellow-600"
+                            />
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center">
+                                <span className="font-medium">Frete Grátis</span>
+                                <span className="font-bold text-green-600">Grátis</span>
+                              </div>
+                              <p className="text-sm text-gray-600">Entrega em 5 a 7 dias úteis</p>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+
                       <Button 
                         type="submit" 
-                        className="w-full btn-primary"
+                        className="w-full btn-primary col-span-2"
                         disabled={createOrderMutation.isPending}
                       >
                         {createOrderMutation.isPending ? "Criando Pedido..." : "Finalizar Pedido"}
