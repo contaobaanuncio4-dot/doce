@@ -151,14 +151,11 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
       const originalPrice = parseFloat(product.price500g.replace('R$ ', '').replace(',', '.'));
       const discountedPrice = originalPrice * 0.5; // 50% de desconto
       
-      return await apiRequest("/api/cart", {
-        method: 'POST',
-        body: {
-          productId: product.id,
-          quantity: 1,
-          size: "500g",
-          price: discountedPrice.toFixed(2).replace('.', ',')
-        }
+      return await apiRequest('POST', "/api/cart", {
+        productId: product.id,
+        quantity: 1,
+        size: "500g",
+        price: discountedPrice.toFixed(2).replace('.', ',')
       });
     },
     onSuccess: () => {
@@ -199,10 +196,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
         total: finalTotal.toFixed(2)
       };
       
-      const response = await apiRequest('/api/orders', {
-        method: 'POST',
-        body: orderWithSession
-      });
+      const response = await apiRequest('POST', '/api/orders', orderWithSession);
       return response;
     },
     onSuccess: async (data) => {
