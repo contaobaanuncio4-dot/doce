@@ -147,16 +147,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Carrinho vazio" });
       }
       
-      // Calcular total e preparar itens para BlackCat
-      let totalAmount = 0;
+      // Usar o valor total enviado do frontend (finalTotal)
+      const totalAmount = parseFloat(orderData.total);
       const blackCatItems = [];
       
       for (const cartItem of cartItems) {
         const product = await storage.getProductById(cartItem.productId);
         if (product) {
           const unitPrice = parseFloat(cartItem.price.replace(",", "."));
-          const itemTotal = unitPrice * cartItem.quantity;
-          totalAmount += itemTotal;
           
           blackCatItems.push({
             title: `${product.name} - ${cartItem.size}`,
@@ -167,16 +165,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Adicionar frete
-      const shippingCost = 9.90;
-      totalAmount += shippingCost;
-      
-      blackCatItems.push({
-        title: "Frete",
-        unitPrice: BlackCatAPI.convertToCents(shippingCost),
-        quantity: 1,
-        tangible: false
-      });
+      // Não precisamos calcular frete aqui - o frontend já enviou o total correto
+      // Apenas incluir o frete como item para referência (valor será ajustado automaticamente)
+      if (totalAmount > 0) {
+        const itemsTotal = blackCatItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0) / 100;
+        const shippingCost = totalAmount - itemsTotal;
+        
+        if (shippingCost > 0) {
+          blackCatItems.push({
+            title: "Frete",
+            unitPrice: BlackCatAPI.convertToCents(shippingCost),
+            quantity: 1,
+            tangible: false
+          });
+        }
+      }
       
       // Preparar dados para BlackCat
       const blackCatRequest = {
