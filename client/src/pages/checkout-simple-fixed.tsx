@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Package, ArrowLeft, User, MapPin, CreditCard, Copy, Check, ShoppingBag, X, Plus } from "lucide-react";
 import QRCode from "qrcode";
 import Header from "@/components/header";
+import { useCart } from "@/hooks/use-cart";
 
 const checkoutSchema = z.object({
   customerName: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -78,6 +79,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   const [shippingOption, setShippingOption] = useState<"express" | "free">("express");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { sessionId } = useCart();
   
   // Detectar plano de assinatura na URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -101,7 +103,9 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   });
 
   const { data: cartItems = [], isLoading: isLoadingCart } = useQuery<any[]>({
-    queryKey: ["/api/cart"],
+    queryKey: ["/api/cart", sessionId],
+    queryFn: () => apiRequest("GET", `/api/cart?sessionId=${sessionId}`),
+    enabled: !!sessionId,
   });
 
   // Query para carregar todos os produtos para order bump
@@ -185,10 +189,10 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
 
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: CheckoutForm) => {
-      // Adicionar sessionId padrão
+      // Usar o sessionId correto do carrinho
       const orderWithSession = {
         ...orderData,
-        sessionId: 'default-session',
+        sessionId: sessionId || 'default-session',
         // Limpar CPF para enviar apenas números para a API
         customerCpf: orderData.customerCpf.replace(/\D/g, ''),
         // Limpar CEP para enviar apenas números para a API
