@@ -75,6 +75,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const [showOrderBump, setShowOrderBump] = useState(false);
   const [selectedBumpProducts, setSelectedBumpProducts] = useState<number[]>([]);
+  const [shippingOption, setShippingOption] = useState<"express" | "free">("express");
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -128,7 +129,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
     return sum + (isNaN(price) ? 0 : price * item.quantity);
   }, 0);
 
-  const shippingCost = selectedPlan ? 0 : 9.90; // Sem frete para planos de assinatura
+  const shippingCost = selectedPlan ? 0 : (shippingOption === "express" ? 9.90 : 0); // Sem frete para planos de assinatura
   const finalTotal = total + shippingCost;
 
   // Order Bump: Mostrar todos os produtos mais caros da loja com 50% OFF (exceto Queijo Chabichou)
@@ -558,7 +559,57 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                           )}
                         />
                       </div>
-
+                      {/* Opções de Frete */}
+                      <div className="mt-6 pt-4 border-t">
+                        <h4 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#0F2E51' }}>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                          </svg>
+                          Opções de Entrega
+                        </h4>
+                        
+                        <div className="space-y-3">
+                          <label className="flex items-center space-x-4 cursor-pointer p-4 border-2 rounded-lg hover:bg-gray-50 transition-colors border-gray-200 hover:border-yellow-300">
+                            <input
+                              type="radio"
+                              name="shipping"
+                              value="express"
+                              checked={shippingOption === "express"}
+                              onChange={() => setShippingOption("express")}
+                              className="w-4 h-4 text-yellow-600 focus:ring-yellow-500"
+                            />
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <span className="font-semibold text-gray-900">Frete Express</span>
+                                  <p className="text-sm text-gray-600 mt-1">Entrega em 5 a 7 dias úteis</p>
+                                </div>
+                                <span className="font-bold text-lg" style={{ color: '#DDAF36' }}>R$ 9,90</span>
+                              </div>
+                            </div>
+                          </label>
+                          
+                          <label className="flex items-center space-x-4 cursor-pointer p-4 border-2 rounded-lg hover:bg-gray-50 transition-colors border-gray-200 hover:border-green-300">
+                            <input
+                              type="radio"
+                              name="shipping"
+                              value="free"
+                              checked={shippingOption === "free"}
+                              onChange={() => setShippingOption("free")}
+                              className="w-4 h-4 text-green-600 focus:ring-green-500"
+                            />
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <span className="font-semibold text-gray-900">Frete Grátis</span>
+                                  <p className="text-sm text-gray-600 mt-1">Entrega em 10 a 14 dias úteis</p>
+                                </div>
+                                <span className="font-bold text-lg text-green-600">Grátis</span>
+                              </div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
                       {/* Order Bump - Produtos Recomendados (Compacto) */}
                       {!selectedPlan && suggestedProducts.length > 0 && (
                         <div className="mt-6 pt-4 border-t">
@@ -672,7 +723,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Frete:</span>
                       <span style={{ color: '#0F2E51' }}>
-                        {selectedPlan ? 'Grátis' : 'R$ 9,90'}
+                        {selectedPlan ? 'Grátis' : (shippingOption === "express" ? 'R$ 9,90' : 'Grátis')}
                       </span>
                     </div>
                     <div className="border-t pt-2 flex justify-between text-lg font-bold">
