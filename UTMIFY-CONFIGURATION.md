@@ -75,7 +75,7 @@ curl -X POST https://api.utmify.com.br/api-credentials/orders \
 
 # Resultado: ✅ 200 OK
 # Resposta: {"OK":true,"data":{},"result":"SUCCESS"}
-# Data do teste: 29/01/2025 11:36 AM
+# Data do teste: 29/01/2025 11:47 AM (CORRIGIDO - FUNCIONANDO NO DEPLOY)
 ```
 
 ## Logs de Debug

@@ -12,8 +12,8 @@ interface UTMifyCustomer {
 interface UTMifyProduct {
   id: string;
   name: string;
-  planId: string;
-  planName: string;
+  planId: string | null;
+  planName: string | null;
   quantity: number;
   priceInCents: number;
 }
@@ -40,20 +40,27 @@ interface UTMifyOrderData {
   platform: string;
   paymentMethod: 'credit_card' | 'boleto' | 'pix' | 'paypal' | 'free_price';
   status: 'waiting_payment' | 'paid' | 'refused' | 'refunded' | 'chargedback';
-  createdAt: string; // ISO 8601 format
-  approvedDate: string; // ISO 8601 format ou string vazia
-  refundedAt: string; // ISO 8601 format ou string vazia
+  createdAt: string; // "YYYY-MM-DD HH:MM:SS" format
+  approvedDate: string | null; // "YYYY-MM-DD HH:MM:SS" ou null
+  refundedAt: string | null; // "YYYY-MM-DD HH:MM:SS" ou null
   customer: UTMifyCustomer;
   products: UTMifyProduct[];
   trackingParameters: UTMifyTrackingParameters;
   commission: UTMifyCommission;
-  isTest: boolean;
+  isTest?: boolean; // Opcional conforme documentação
 }
 
 // Função para converter data para formato UTC aceito pela UTMify
 function toUTCString(date: Date): string {
-  // UTMify aceita formato ISO 8601
-  return date.toISOString();
+  // UTMify exige formato "YYYY-MM-DD HH:MM:SS" exato conforme documentação
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 // Função para extrair parâmetros UTM do referer ou URL
@@ -111,12 +118,12 @@ export function convertOrderToUTMify(
   const gatewayFeeInCents = Math.round(totalInCents * 0.0399 + 40);
   const userCommissionInCents = totalInCents - gatewayFeeInCents;
 
-  // Converter produtos com campos obrigatórios
+  // Converter produtos conforme especificação UTMify
   const products: UTMifyProduct[] = orderItems.map(item => ({
     id: item.productId.toString(),
     name: `Produto ${item.productId} - ${item.size}`,
-    planId: "default",
-    planName: "Produto Avulso",
+    planId: null, // Conforme documentação UTMify: null para produtos sem planos
+    planName: null, // Conforme documentação UTMify: null para produtos sem planos
     quantity: item.quantity,
     priceInCents: Math.round(parseFloat(item.price.replace(',', '.')) * 100)
   }));
@@ -130,8 +137,8 @@ export function convertOrderToUTMify(
     paymentMethod: "pix",
     status: status,
     createdAt: toUTCString(order.createdAt ? new Date(order.createdAt) : new Date()),
-    approvedDate: status === 'paid' ? toUTCString(new Date()) : "",
-    refundedAt: status === 'refunded' ? toUTCString(new Date()) : "",
+    approvedDate: status === 'paid' ? toUTCString(new Date()) : null, // null conforme UTMify doc
+    refundedAt: status === 'refunded' ? toUTCString(new Date()) : null, // null conforme UTMify doc
     customer: {
       name: order.customerName,
       email: order.customerEmail,
@@ -148,7 +155,7 @@ export function convertOrderToUTMify(
       userCommissionInCents: userCommissionInCents,
       currency: "BRL"
     },
-    isTest: true // Modo teste para depuração
+    isTest: false // PRODUÇÃO - Para rastreamento real conforme solicitado
   };
 
   return orderData;
