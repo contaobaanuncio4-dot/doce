@@ -9,8 +9,12 @@ interface HeaderProps {
 }
 
 export default function Header({ onCartToggle }: HeaderProps) {
+  const sessionId = sessionStorage.getItem('sessionId') || 'default-session';
+  
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['/api/cart', 'default-session']
+    queryKey: ['/api/cart'],
+    queryFn: () => fetch(`/api/cart?sessionId=${sessionId}`).then(res => res.json()),
+    enabled: !!sessionId
   });
 
   const totalItems = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0) : 0;

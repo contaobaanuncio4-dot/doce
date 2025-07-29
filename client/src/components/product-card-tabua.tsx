@@ -30,26 +30,36 @@ interface ProductCardTabuaProps {
 export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
   const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
   
-  const handleCheckout = () => {
-    const checkoutUrl = selectedSize === "500g" 
-      ? product.checkout500g 
-      : product.checkout1kg;
-    
-    console.log('Dados do produto:', product);
-    console.log('Tamanho selecionado:', selectedSize);
-    console.log('URL de checkout:', checkoutUrl);
-    
-    if (checkoutUrl) {
-      console.log('Abrindo URL:', checkoutUrl);
-      // Tenta abrir em nova aba
-      const opened = window.open(checkoutUrl, '_blank');
-      if (!opened) {
-        // Se bloqueado pelo popup blocker, tenta redirecionar na mesma janela
-        window.location.href = checkoutUrl;
+  const addToCart = async () => {
+    try {
+      const sessionId = sessionStorage.getItem('sessionId') || 
+        Math.random().toString(36).substring(2, 15);
+      sessionStorage.setItem('sessionId', sessionId);
+
+      const currentPrice = selectedSize === "500g" 
+        ? (product.price500g || product.price)
+        : (product.price1kg || product.price);
+
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionId,
+          productId: product.id,
+          quantity: 1,
+          size: selectedSize,
+          price: parseFloat(currentPrice || '0')
+        }),
+      });
+
+      if (response.ok) {
+        // Disparar evento personalizado para atualizar o carrinho
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
       }
-    } else {
-      console.error('URL de checkout não encontrada:', { product, selectedSize });
-      alert(`Link de checkout não configurado para ${product.name} - ${selectedSize}`);
+    } catch (error) {
+      console.error('Erro ao adicionar ao carrinho:', error);
     }
   };
 
@@ -156,12 +166,12 @@ export default function ProductCardTabua({ product }: ProductCardTabuaProps) {
             </div>
           </div>
 
-          {/* Botão Comprar Agora */}
+          {/* Botão Adicionar ao Carrinho */}
           <Button
-            onClick={handleCheckout}
+            onClick={addToCart}
             className="w-full bg-[#DDAF36] hover:bg-[#c49a2b] text-[#0F2E51] font-bold py-3 rounded-2xl transition-colors duration-300"
           >
-            Comprar Agora
+            Adicionar ao Carrinho
           </Button>
         </CardContent>
       </Card>
