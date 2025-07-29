@@ -159,6 +159,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
       const discountedPrice = originalPrice * 0.5; // 50% de desconto
       
       return await apiRequest('POST', "/api/cart", {
+        sessionId: effectiveSessionId,
         productId: product.id,
         quantity: 1,
         size: "500g",
@@ -166,7 +167,7 @@ export default function CheckoutSimple({ onCartToggle }: CheckoutSimpleProps) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cart", effectiveSessionId] });
       // Notificação removida conforme solicitado
     },
     onError: () => {
