@@ -136,7 +136,7 @@ export function convertOrderToUTMify(
     platform: "TabuaDeMinas",
     paymentMethod: "pix",
     status: status,
-    createdAt: toUTCString(order.createdAt ? new Date(order.createdAt) : new Date()),
+    createdAt: toUTCString(new Date()), // Sempre usar data atual para evitar rejeição da UTMify
     approvedDate: status === 'paid' ? toUTCString(new Date()) : null, // null conforme UTMify doc
     refundedAt: status === 'refunded' ? toUTCString(new Date()) : null, // null conforme UTMify doc
     customer: {
