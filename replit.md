@@ -1,194 +1,59 @@
 # Tábua de Minas - E-commerce Platform
 
 ## Overview
-
-This is a modern e-commerce platform for "Tábua de Minas - Doces e Queijos," a Brazilian artisanal cheese and sweets brand. The application is designed with a focus on accessibility for older users while maintaining modern aesthetics inspired by the interior of Minas Gerais.
-
-## Recent Changes (Updated: January 29, 2025)
-
-- **Expanded Product Catalog**: Implemented complete catalog with 34 authentic products (17 queijos + 17 doces) using real data from tabuademinas.com and Imgur albums
-- **Fixed API Integration**: Resolved TypeScript errors and API endpoints - products now load correctly
-- **Product Gallery System**: Added multi-image galleries for product variations with navigation controls
-- **Customer Review System**: Implemented comprehensive review display with ratings and customer feedback
-- **Banner Integration**: Added promotional banner from tabuademinas.com to homepage
-- **Cart Functionality**: Fixed session handling for shopping cart functionality with direct "Add to Cart" system
-- **Fixed Shipping System**: Removed free shipping threshold, implemented fixed R$9.90 shipping for all orders
-- **Cart Bottom Bar**: Added fixed bottom cart bar with clean pricing layout showing subtotal crossed out and total highlighted with "COMPRAR AGORA" button
-- **Fixed Cart Functionality**: Corrected cart API to include product details with cart items, resolving "empty cart" display issue
-- **Modern Cart Design**: Applied custom cart sidebar and checkout page with site brand colors (#0F2E51 and #DDAF36)
-- **Removed Shipping Progress Bar**: Removed shipping information bar from homepage as requested
-- **Simplified Product Actions**: Changed from dual buttons to single "Adicionar ao Carrinho" button per user preference
-- **Navigation Improvements**: Removed "VER TODOS OS QUEIJOS" button as requested, kept only for doces section
-- **Product Pages Enhanced**: Individual product pages now feature detailed descriptions, weight information, and review sections
-- **CEP Integration Removed**: Removed automatic CEP lookup functionality at user request due to deployment issues
-- **CPF Field Added**: Added CPF field to checkout form with automatic formatting and validation
-- **PIX Payment Integration**: Integrated BlackCat Payment Gateway for real PIX transactions with QR codes
-- **Real-time Payment Processing**: Orders now generate authentic PIX codes for customer payments
-- **Payment Gateway Security**: All transactions secured with BlackCat API authentication
-- **QR Code Generation**: Implemented real QR code generation using qrcode library for PIX payments
-- **Customer Reviews Section**: Added comprehensive reviews display with 4.9★ rating and customer testimonials
-- **Trust & Security Section**: Added "Por que escolher a Tábua de Minas" with quality, security, and delivery guarantees
-- **About Company Section**: Added company information highlighting 5,000+ orders and artisanal quality commitment
-- **Subscription Club "Clube Tábua"**: Implemented subscription service with two plans (Semestral R$ 187,90/mês, Anual R$ 139,90/mês)
-- **Promotional Countdown Timer**: Added 24-hour countdown timer for limited-time subscription offers
-- **Three-Tab Navigation**: Enhanced product tabs with Doces, Queijos, and new Clube Tábua sections
-- **Instagram Widget Integration**: Added LightWidget Instagram feed display after reviews section on homepage
-- **Professional Design Updates**: Removed emojis from subscription section for cleaner, more professional appearance
-- **Netlify Deployment Ready**: Complete project organization for Netlify hosting with serverless functions and optimized build process
-- **Production Architecture**: Configured dual deployment strategy supporting both Replit and Netlify platforms
-- **Updated Product Images**: All product images updated with fresh Imgur links - resolved expired image issues
-- **Expanded Sweet Catalog**: Added 5 new sweet products from Imgur album (Prestígio Mineiro, Quebra-Queixo, Banana Zero Açúcar, Doce de Leite Dom, Goiabada Tia Carla)  
-- **Complete Image Refresh**: All 34 products now use working Imgur image links (17 queijos + 17 doces)
-- **Netlify Build Fix**: Simplified build commands in netlify.toml for reliable deployment
-- **Netlify Products Fix**: Fixed missing products issue on Netlify deployment - updated storage functions to include all 22 products (6 queijos + 16 doces) instead of only 4, resolving the "products disappearing" problem
-- **Netlify CEP API Fix**: Created dedicated Netlify function for CEP lookup (netlify/functions/cep.ts) with proper routing to resolve address auto-fill functionality on deployed site
-- **Complete Product Catalog Fix**: Updated netlify/functions/storage.ts with all 33 products (19 queijos + 14 doces) matching the full catalog - resolved missing products issue on Netlify deployment
-- **Shipping Options Implementation**: Added selectable shipping options in checkout after address fields - Express freight (R$ 9,90, 5-7 days) and Free freight (10-14 days) with dynamic total calculation based on user selection
-- **PIX Generation API Fix**: Corrected apiRequest function call parameters from object notation to positional parameters (method, url, body) to resolve PIX generation errors
-- **Image Loading Optimization**: Implemented comprehensive image optimization system - all 66 Imgur URLs now use optimized format (m.jpg) for 50-70% smaller file sizes, added skeleton loading components, image preloading for critical images, and intelligent fallback mechanisms
-- **CEP API Debug Enhancement**: Enhanced Netlify CEP function with detailed logging, multiple extraction methods, improved error handling, and direct ViaCEP API testing to resolve "CEP não encontrado" errors on production deployment
-- **Build Fix for Netlify**: Removed ImageSkeleton and image preload components that were causing build failures on Netlify deployment - replaced with simple img tags with error handling to ensure reliable builds
-- **Cache Clearing Enhancement**: Added comprehensive cache clearing to Netlify build command and updated browserslist to resolve persistent build failures
-- **CEP API Complete Removal**: Completely removed all CEP functionality including cep-api.ts file, imports, and server routes to resolve Netlify build failures - users now fill address fields manually
-- **Image Skeleton Component Removal**: Removed all ImageSkeleton component references that were causing Netlify build failures - replaced with direct img tags with error handling for reliable builds
-- **CEP API Re-implementation**: Re-added automatic CEP lookup functionality using direct ViaCEP API integration within checkout component, with improved error handling and user experience
-- **Product Card UI Improvements**: Fixed variant selection with compact buttons, moved price above variants, and prevented automatic cart opening for better UX
-- **Badge Positioning Fix**: Resolved overlapping badges issue by repositioning discount and "Mais Vendido" labels vertically
-- **Navigation Menu Functionality**: Added working track-order and contact pages with complete functionality and proper routing
-- **TypeScript Error Fixes**: Resolved cart items type errors in header component for proper type safety
-- **Netlify PIX Integration Fix**: Added complete BlackCat PIX API integration to Netlify functions - PIX now generates correctly on deployed site when BLACKCAT_API_KEY environment variable is configured
-- **Button Styling Update**: Applied custom inline styles to product card "Adicionar ao carrinho" button with specific padding and text size
-- **Netlify Environment Setup Guide**: Created NETLIFY-ENV-SETUP.md with instructions for configuring BlackCat API key on Netlify deployment
-- **BlackCat Webhook Integration**: Implemented complete webhook system for payment status updates - webhook handlers for both Replit (/api/webhooks/blackcat) and Netlify (/.netlify/functions/webhook-blackcat) with automatic order status updates when payments are confirmed or cancelled
-- **Webhook Documentation**: Created WEBHOOK-SETUP.md with complete instructions for configuring webhooks in BlackCat dashboard and testing payment notifications
-- **Netlify Webhook Configuration**: Added redirect rule to netlify.toml for /api/webhooks/blackcat → /.netlify/functions/webhook-blackcat mapping
-- **Webhook Deployment Guide**: Created DEPLOY-WEBHOOK.md with troubleshooting steps for Netlify webhook deployment - function needs to be redeployed to work properly
-- **Orders API 500 Error Fix**: Identified and fixed error 500 in Netlify orders function - updated createOrder function with proper BlackCat API integration and fallback handling when API key is not configured
-- **Netlify Debug Documentation**: Created NETLIFY-DEBUG.md with troubleshooting steps for orders API errors and testing procedures
-- **Vercel Migration Complete**: Created complete Vercel deployment structure with vercel.json, api/index.ts containing full Express API with BlackCat PIX integration, CORS setup, and comprehensive product catalog
-- **Vercel API Architecture**: Implemented serverless Express app with all routes (/products, /cart, /orders, /webhooks/blackcat) using in-memory storage and proper error handling
-- **Complete Product Catalog**: Added 11 products (6 queijos + 5 doces) with authentic pricing, descriptions, and Imgur images for full e-commerce functionality
-- **Vercel Deploy Documentation**: Created VERCEL-DEPLOY.md with complete deployment instructions, environment setup, and feature comparison with Netlify
-- **Netlify PIX Integration Fixed**: Updated storage.ts and orders.ts with complete BlackCat API integration using correct endpoint (pix/solicitar) and proper payload format - PIX generation now working correctly
-- **Enhanced Error Handling**: Added comprehensive logging, timeout handling (30s), and specific error codes for different failure scenarios in Netlify functions  
-- **Production-Ready BlackCat Integration**: Implemented robust PIX payment system with detailed debugging, proper authentication headers, and fallback error handling for reliable deployment
-- **Netlify Build Error Fixed**: Corrected syntax error in storage.ts that was causing "Expected ';' but found 'Date'" build failure - file completely recreated with clean code structure
-- **Complete Storage.ts Rebuild**: Recreated netlify/functions/storage.ts with proper syntax, 11 products catalog, and full BlackCat PIX integration ready for deployment
-- **UTMify Integration Complete**: Integrated UTMify API for comprehensive tracking of marketing campaigns and conversions - automatically tracks order creation (PIX generated) and order payments with full UTM parameter capture, customer data, and commission tracking. Vercel deployment also includes complete UTMify integration with environment variable configuration
-- **External Checkout Links Integration**: Successfully integrated external checkout links for all products and subscription plans - fixed "Comprar Agora" button functionality with direct links to pay.tabuademinas.fun payment pages. Added checkout500g and checkout1kg fields to product database with complete URL mapping for seamless third-party payment processing
-- **Subscription Checkout Links Added**: Implemented external checkout links for subscription plans - Plano Semestral (https://pay.tabuademinas.fun/6887625ded44f872dda1f5ce) and Plano Anual (https://pay.tabuademinas.fun/68876277ed44f872dda1f5f6) now open directly in new tabs for streamlined payment processing
-- **UTMify Integration Fully Operational**: Fixed critical issue where UTMify notifications weren't working after Replit redeploys - corrected API payload format from UTC string to ISO 8601 format, added comprehensive logging and error handling, validated with successful API tests returning 200 status and "SUCCESS" responses. UTMify now properly tracks all PIX order creation events with authentic customer data, UTM parameters, and commission calculations.
-- **UTMify API Key Updated**: Configured new UTMify API key (EYf0pNagmHEyqtYwkMVsbw5KaySM5Y5Ftfga) in Replit Secrets - tested and validated with SUCCESS response from UTMify API. Integration now fully operational with new credentials and persists across all redeploys.
-- **UTMify Integration Fixed for Deployment**: Corrected critical implementation issues following UTMify documentation manual - fixed date format from ISO 8601 to "YYYY-MM-DD HH:MM:SS", changed approvedDate/refundedAt from empty strings to null values, corrected planId/planName to null for non-subscription products, and enabled production mode (isTest: false). Integration now works correctly on Replit deployments with real order tracking and UTM parameter capture.
-- **TikTok Pixel Integration Complete**: Added comprehensive TikTok pixel tracking (D25LRGJC77U5781IMC3G) with complete event tracking system - page views, product views (ViewContent), add to cart (AddToCart), checkout initiation (InitiateCheckout), payment completion (CompletePayment), and contact form submissions (Contact). All events include proper product data, pricing in BRL currency, and order information for precise campaign optimization and conversion tracking.
+Tábua de Minas is an e-commerce platform for an artisanal Brazilian cheese and sweets brand. The project aims to provide an accessible, modern online shopping experience, inspired by Minas Gerais aesthetics, with a focus on ease of use for older users. Key capabilities include a comprehensive product catalog, multi-image galleries, a customer review system, a subscription club, and secure PIX payment integration. The business vision is to expand market reach for authentic Brazilian artisanal products, leveraging a user-friendly digital storefront.
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
-
 **Change Tracking Requirement**: Always list modified files at the end of each response when making changes to the codebase.
 
 ## System Architecture
 
 ### Frontend Architecture
-The frontend is built using **React 18** with **TypeScript** and **Vite** as the build tool. The application follows a component-based architecture with:
-- **Routing**: Wouter for lightweight client-side routing
-- **Styling**: Tailwind CSS with custom Minas Gerais-inspired color scheme
-- **UI Components**: Radix UI primitives with shadcn/ui components for accessibility
-- **State Management**: React Query (TanStack Query) for server state
-- **Form Handling**: React Hook Form with Zod validation
+The frontend is built with **React 18**, **TypeScript**, and **Vite**. It employs a component-based architecture using **Wouter** for routing, **Tailwind CSS** for styling with a custom Minas Gerais-inspired color scheme, **Radix UI** primitives and **shadcn/ui** components for accessibility, **React Query** for server state management, and **React Hook Form** with **Zod** for form handling and validation.
 
 ### Backend Architecture
-The backend uses **Express.js** with **TypeScript** running on Node.js:
-- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
-- **Session Management**: In-memory storage with session-based cart functionality
-- **API Design**: RESTful endpoints for products, cart, and orders
-- **Database Provider**: Neon Database (serverless PostgreSQL)
+The backend uses **Express.js** with **TypeScript** on Node.js. It features **RESTful APIs** for products, cart, and orders. **PostgreSQL** with **Drizzle ORM** is used for type-safe database operations, specifically leveraging **Neon Database** for serverless PostgreSQL. Session-based cart functionality utilizes in-memory storage.
+
+### UI/UX Strategy
+The design prioritizes accessibility for older users with:
+- Large, clear buttons and typography.
+- High-contrast colors inspired by Minas Gerais.
+- Simplified navigation patterns.
+- Generous spacing and readable fonts.
 
 ### Key Design Decisions
+- **Frontend Framework**: React was chosen for its mature ecosystem, TypeScript support, and Vite for fast development.
+- **Database**: PostgreSQL with Drizzle ORM provides type safety, performance, and serverless deployment capabilities.
+- **Data Flow**: Products are fetched from PostgreSQL and cached. Cart items are session-based. Shipping costs are calculated in real-time. Checkout processes involve client-side validation and server-side processing with PIX payment integration, and orders are stored with a complete audit trail.
 
-**Frontend Framework Choice**: React was chosen for its mature ecosystem and excellent TypeScript support. Vite provides fast development builds and modern bundling.
-
-**Database Architecture**: PostgreSQL with Drizzle ORM was selected for:
-- Type safety across the entire stack
-- Excellent performance for e-commerce workloads
-- Support for complex queries and relationships
-- Serverless deployment capabilities with Neon
-
-**UI/UX Strategy**: The application prioritizes elderly-friendly design with:
-- Large, clear buttons and typography
-- High contrast colors inspired by Minas Gerais aesthetics
-- Simplified navigation patterns
-- Generous spacing and readable fonts
-
-## Key Components
-
-### Database Schema
-- **Products**: Core product information with categories (queijos, doces, combos)
-- **Cart Items**: Session-based shopping cart with quantity tracking
-- **Orders**: Complete order information including customer details and address
-- **Order Items**: Individual items within orders for detailed tracking
-
-### Frontend Components
-- **Product Cards**: Responsive product display with quantity selectors
-- **Shopping Cart**: Sliding sidebar cart with size selection (500g/1kg) and real-time updates
-- **Shipping Progress Bar**: Dynamic progress indicator for free shipping (R$ 30 threshold)
-- **Exit Intent Modal**: Conversion optimization with 10% discount offer
-- **Order Bump Modal**: Additional product recommendations with 30% discount
-- **Header/Footer**: Traditional design with trust badges and social links
-
-### Backend Services
-- **Product Management**: CRUD operations for product catalog with size variants (500g/1kg)
-- **Cart Operations**: Session-based cart with size and price tracking
-- **Shipping Calculator**: Automatic free shipping for orders ≥ R$ 30, R$ 9.90 shipping fee below threshold
-- **Order Processing**: Complete checkout flow with PIX payment integration
-- **CEP Integration**: Brazilian postal code lookup for address completion
-
-## Data Flow
-
-1. **Product Browsing**: Products are fetched from PostgreSQL and cached using React Query
-2. **Cart Management**: Cart items are stored per session ID with size and price variants
-3. **Shipping Calculation**: Real-time calculation of shipping costs and free shipping progress
-4. **Checkout Process**: Form data is validated client-side, then processed server-side
-5. **Payment Flow**: PIX payment codes are generated for Brazilian payment processing
-6. **Order Completion**: Orders are stored with complete audit trail
+### Feature Specifications
+- **Product Catalog**: Comprehensive product listing with detailed descriptions, weight information, and multi-image galleries. Supports product variations and categories.
+- **Shopping Cart**: Sliding sidebar cart with quantity and size selection (500g/1kg), real-time updates, and a fixed bottom bar for pricing and checkout.
+- **Checkout Process**: Secure checkout with CPF field, automatic formatting/validation, selectable shipping options (Express/Free freight), and real-time total calculation. Includes automatic CEP lookup for address completion.
+- **Payment Integration**: Real PIX payment integration via BlackCat Payment Gateway, generating unique QR codes for transactions. Supports real-time payment processing and webhook updates for order status.
+- **Customer Engagement**: Integrated customer review system, promotional banners, "Por que escolher a Tábua de Minas" section for trust-building, and an "About Company" section.
+- **Subscription Club**: "Clube Tábua" subscription service with two plans and a promotional countdown timer.
+- **Marketing Integration**: UTMify for comprehensive marketing campaign tracking (order creation, payments, UTM parameters, customer data), and TikTok Pixel for event tracking (page views, product views, add to cart, checkout initiation, payment completion, contact form submissions).
+- **External Checkout Links**: Integration for direct links to external payment pages for products and subscription plans.
 
 ## External Dependencies
 
-### Frontend Dependencies
-- **React Query**: Server state management and caching
-- **Wouter**: Lightweight routing solution
-- **React Hook Form**: Form state management
-- **Zod**: Runtime type validation
-- **Tailwind CSS**: Utility-first styling framework
-- **Radix UI**: Accessible component primitives
+### Services & APIs
+- **BlackCat Payment Gateway**: For PIX payment processing and webhooks.
+- **ViaCEP API**: For Brazilian postal code lookup.
+- **UTMify API**: For marketing campaign tracking and analytics.
+- **TikTok Pixel**: For advertising and conversion tracking.
+- **Imgur**: For hosting product images.
+- **LightWidget**: For Instagram feed integration.
 
-### Backend Dependencies
-- **Express.js**: Web application framework
-- **Drizzle ORM**: Type-safe database operations
-- **Neon Database**: Serverless PostgreSQL provider
-- **Zod**: Shared validation schemas
-
-### Development Tools
-- **TypeScript**: Type safety across the stack
-- **Vite**: Fast development and build tool
-- **ESBuild**: Fast JavaScript bundler for production
-
-## Deployment Strategy
-
-The application supports multiple deployment platforms:
-
-### Replit Deployment (Current)
-- **Development**: Hot module replacement with Vite dev server
-- **Production**: Express serves static files built by Vite
-- **Database**: Neon Database provides managed PostgreSQL
-- **Environment**: Node.js with ES modules throughout
-
-### Netlify Deployment (Ready)
-- **Build**: Configured with `netlify.toml` and `build-netlify.sh`
-- **Functions**: Serverless functions for API endpoints (`/api/products`, `/api/cart`, `/api/orders`)
-- **Storage**: In-memory storage for demo (can be upgraded to external database)
-- **Static Files**: Optimized client build served via CDN
-- **Environment**: Node.js serverless functions with TypeScript support
-
-The build process creates optimized bundles for both client and server code, with platform-specific configurations for seamless deployment.
+### Technologies & Libraries
+- **React Query**: For server state management.
+- **Wouter**: For client-side routing.
+- **React Hook Form & Zod**: For form handling and validation.
+- **Tailwind CSS**: For styling.
+- **Radix UI & shadcn/ui**: For accessible UI components.
+- **Express.js**: For backend web framework.
+- **Drizzle ORM**: For type-safe database operations.
+- **Neon Database**: Serverless PostgreSQL database provider.
+- **qrcode library**: For QR code generation.
