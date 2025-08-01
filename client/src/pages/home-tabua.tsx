@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 // Preload removido para resolver problemas de build no Netlify
 import ProductSkeleton from "@/components/product-skeleton";
 import type { Product, CartItem } from "@shared/schema";
-import { testTikTokPixel } from "@/lib/tiktok-tracking";
 
 interface HomeTabuaProps {
   onCartToggle: () => void;
@@ -80,17 +79,6 @@ export function HomeTabua({ onCartToggle }: HomeTabuaProps) {
   return (
     <div className="min-h-screen bg-white">
       <Header onCartToggle={onCartToggle} />
-      
-      {/* Botão temporário para testar TikTok Pixel */}
-      <div className="fixed top-20 right-4 z-50">
-        <button
-          onClick={testTikTokPixel}
-          className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm font-medium"
-          title="Testar eventos TikTok Pixel com código TEST29173"
-        >
-          🧪 Teste TikTok
-        </button>
-      </div>
 
 
 
