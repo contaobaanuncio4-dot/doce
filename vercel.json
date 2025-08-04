@@ -9,11 +9,15 @@
       "destination": "/test-api.html"
     },
     {
+      "source": "/test-vercel-api",
+      "destination": "/test-vercel-api.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "vite build && cp test-api.html dist/public/",
+  "buildCommand": "vite build && cp test-api.html dist/public/ && cp test-vercel-api.html dist/public/",
   "outputDirectory": "dist/public",
   "installCommand": "npm install"
 }
