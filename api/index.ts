@@ -432,12 +432,19 @@ const storage = {
   },
 
   getCartItems: async (sessionId: string): Promise<CartItem[]> => {
-    return cartItems
+    console.log('🛒 Buscando itens do carrinho para sessionId:', sessionId);
+    console.log('📦 Total de itens em memória:', cartItems.length);
+    console.log('🔍 Itens filtrados por sessionId:', cartItems.filter(item => item.sessionId === sessionId).length);
+    
+    const filteredItems = cartItems
       .filter(item => item.sessionId === sessionId)
       .map(item => ({
         ...item,
         product: products.find(p => p.id === item.productId)
       }));
+    
+    console.log('✅ Itens retornados:', filteredItems.length);
+    return filteredItems;
   },
 
   addToCart: async (cartData: {
@@ -448,11 +455,23 @@ const storage = {
     price: string;
     createdAt?: Date;
   }): Promise<CartItem> => {
+    console.log('➕ Adicionando item ao carrinho:', {
+      sessionId: cartData.sessionId,
+      productId: cartData.productId,
+      quantity: cartData.quantity,
+      size: cartData.size,
+      price: cartData.price
+    });
+    
     const newItem: CartItem = {
       id: cartIdCounter++,
       ...cartData
     };
+    
     cartItems.push(newItem);
+    console.log('✅ Item adicionado com ID:', newItem.id);
+    console.log('📦 Total de itens no carrinho:', cartItems.length);
+    
     return newItem;
   },
 
@@ -678,21 +697,78 @@ app.delete('/api/cart/:id', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
   try {
-    // Buscar itens do carrinho
-    const cartItems = await storage.getCartItems(req.body.sessionId);
-    if (cartItems.length === 0) {
-      return res.status(400).json({ message: 'Carrinho vazio' });
+    console.log('📦 Recebendo requisição para criar pedido...');
+    console.log('📋 Body da requisição:', JSON.stringify(req.body, null, 2));
+    
+    // Validar dados obrigatórios
+    if (!req.body.sessionId) {
+      console.error('❌ sessionId não fornecido');
+      return res.status(400).json({ 
+        error: 'sessionId é obrigatório',
+        received: req.body 
+      });
     }
     
+    if (!req.body.customerName) {
+      console.error('❌ customerName não fornecido');
+      return res.status(400).json({ 
+        error: 'customerName é obrigatório',
+        received: req.body 
+      });
+    }
+    
+    if (!req.body.customerEmail) {
+      console.error('❌ customerEmail não fornecido');
+      return res.status(400).json({ 
+        error: 'customerEmail é obrigatório',
+        received: req.body 
+      });
+    }
+    
+    if (!req.body.total) {
+      console.error('❌ total não fornecido');
+      return res.status(400).json({ 
+        error: 'total é obrigatório',
+        received: req.body 
+      });
+    }
+    
+    // Buscar itens do carrinho
+    console.log('🛒 Buscando itens do carrinho para sessionId:', req.body.sessionId);
+    const cartItems = await storage.getCartItems(req.body.sessionId);
+    console.log('📦 Itens encontrados no carrinho:', cartItems.length);
+    
+    if (cartItems.length === 0) {
+      console.error('❌ Carrinho vazio para sessionId:', req.body.sessionId);
+      return res.status(400).json({ 
+        error: 'Carrinho vazio',
+        sessionId: req.body.sessionId,
+        cartItemsCount: cartItems.length
+      });
+    }
+    
+    console.log('✅ Dados válidos, criando pedido...');
     const order = await storage.createOrder(req.body);
+    
+    console.log('✅ Pedido criado com sucesso, ID:', order.id);
     
     // Limpar carrinho após criar pedido
     await storage.clearCart(req.body.sessionId);
+    console.log('🧹 Carrinho limpo para sessionId:', req.body.sessionId);
     
     res.json(order);
   } catch (error) {
-    console.error('Error creating order:', error);
-    res.status(500).json({ message: 'Failed to create order' });
+    console.error('💥 Erro ao criar pedido:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
+    res.status(500).json({ 
+      error: 'Erro interno ao criar pedido',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Carrinho - Tábua de Minas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .warning {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Carrinho - Tábua de Minas</h1>
+    
+    <div class="container">
+        <h2>1. Verificar SessionId</h2>
+        <button onclick="checkSessionId()">Verificar SessionId</button>
+        <div id="sessionIdResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>2. Adicionar Produto ao Carrinho</h2>
+        <button onclick="addProductToCart()">Adicionar Queijo MinasBri</button>
+        <div id="addCartResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>3. Verificar Itens do Carrinho</h2>
+        <button onclick="checkCartItems()">Verificar Carrinho</button>
+        <div id="cartItemsResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>4. Testar Criação de Pedido</h2>
+        <button onclick="testCreateOrder()">Criar Pedido de Teste</button>
+        <div id="createOrderResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>5. Debug Completo</h2>
+        <button onclick="runFullDebug()">Executar Debug Completo</button>
+        <div id="fullDebugResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        const SESSION_ID = 'wil3rxwaf0q'; // SessionId padrão usado no site
+        
+        function showResult(elementId, data, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = `result ${type}`;
+        }
+
+        async function checkSessionId() {
+            try {
+                showResult('sessionIdResult', {
+                    sessionId: SESSION_ID,
+                    timestamp: new Date().toISOString(),
+                    localStorage: localStorage.getItem('sessionId')
+                });
+            } catch (error) {
+                showResult('sessionIdResult', {
+                    error: error.message,
+                    stack: error.stack
+                }, 'error');
+            }
+        }
+
+        async function addProductToCart() {
+            try {
+                const response = await fetch(`${API_BASE}/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId: SESSION_ID,
+                        productId: 1,
+                        quantity: 1,
+                        size: '500g',
+                        price: '33.90'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                showResult('addCartResult', {
+                    status: response.status,
+                    ok: response.ok,
+                    data: data
+                }, response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('addCartResult', {
+                    error: error.message,
+                    stack: error.stack
+                }, 'error');
+            }
+        }
+
+        async function checkCartItems() {
+            try {
+                const response = await fetch(`${API_BASE}/cart?sessionId=${SESSION_ID}`);
+                const data = await response.json();
+                
+                showResult('cartItemsResult', {
+                    status: response.status,
+                    ok: response.ok,
+                    sessionId: SESSION_ID,
+                    itemsCount: Array.isArray(data) ? data.length : 'N/A',
+                    items: Array.isArray(data) ? data : data
+                }, response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('cartItemsResult', {
+                    error: error.message,
+                    stack: error.stack
+                }, 'error');
+            }
+        }
+
+        async function testCreateOrder() {
+            try {
+                // Primeiro adicionar item ao carrinho
+                await fetch(`${API_BASE}/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId: SESSION_ID,
+                        productId: 1,
+                        quantity: 1,
+                        size: '500g',
+                        price: '33.90'
+                    })
+                });
+                
+                // Agora criar pedido
+                const response = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId: SESSION_ID,
+                        customerName: 'Teste Cliente',
+                        customerEmail: 'teste@exemplo.com',
+                        customerPhone: '11999999999',
+                        customerCpf: '12345678901',
+                        zipCode: '01234-567',
+                        address: 'Rua Teste, 123',
+                        addressNumber: '123',
+                        addressComplement: 'Apto 1',
+                        neighborhood: 'Centro',
+                        city: 'São Paulo',
+                        state: 'SP',
+                        total: '33.90',
+                        shippingOption: 'express',
+                        shippingCost: '9.90',
+                        paymentMethod: 'pix'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                showResult('createOrderResult', {
+                    status: response.status,
+                    ok: response.ok,
+                    hasPixCode: !!data.pixCode,
+                    pixCodeLength: data.pixCode ? data.pixCode.length : 0,
+                    orderId: data.id,
+                    data: data
+                }, response.ok ? 'success' : 'error');
+            } catch (error) {
+                showResult('createOrderResult', {
+                    error: error.message,
+                    stack: error.stack
+                }, 'error');
+            }
+        }
+
+        async function runFullDebug() {
+            try {
+                const results = {
+                    timestamp: new Date().toISOString(),
+                    sessionId: SESSION_ID,
+                    steps: []
+                };
+
+                // Passo 1: Verificar sessionId
+                results.steps.push({
+                    step: 'Verificar SessionId',
+                    sessionId: SESSION_ID,
+                    localStorage: localStorage.getItem('sessionId')
+                });
+
+                // Passo 2: Adicionar produto ao carrinho
+                try {
+                    const addResponse = await fetch(`${API_BASE}/cart`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionId: SESSION_ID,
+                            productId: 1,
+                            quantity: 1,
+                            size: '500g',
+                            price: '33.90'
+                        })
+                    });
+                    
+                    const addData = await addResponse.json();
+                    results.steps.push({
+                        step: 'Adicionar ao Carrinho',
+                        status: addResponse.status,
+                        ok: addResponse.ok,
+                        data: addData
+                    });
+                } catch (error) {
+                    results.steps.push({
+                        step: 'Adicionar ao Carrinho',
+                        error: error.message
+                    });
+                }
+
+                // Passo 3: Verificar itens do carrinho
+                try {
+                    const cartResponse = await fetch(`${API_BASE}/cart?sessionId=${SESSION_ID}`);
+                    const cartData = await cartResponse.json();
+                    results.steps.push({
+                        step: 'Verificar Carrinho',
+                        status: cartResponse.status,
+                        ok: cartResponse.ok,
+                        itemsCount: Array.isArray(cartData) ? cartData.length : 'N/A',
+                        items: Array.isArray(cartData) ? cartData : cartData
+                    });
+                } catch (error) {
+                    results.steps.push({
+                        step: 'Verificar Carrinho',
+                        error: error.message
+                    });
+                }
+
+                // Passo 4: Tentar criar pedido
+                try {
+                    const orderResponse = await fetch(`${API_BASE}/orders`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            sessionId: SESSION_ID,
+                            customerName: 'Teste Cliente',
+                            customerEmail: 'teste@exemplo.com',
+                            customerPhone: '11999999999',
+                            customerCpf: '12345678901',
+                            zipCode: '01234-567',
+                            address: 'Rua Teste, 123',
+                            addressNumber: '123',
+                            addressComplement: 'Apto 1',
+                            neighborhood: 'Centro',
+                            city: 'São Paulo',
+                            state: 'SP',
+                            total: '33.90',
+                            shippingOption: 'express',
+                            shippingCost: '9.90',
+                            paymentMethod: 'pix'
+                        })
+                    });
+                    
+                    const orderData = await orderResponse.json();
+                    results.steps.push({
+                        step: 'Criar Pedido',
+                        status: orderResponse.status,
+                        ok: orderResponse.ok,
+                        hasPixCode: !!orderData.pixCode,
+                        orderId: orderData.id,
+                        data: orderData
+                    });
+                } catch (error) {
+                    results.steps.push({
+                        step: 'Criar Pedido',
+                        error: error.message
+                    });
+                }
+
+                showResult('fullDebugResult', results, 'success');
+            } catch (error) {
+                showResult('fullDebugResult', {
+                    error: error.message,
+                    stack: error.stack
+                }, 'error');
+            }
+        }
+    </script>
+</body>
+</html> 
