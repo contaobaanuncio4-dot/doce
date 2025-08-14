@@ -1,47 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Test Vercel API</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste API - Tábua de Minas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .product {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .product img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .loading {
+            color: blue;
+            background: #e6f3ff;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Teste API Vercel</h1>
-    <button onclick="testAPI()">Testar /api/products</button>
-    <button onclick="testHealth()">Testar /api (health)</button>
-    <div id="result"></div>
+    <h1>Teste API - Tábua de Minas</h1>
+    
+    <div id="status"></div>
+    <div id="products"></div>
 
     <script>
+        const statusDiv = document.getElementById('status');
+        const productsDiv = document.getElementById('products');
+
         async function testAPI() {
-            const result = document.getElementById('result');
-            result.innerHTML = 'Carregando...';
+            statusDiv.innerHTML = '<div class="loading">Testando API...</div>';
             
             try {
-                const response = await fetch('/api/products');
+                // Testar rota principal
+                const response = await fetch('/api');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const data = await response.json();
-                result.innerHTML = `
-                    <h3>Status: ${response.status}</h3>
-                    <h3>Produtos encontrados: ${data.length}</h3>
-                    <pre>${JSON.stringify(data, null, 2)}</pre>
-                `;
+                console.log('API Status:', data);
+                
+                // Testar produtos
+                const productsResponse = await fetch('/api/products');
+                if (!productsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${productsResponse.status}`);
+                }
+                const products = await productsResponse.json();
+                console.log('Produtos:', products);
+                
+                statusDiv.innerHTML = `<div class="success">✅ API funcionando! ${products.length} produtos encontrados</div>`;
+                
+                // Exibir produtos
+                productsDiv.innerHTML = '<h2>Produtos:</h2>';
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product';
+                    productDiv.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <img src="${product.imageUrl}" alt="${product.name}" onerror="this.style.display='none'">
+                        <p><strong>Categoria:</strong> ${product.category}</p>
+                        <p><strong>Preço 500g:</strong> R$ ${product.price500g}</p>
+                        <p><strong>Preço 1kg:</strong> R$ ${product.price1kg}</p>
+                        <p><strong>Checkout 500g:</strong> <a href="${product.checkout500g}" target="_blank">Link</a></p>
+                        <p><strong>Checkout 1kg:</strong> <a href="${product.checkout1kg}" target="_blank">Link</a></p>
+                        <p><strong>Destaque:</strong> ${product.featured ? 'Sim' : 'Não'}</p>
+                        <p><strong>Desconto:</strong> ${product.discount || 0}%</p>
+                    `;
+                    productsDiv.appendChild(productDiv);
+                });
+                
             } catch (error) {
-                result.innerHTML = `<h3>ERRO: ${error.message}</h3>`;
+                console.error('Erro:', error);
+                statusDiv.innerHTML = `<div class="error">❌ Erro: ${error.message}</div>`;
             }
         }
 
-        async function testHealth() {
-            const result = document.getElementById('result');
-            result.innerHTML = 'Carregando...';
-            
-            try {
-                const response = await fetch('/api');
-                const data = await response.json();
-                result.innerHTML = `
-                    <h3>Status: ${response.status}</h3>
-                    <pre>${JSON.stringify(data, null, 2)}</pre>
-                `;
-            } catch (error) {
-                result.innerHTML = `<h3>ERRO: ${error.message}</h3>`;
-            }
-        }
+        // Executar teste quando a página carregar
+        testAPI();
     </script>
 </body>
 </html>

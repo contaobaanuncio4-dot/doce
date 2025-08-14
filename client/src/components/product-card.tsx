@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, ShoppingCart, Plus, Minus } from "lucide-react";
-import { useCart } from "@/hooks/use-cart";
+import { Star, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@shared/schema";
 
@@ -13,40 +10,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState<"500g" | "1kg">("500g");
-  const { addToCart } = useCart();
   const { toast } = useToast();
 
-  const handleAddToCart = () => {
-    const price = product.category === "doces" 
-      ? (selectedSize === "500g" ? product.price500g : product.price1kg)
-      : product.price500g;
-    const size = product.category === "doces" ? selectedSize : "500g";
-    
-    addToCart(product, quantity, size, price);
-    // Notificação removida conforme solicitado
-    onAddToCart?.();
-  };
-
-  const increaseQuantity = () => {
-    if (quantity < 10) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  // Preço baseado no tamanho selecionado (para doces) ou preço padrão (para queijos)
-  const currentPrice = product.category === "doces" 
-    ? (selectedSize === "500g" ? product.price500g : product.price1kg)
-    : product.price500g;
-  
-  const originalPrice = parseFloat(currentPrice.replace("R$ ", "").replace(",", "."));
+  const originalPrice = parseFloat(product.price500g);
   const discountedPrice = (product.discount && product.discount > 0)
     ? originalPrice - (originalPrice * product.discount / 100)
     : originalPrice;
@@ -85,68 +51,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         <p className="text-gray-600 mb-4 text-sm leading-relaxed">
           {product.description}
         </p>
-        
-        {/* Seleção de tamanho para doces */}
-        {product.category === "doces" && (
-          <div className="mb-4">
-            <h4 className="text-sm font-medium mb-2" style={{ color: '#0F2E51' }}>
-              Escolha o tamanho:
-            </h4>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setSelectedSize("500g")}
-                className={`p-2 border-2 rounded-lg text-center transition-colors text-xs ${
-                  selectedSize === "500g"
-                    ? "border-yellow-500 bg-yellow-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-                style={{
-                  borderColor: selectedSize === "500g" ? "#DDAF36" : undefined,
-                  backgroundColor: selectedSize === "500g" ? "#DDAF36" : undefined,
-                  color: selectedSize === "500g" ? "white" : "#0F2E51"
-                }}
-              >
-                <div className="font-medium">500g</div>
-                <div className="text-xs">
-                  R$ {product.price500g}
-                </div>
-              </button>
-              <button
-                onClick={() => setSelectedSize("1kg")}
-                className={`p-2 border-2 rounded-lg text-center transition-colors text-xs ${
-                  selectedSize === "1kg"
-                    ? "border-yellow-500 bg-yellow-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-                style={{
-                  borderColor: selectedSize === "1kg" ? "#DDAF36" : undefined,
-                  backgroundColor: selectedSize === "1kg" ? "#DDAF36" : undefined,
-                  color: selectedSize === "1kg" ? "white" : "#0F2E51"
-                }}
-              >
-                <div className="font-medium">1kg</div>
-                <div className="text-xs">
-                  R$ {product.price1kg}
-                </div>
-              </button>
-            </div>
-          </div>
-        )}
 
         <div className="flex items-center justify-between mb-4">
           <div>
+            <div className="text-sm text-gray-600 mb-1">
+              500g: R$ {product.price500g} | 1kg: R$ {product.price1kg}
+            </div>
             {product.discount && product.discount > 0 && (
-              <span className="text-gray-500 line-through text-sm">
-                R$ {originalPrice.toFixed(2).replace(".", ",")}
-              </span>
-            )}
-            <span className="text-2xl font-bold text-minas-green ml-2">
-              R$ {discountedPrice.toFixed(2).replace(".", ",")}
-            </span>
-            {product.weight && product.category !== "doces" && (
-              <span className="text-gray-500 text-sm ml-2">
-                {product.weight}
-              </span>
+              <div className="text-xs text-green-600 font-medium">
+                {product.discount}% de desconto
+              </div>
             )}
           </div>
           
@@ -158,42 +72,28 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           </div>
         </div>
         
-        <div className="flex items-center justify-between">
-          <div className="quantity-selector">
-            <button 
-              className="quantity-btn"
-              onClick={decreaseQuantity}
-              disabled={quantity <= 1}
+        <div className="flex flex-col gap-3">
+          {/* Botões de compra direta */}
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href={product.checkout500g}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex items-center justify-center text-sm py-2"
             >
-              <Minus className="w-4 h-4" />
-            </button>
-            <input 
-              type="number" 
-              className="quantity-input"
-              value={quantity}
-              onChange={(e) => {
-                const value = parseInt(e.target.value) || 1;
-                setQuantity(Math.max(1, Math.min(10, value)));
-              }}
-              min="1"
-              max="10"
-            />
-            <button 
-              className="quantity-btn"
-              onClick={increaseQuantity}
-              disabled={quantity >= 10}
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              500g - R$ {product.price500g}
+            </a>
+            <a
+              href={product.checkout1kg}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex items-center justify-center text-sm py-2"
             >
-              <Plus className="w-4 h-4" />
-            </button>
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              1kg - R$ {product.price1kg}
+            </a>
           </div>
-          
-          <Button 
-            className="btn-primary flex items-center"
-            onClick={handleAddToCart}
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Comprar
-          </Button>
         </div>
       </CardContent>
     </Card>
